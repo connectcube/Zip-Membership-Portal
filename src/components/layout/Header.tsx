@@ -84,33 +84,28 @@ const Header = () => {
 
         {/* Auth Buttons */}
         <div className="hidden md:flex items-center space-x-4">
-          <Dialog open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen}>
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="border-primary text-primary hover:bg-primary hover:text-white"
-              >
-                Login
-              </Button>
-            </DialogTrigger>
-            <AuthModal
-              activeTab="login"
-              onClose={() => setIsAuthModalOpen(false)}
-            />
-          </Dialog>
-
-          <Dialog open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-primary text-white hover:bg-primary/90">
-                Register
-              </Button>
-            </DialogTrigger>
-            <AuthModal
-              activeTab="register"
-              onClose={() => setIsAuthModalOpen(false)}
-            />
-          </Dialog>
+          <Button
+            variant="outline"
+            className="border-primary text-primary hover:bg-primary hover:text-white"
+            onClick={() => setIsAuthModalOpen(true)}
+          >
+            Login
+          </Button>
+          <Button
+            className="bg-primary text-white hover:bg-primary/90"
+            onClick={() => setIsAuthModalOpen(true)}
+          >
+            Register
+          </Button>
         </div>
+
+        {/* Auth Modal */}
+        <Dialog open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen}>
+          <AuthModal
+            activeTab="login"
+            onClose={() => setIsAuthModalOpen(false)}
+          />
+        </Dialog>
 
         {/* Mobile Menu Button */}
         <button
@@ -167,32 +162,19 @@ const Header = () => {
           </nav>
 
           <div className="flex flex-col space-y-3 pt-4 border-t border-gray-100">
-            <Dialog open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full border-primary text-primary hover:bg-primary hover:text-white"
-                >
-                  Login
-                </Button>
-              </DialogTrigger>
-              <AuthModal
-                activeTab="login"
-                onClose={() => setIsAuthModalOpen(false)}
-              />
-            </Dialog>
-
-            <Dialog open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen}>
-              <DialogTrigger asChild>
-                <Button className="w-full bg-primary text-white hover:bg-primary/90">
-                  Register
-                </Button>
-              </DialogTrigger>
-              <AuthModal
-                activeTab="register"
-                onClose={() => setIsAuthModalOpen(false)}
-              />
-            </Dialog>
+            <Button
+              variant="outline"
+              className="w-full border-primary text-primary hover:bg-primary hover:text-white"
+              onClick={() => setIsAuthModalOpen(true)}
+            >
+              Login
+            </Button>
+            <Button
+              className="w-full bg-primary text-white hover:bg-primary/90"
+              onClick={() => setIsAuthModalOpen(true)}
+            >
+              Register
+            </Button>
           </div>
         </div>
       </div>

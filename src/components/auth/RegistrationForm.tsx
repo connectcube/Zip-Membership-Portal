@@ -64,6 +64,7 @@ const personalInfoSchema = z.object({
   province: z
     .string()
     .min(2, { message: "Province must be at least 2 characters" }),
+  dateJoined: z.string().min(1, { message: "Date joined is required" }),
 });
 
 const professionalInfoSchema = z.object({
@@ -139,6 +140,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       address: "",
       town: "",
       province: "",
+      dateJoined: "",
     },
   });
 
@@ -470,6 +472,24 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                         )}
                       />
                     </div>
+                    <FormField
+                      control={personalInfoForm.control}
+                      name="dateJoined"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            When did you first join the organization?
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <Input className="pl-10" type="date" {...field} />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                     <div className="pt-4">
                       <Button type="submit" className="w-full">
                         Continue
@@ -682,16 +702,25 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="student">
-                                Student Member
+                              <SelectItem value="technician">
+                                Technician
                               </SelectItem>
                               <SelectItem value="associate">
-                                Associate Member
+                                Associate
                               </SelectItem>
                               <SelectItem value="full">Full Member</SelectItem>
                               <SelectItem value="fellow">Fellow</SelectItem>
-                              <SelectItem value="corporate">
-                                Corporate Member
+                              <SelectItem value="student">
+                                Student Chapter
+                              </SelectItem>
+                              <SelectItem value="postgrad">
+                                Post Grad.
+                              </SelectItem>
+                              <SelectItem value="planning-firms">
+                                Planning Firms
+                              </SelectItem>
+                              <SelectItem value="educational-ngo">
+                                Educational/Research Institutions or NGO
                               </SelectItem>
                             </SelectContent>
                           </Select>

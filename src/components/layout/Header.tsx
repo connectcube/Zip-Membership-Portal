@@ -92,12 +92,12 @@ interface AuthModalProps {
 // Create a placeholder AuthModal component until the real one is implemented
 const AuthModal: React.FC<AuthModalProps> = ({ activeTab = 'login', setActiveTab = () => {} }) => {
   const { setUser } = useUserStore();
+  const [isLoading, setIsLoading] = useState(false);
 
-
-
-const handleLoginSubmit = async (values: LoginFormValues) => {
-  try {
-    // 1. Authenticate user
+  const handleLoginSubmit = async (values: LoginFormValues) => {
+    try {
+      setIsLoading(true);
+      // 1. Authenticate user
     const userCredential = await signInWithEmailAndPassword(
       auth,
       values.email,
@@ -122,6 +122,7 @@ const handleLoginSubmit = async (values: LoginFormValues) => {
       rememberMe: values.rememberMe,
       profile: userData,
     });
+    setIsLoading(false);
     setActiveTab(null);
   } catch (error) {
     console.error("Login failed:", error);
@@ -131,6 +132,7 @@ const handleLoginSubmit = async (values: LoginFormValues) => {
 
 const handleRegistrationSubmit = async (values: RegistrationFormData) => {
   try {
+    setIsLoading(true);
     // 1. Create user in Firebase Auth
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -198,6 +200,7 @@ const handleRegistrationSubmit = async (values: RegistrationFormData) => {
     // 4. Save to Firestore
     await setDoc(userRef, userData);
     await updateDoc(doc(fireDataBase, "userIndex", "userNumber"), {lastUserIndex: increment(1)});
+    setIsLoading(false);
    setActiveTab("login");
   } catch (error) {
     console.error("Registration failed:", error);
@@ -206,13 +209,13 @@ const handleRegistrationSubmit = async (values: RegistrationFormData) => {
 };
   if (activeTab === 'login') {
     return (
-      <LoginForm onSubmit={handleLoginSubmit}/>
+      <LoginForm onSubmit={handleLoginSubmit} isLoading={isLoading} />
     );
   }
   if (activeTab === 'register') {
     return (
       <div className='h-[80svh] overflow-auto'>
-        <RegistrationForm onSubmit={handleRegistrationSubmit}/>
+        <RegistrationForm onSubmit={handleRegistrationSubmit} isLoading={isLoading}/>
       </div>
     );
   }

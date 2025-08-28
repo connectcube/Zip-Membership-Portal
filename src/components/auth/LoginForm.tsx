@@ -24,17 +24,10 @@ import {
 } from '@/components/ui/select';
 
 const loginSchema = z.object({
-<<<<<<< HEAD
   email: z.string().email({ message: "Please enter a valid email address" }),
   password: z
     .string()
     .min(8, { message: "Password must be at least 8 characters" }),
-=======
-  email: z.string().email({ message: 'Please enter a valid email address' }),
-  password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
-  employerType: z.string().min(1, { message: 'Please select your employer type' }),
-  employerName: z.string().optional(),
->>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
   rememberMe: z.boolean().optional(),
 });
 
@@ -63,15 +56,8 @@ const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFo
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-<<<<<<< HEAD
       email: "",
       password: "",
-=======
-      email: '',
-      password: '',
-      employerType: '',
-      employerName: '',
->>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
       rememberMe: false,
     },
   });
@@ -80,7 +66,6 @@ const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFo
     setIsLoading(true);
     try {
       // In a real implementation, this would call an authentication service
-<<<<<<< HEAD
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
 
       // Handle remember me functionality
@@ -92,9 +77,6 @@ const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFo
         localStorage.removeItem("zipRememberedEmail");
       }
 
-=======
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
->>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
       onSubmit(values);
     } catch (error) {
       console.error('Login error:', error);
@@ -166,63 +148,7 @@ const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFo
             )}
           />
 
-<<<<<<< HEAD
-          <div className="flex items-center justify-between">
-=======
-          <FormField
-            control={form.control}
-            name="employerType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Employer Type</FormLabel>
-                <Select
-                  onValueChange={value => {
-                    field.onChange(value);
-                    // Reset employer name if not needed
-                    if (['lgsc', 'other'].includes(value)) {
-                      form.setValue('employerName', '');
-                    }
-                  }}
-                  value={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your employer type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="lgsc">Local Government Service Commission</SelectItem>
-                    <SelectItem value="psc">Public Service Commission</SelectItem>
-                    <SelectItem value="private">Private Sector</SelectItem>
-                    <SelectItem value="ngo">
-                      NGO, Bilateral, or Multilateral Organization
-                    </SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {['psc', 'private', 'ngo', 'other'].includes(form.watch('employerType')) && (
-            <FormField
-              control={form.control}
-              name="employerName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Employer Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter your employer's name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-
           <div className="flex justify-between items-center">
->>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
             <FormField
               control={form.control}
               name="rememberMe"

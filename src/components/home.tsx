@@ -40,7 +40,6 @@ const Home = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-<<<<<<< HEAD
   const [authModalTab, setAuthModalTab] = useState<"login" | "register">(
     "login",
   );
@@ -89,11 +88,6 @@ const Home = () => {
     };
 
     setUserData(mockUserData);
-=======
-  const [authModalTab, setAuthModalTab] = useState<"login" | "register">("login");
-
-  const handleLoginSuccess = () => {
->>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
     setIsLoggedIn(true);
     setIsAuthModalOpen(false);
 
@@ -102,7 +96,6 @@ const Home = () => {
     localStorage.setItem("zipIsLoggedIn", "true");
   };
 
-<<<<<<< HEAD
   // Handle registration success
   const handleRegistrationSuccess = (registrationData?: any) => {
     if (registrationData) {
@@ -125,11 +118,6 @@ const Home = () => {
       setAuthModalTab("login");
       setIsAuthModalOpen(true);
     }
-=======
-  const handleRegistrationSuccess = () => {
-    setAuthModalTab("login");
-    setIsAuthModalOpen(true);
->>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
   };
 
   const handleRegisterClick = () => {
@@ -160,7 +148,6 @@ const Home = () => {
     }
   };
 
-<<<<<<< HEAD
   // Handle logout
   const handleLogout = () => {
     setIsLoggedIn(false);
@@ -207,12 +194,9 @@ const Home = () => {
       />
     );
   }
-=======
-  if (isLoggedIn) return <MemberDashboard />;
->>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col bg-white min-h-screen">
       <Header />
       <main className="flex-grow">
         <HeroSection
@@ -220,8 +204,8 @@ const Home = () => {
           onSecondaryCtaClick={handleLoginClick}
         />
         <FeatureHighlights />
-        <section className="py-16 px-4 bg-white">
-          <div className="container mx-auto">
+        <section className="bg-white px-4 py-16">
+          <div className="mx-auto container">
             <VerificationTool onVerify={handleVerification} />
           </div>
         </section>

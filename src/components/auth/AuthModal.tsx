@@ -16,15 +16,9 @@ import { X } from 'lucide-react';
 interface AuthModalProps {
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
-<<<<<<< HEAD
   defaultTab?: "login" | "register";
   onLoginSuccess?: (data?: any) => void;
   onRegisterSuccess?: (data?: any) => void;
-=======
-  defaultTab?: 'login' | 'register';
-  onLoginSuccess?: () => void;
-  onRegisterSuccess?: () => void;
->>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
 }
 
 const AuthModal: React.FC<AuthModalProps> = ({

@@ -122,7 +122,6 @@ const MemberDashboard = ({
     },
   ];
 
-<<<<<<< HEAD
   // Generate payment history based on membership type and registration date
   const paymentHistory = [
     {
@@ -152,40 +151,6 @@ const MemberDashboard = ({
       status: "Paid" as const,
     },
   ];
-=======
-  // Mock data for payment history
-    type PaymentStatus = "Pending" | "Paid" | "Failed";
-
-    const paymentHistory: {
-      id: string;
-      description: string;
-      amount: string;
-      date: string;
-      status: PaymentStatus;
-    }[] = [
-      {
-        id: "1",
-        description: "Annual Membership Fee",
-        amount: "K1,500",
-        date: "2023-01-15",
-        status: "Paid",
-      },
-      {
-        id: "2",
-        description: "AGM Registration",
-        amount: "K500",
-        date: "2022-12-10",
-        status: "Paid",
-      },
-      {
-        id: "3",
-        description: "Membership Renewal",
-        amount: "K1,500",
-        date: "2022-01-15",
-        status: "Paid",
-      },
-    ];
->>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
 
   // Placeholder components for different sections
   const ProfileSection = () => {
@@ -236,97 +201,97 @@ const MemberDashboard = ({
     };
 
     return (
-      <div className="p-6 bg-gray-50 min-h-screen">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">My Profile</h1>
+      <div className="bg-gray-50 p-6 min-h-screen">
+        <h1 className="mb-6 font-bold text-gray-900 text-3xl">My Profile</h1>
         <div className="space-y-6">
           {/* Basic Information Card */}
           <Card>
             <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
-              <div className="flex flex-col md:flex-row gap-8">
+              <h2 className="mb-4 font-semibold text-xl">Basic Information</h2>
+              <div className="flex md:flex-row flex-col gap-8">
                 <div className="flex flex-col items-center">
-                  <div className="w-32 h-32 rounded-full bg-slate-200 flex items-center justify-center mb-4">
+                  <div className="flex justify-center items-center bg-slate-200 mb-4 rounded-full w-32 h-32">
                     <User size={64} className="text-slate-400" />
                   </div>
-                  <button className="text-sm text-blue-600 hover:underline">
+                  <button className="text-blue-600 text-sm hover:underline">
                     Change Photo
                   </button>
                 </div>
                 <div className="flex-1 space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block mb-1 font-medium text-gray-700 text-sm">
                         Full Name
                       </label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="p-2 border rounded-md w-full"
                         value={userName}
                         readOnly={!isEditing}
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block mb-1 font-medium text-gray-700 text-sm">
                         Membership Type
                       </label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="p-2 border rounded-md w-full"
                         value={membershipType}
                         readOnly
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block mb-1 font-medium text-gray-700 text-sm">
                         Email Address
                       </label>
                       <input
                         type="email"
-                        className="w-full p-2 border rounded-md"
+                        className="p-2 border rounded-md w-full"
                         value={userEmail}
                         readOnly={!isEditing}
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block mb-1 font-medium text-gray-700 text-sm">
                         Phone Number
                       </label>
                       <input
                         type="tel"
-                        className="w-full p-2 border rounded-md"
+                        className="p-2 border rounded-md w-full"
                         value={userPhone}
                         readOnly={!isEditing}
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block mb-1 font-medium text-gray-700 text-sm">
                         Planner ID
                       </label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="p-2 border rounded-md w-full"
                         value={plannerID}
                         readOnly
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block mb-1 font-medium text-gray-700 text-sm">
                         Registration Date
                       </label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="p-2 border rounded-md w-full"
                         value={registrationDate}
                         readOnly
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block mb-1 font-medium text-gray-700 text-sm">
                       Professional Address
                     </label>
                     <textarea
-                      className="w-full p-2 border rounded-md"
+                      className="p-2 border rounded-md w-full"
                       rows={3}
                       value={`${userAddress}, ${userTown}, ${userProvince}, Zambia`}
                       readOnly={!isEditing}
@@ -336,24 +301,24 @@ const MemberDashboard = ({
                     {isEditing ? (
                       <>
                         <button
-                          className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                          className="hover:bg-gray-50 px-4 py-2 border border-gray-300 rounded-md transition-colors"
                           onClick={() => setIsEditing(false)}
                         >
                           Cancel
                         </button>
-                        <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                        <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
                           Save Changes
                         </button>
                       </>
                     ) : (
                       <>
                         <button
-                          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors"
                           onClick={() => setIsEditing(true)}
                         >
                           Edit Profile
                         </button>
-                        <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                        <button className="hover:bg-gray-50 px-4 py-2 border border-gray-300 rounded-md transition-colors">
                           Change Password
                         </button>
                       </>
@@ -368,9 +333,9 @@ const MemberDashboard = ({
           <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Qualifications</h2>
+                <h2 className="font-semibold text-xl">Qualifications</h2>
                 <button
-                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                  className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md text-white transition-colors"
                   onClick={() => setShowAddQualification(true)}
                 >
                   Add Qualification
@@ -379,14 +344,14 @@ const MemberDashboard = ({
 
               <div className="space-y-4">
                 {qualifications.map((qual) => (
-                  <div key={qual.id} className="border rounded-lg p-4">
+                  <div key={qual.id} className="p-4 border rounded-lg">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <h3 className="font-medium text-lg">
                           {qual.qualification}
                         </h3>
                         <p className="text-gray-600">{qual.institution}</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-gray-500 text-sm">
                           Graduated: {qual.graduationYear}
                         </p>
                       </div>
@@ -405,18 +370,18 @@ const MemberDashboard = ({
 
               {/* Add Qualification Form */}
               {showAddQualification && (
-                <div className="mt-6 border-t pt-6">
-                  <h3 className="text-lg font-medium mb-4">
+                <div className="mt-6 pt-6 border-t">
+                  <h3 className="mb-4 font-medium text-lg">
                     Add New Qualification
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block mb-1 font-medium text-gray-700 text-sm">
                         Qualification
                       </label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="p-2 border rounded-md w-full"
                         placeholder="e.g., Master of Urban Planning"
                         value={newQualification.qualification}
                         onChange={(e) =>
@@ -428,12 +393,12 @@ const MemberDashboard = ({
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block mb-1 font-medium text-gray-700 text-sm">
                         Institution
                       </label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="p-2 border rounded-md w-full"
                         placeholder="e.g., University of Zambia"
                         value={newQualification.institution}
                         onChange={(e) =>
@@ -445,12 +410,12 @@ const MemberDashboard = ({
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block mb-1 font-medium text-gray-700 text-sm">
                         Graduation Year
                       </label>
                       <input
                         type="number"
-                        className="w-full p-2 border rounded-md"
+                        className="p-2 border rounded-md w-full"
                         placeholder="e.g., 2020"
                         value={newQualification.graduationYear}
                         onChange={(e) =>
@@ -464,7 +429,7 @@ const MemberDashboard = ({
                   </div>
                   <div className="flex justify-end space-x-4 mt-4">
                     <button
-                      className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                      className="hover:bg-gray-50 px-4 py-2 border border-gray-300 rounded-md transition-colors"
                       onClick={() => {
                         setShowAddQualification(false);
                         setNewQualification({
@@ -477,7 +442,7 @@ const MemberDashboard = ({
                       Cancel
                     </button>
                     <button
-                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                      className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors"
                       onClick={handleAddQualification}
                     >
                       Add Qualification
@@ -493,8 +458,8 @@ const MemberDashboard = ({
   };
 
   const PaymentsSection = () => (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Payments</h1>
+    <div className="bg-gray-50 p-6 min-h-screen">
+      <h1 className="mb-6 font-bold text-gray-900 text-3xl">Payments</h1>
       <Tabs defaultValue="history">
         <TabsList className="mb-6">
           <TabsTrigger value="history">Payment History</TabsTrigger>
@@ -508,20 +473,20 @@ const MemberDashboard = ({
                 {paymentHistory.map((payment) => (
                   <div
                     key={payment.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
+                    className="flex justify-between items-center p-4 border rounded-lg"
                   >
                     <div className="flex items-center gap-4">
                       <div className="bg-green-100 p-3 rounded-lg">
-                        <CreditCard className="h-5 w-5 text-green-600" />
+                        <CreditCard className="w-5 h-5 text-green-600" />
                       </div>
                       <div>
                         <h4 className="font-medium">{payment.description}</h4>
-                        <p className="text-sm text-gray-500">{payment.date}</p>
+                        <p className="text-gray-500 text-sm">{payment.date}</p>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="font-bold">{payment.amount}</p>
-                      <span className="inline-block px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+                      <span className="inline-block bg-green-100 px-2 py-1 rounded-full text-green-800 text-xs">
                         {payment.status}
                       </span>
                     </div>
@@ -543,13 +508,13 @@ const MemberDashboard = ({
         <TabsContent value="make">
           <Card>
             <CardContent className="p-6">
-              <h3 className="text-xl font-medium mb-4">Make a Payment</h3>
+              <h3 className="mb-4 font-medium text-xl">Make a Payment</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">
                     Payment Type
                   </label>
-                  <select className="w-full p-2 border rounded-md">
+                  <select className="p-2 border rounded-md w-full">
                     <option>Annual Membership Fee</option>
                     <option>AGM Registration</option>
                     <option>Workshop Registration</option>
@@ -557,22 +522,22 @@ const MemberDashboard = ({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">
                     Amount
                   </label>
                   <input
                     type="text"
-                    className="w-full p-2 border rounded-md"
+                    className="p-2 border rounded-md w-full"
                     value="K1,500"
                     readOnly
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">
                     Payment Method
                   </label>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="border p-4 rounded-md cursor-pointer hover:bg-gray-50 flex items-center gap-2">
+                  <div className="gap-4 grid grid-cols-1 md:grid-cols-3">
+                    <div className="flex items-center gap-2 hover:bg-gray-50 p-4 border rounded-md cursor-pointer">
                       <input
                         type="radio"
                         name="payment-method"
@@ -580,7 +545,7 @@ const MemberDashboard = ({
                       />
                       <label htmlFor="mobile-money">Mobile Money</label>
                     </div>
-                    <div className="border p-4 rounded-md cursor-pointer hover:bg-gray-50 flex items-center gap-2">
+                    <div className="flex items-center gap-2 hover:bg-gray-50 p-4 border rounded-md cursor-pointer">
                       <input
                         type="radio"
                         name="payment-method"
@@ -588,7 +553,7 @@ const MemberDashboard = ({
                       />
                       <label htmlFor="bank-transfer">Bank Transfer</label>
                     </div>
-                    <div className="border p-4 rounded-md cursor-pointer hover:bg-gray-50 flex items-center gap-2">
+                    <div className="flex items-center gap-2 hover:bg-gray-50 p-4 border rounded-md cursor-pointer">
                       <input
                         type="radio"
                         name="payment-method"
@@ -599,7 +564,7 @@ const MemberDashboard = ({
                   </div>
                 </div>
                 <div className="flex justify-end">
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                  <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
                     Proceed to Payment
                   </button>
                 </div>
@@ -612,8 +577,8 @@ const MemberDashboard = ({
   );
 
   const DocumentsSection = () => (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Documents</h1>
+    <div className="bg-gray-50 p-6 min-h-screen">
+      <h1 className="mb-6 font-bold text-gray-900 text-3xl">Documents</h1>
       <Tabs defaultValue="my-documents">
         <TabsList className="mb-6">
           <TabsTrigger value="my-documents">My Documents</TabsTrigger>
@@ -643,24 +608,24 @@ const MemberDashboard = ({
                 ].map((doc) => (
                   <div
                     key={doc.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
+                    className="flex justify-between items-center p-4 border rounded-lg"
                   >
                     <div className="flex items-center gap-4">
                       <div className="bg-blue-100 p-3 rounded-lg">
-                        <FileText className="h-5 w-5 text-blue-600" />
+                        <FileText className="w-5 h-5 text-blue-600" />
                       </div>
                       <div>
                         <h4 className="font-medium">{doc.name}</h4>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-gray-500 text-sm">
                           Uploaded on: {doc.date}
                         </p>
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button className="px-3 py-1 text-sm border rounded-md hover:bg-gray-50">
+                      <button className="hover:bg-gray-50 px-3 py-1 border rounded-md text-sm">
                         View
                       </button>
-                      <button className="px-3 py-1 text-sm border rounded-md hover:bg-gray-50">
+                      <button className="hover:bg-gray-50 px-3 py-1 border rounded-md text-sm">
                         Download
                       </button>
                     </div>
@@ -696,24 +661,24 @@ const MemberDashboard = ({
                 ].map((doc) => (
                   <div
                     key={doc.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
+                    className="flex justify-between items-center p-4 border rounded-lg"
                   >
                     <div className="flex items-center gap-4">
                       <div className="bg-purple-100 p-3 rounded-lg">
-                        <FileText className="h-5 w-5 text-purple-600" />
+                        <FileText className="w-5 h-5 text-purple-600" />
                       </div>
                       <div>
                         <h4 className="font-medium">{doc.name}</h4>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-gray-500 text-sm">
                           Published on: {doc.date}
                         </p>
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button className="px-3 py-1 text-sm border rounded-md hover:bg-gray-50">
+                      <button className="hover:bg-gray-50 px-3 py-1 border rounded-md text-sm">
                         View
                       </button>
-                      <button className="px-3 py-1 text-sm border rounded-md hover:bg-gray-50">
+                      <button className="hover:bg-gray-50 px-3 py-1 border rounded-md text-sm">
                         Download
                       </button>
                     </div>
@@ -726,13 +691,13 @@ const MemberDashboard = ({
         <TabsContent value="upload">
           <Card>
             <CardContent className="p-6">
-              <h3 className="text-xl font-medium mb-4">Upload New Document</h3>
+              <h3 className="mb-4 font-medium text-xl">Upload New Document</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">
                     Document Type
                   </label>
-                  <select className="w-full p-2 border rounded-md">
+                  <select className="p-2 border rounded-md w-full">
                     <option>Professional Certificate</option>
                     <option>Academic Transcript</option>
                     <option>CV</option>
@@ -740,35 +705,35 @@ const MemberDashboard = ({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">
                     Document Title
                   </label>
                   <input
                     type="text"
-                    className="w-full p-2 border rounded-md"
+                    className="p-2 border rounded-md w-full"
                     placeholder="Enter document title"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">
                     Upload File
                   </label>
-                  <div className="border-2 border-dashed border-gray-300 p-6 rounded-md text-center">
-                    <FileText className="h-10 w-10 text-gray-400 mx-auto mb-2" />
-                    <p className="text-sm text-gray-500 mb-2">
+                  <div className="p-6 border-2 border-gray-300 border-dashed rounded-md text-center">
+                    <FileText className="mx-auto mb-2 w-10 h-10 text-gray-400" />
+                    <p className="mb-2 text-gray-500 text-sm">
                       Drag and drop your file here, or click to browse
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-gray-400 text-xs">
                       Supported formats: PDF, DOCX, JPG, PNG (Max 10MB)
                     </p>
                     <input type="file" className="hidden" />
-                    <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                    <button className="bg-blue-600 hover:bg-blue-700 mt-4 px-4 py-2 rounded-md text-white transition-colors">
                       Browse Files
                     </button>
                   </div>
                 </div>
                 <div className="flex justify-end">
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                  <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
                     Upload Document
                   </button>
                 </div>
@@ -781,8 +746,8 @@ const MemberDashboard = ({
   );
 
   const EventsSection = () => (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Events & CPD</h1>
+    <div className="bg-gray-50 p-6 min-h-screen">
+      <h1 className="mb-6 font-bold text-gray-900 text-3xl">Events & CPD</h1>
       <Tabs defaultValue="upcoming">
         <TabsList className="mb-6">
           <TabsTrigger value="upcoming">Upcoming Events</TabsTrigger>
@@ -798,12 +763,12 @@ const MemberDashboard = ({
                     key={event.id}
                     className="border rounded-lg overflow-hidden"
                   >
-                    <div className="bg-blue-50 p-4 flex justify-between items-center">
+                    <div className="flex justify-between items-center bg-blue-50 p-4">
                       <div className="flex items-center gap-3">
-                        <Calendar className="h-5 w-5 text-blue-600" />
+                        <Calendar className="w-5 h-5 text-blue-600" />
                         <h3 className="font-medium">{event.title}</h3>
                       </div>
-                      <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                      <span className="bg-blue-100 px-2 py-1 rounded-full text-blue-800 text-xs">
                         {event.type}
                       </span>
                     </div>
@@ -816,7 +781,7 @@ const MemberDashboard = ({
                           <strong>Location:</strong> Lusaka, Zambia
                         </p>
                       </div>
-                      <p className="text-sm text-gray-600 mb-4">
+                      <p className="mb-4 text-gray-600 text-sm">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         Sed do eiusmod tempor incididunt ut labore et dolore
                         magna aliqua.
@@ -825,7 +790,7 @@ const MemberDashboard = ({
                         <p className="text-sm">
                           <strong>CPD Points:</strong> 5
                         </p>
-                        <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                        <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
                           Register Now
                         </button>
                       </div>
@@ -865,26 +830,26 @@ const MemberDashboard = ({
                 ].map((event) => (
                   <div
                     key={event.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
+                    className="flex justify-between items-center p-4 border rounded-lg"
                   >
                     <div className="flex items-center gap-4">
                       <div className="bg-gray-100 p-3 rounded-lg">
-                        <Calendar className="h-5 w-5 text-gray-600" />
+                        <Calendar className="w-5 h-5 text-gray-600" />
                       </div>
                       <div>
                         <h4 className="font-medium">{event.title}</h4>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-gray-500 text-sm">
                           {event.date} • {event.type}
                         </p>
                       </div>
                     </div>
                     <div>
                       {event.attended ? (
-                        <span className="inline-block px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+                        <span className="inline-block bg-green-100 px-2 py-1 rounded-full text-green-800 text-xs">
                           Attended
                         </span>
                       ) : (
-                        <span className="inline-block px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">
+                        <span className="inline-block bg-red-100 px-2 py-1 rounded-full text-red-800 text-xs">
                           Missed
                         </span>
                       )}
@@ -899,22 +864,22 @@ const MemberDashboard = ({
           <Card>
             <CardContent className="p-6">
               <div className="mb-6">
-                <h3 className="text-xl font-medium mb-2">CPD Points Summary</h3>
+                <h3 className="mb-2 font-medium text-xl">CPD Points Summary</h3>
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <div className="flex justify-between items-center">
                     <div>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-gray-600 text-sm">
                         Current Year (2023)
                       </p>
-                      <p className="text-2xl font-bold">15 / 20 Points</p>
+                      <p className="font-bold text-2xl">15 / 20 Points</p>
                     </div>
-                    <div className="w-24 h-24 rounded-full border-8 border-blue-500 flex items-center justify-center">
-                      <span className="text-xl font-bold">75%</span>
+                    <div className="flex justify-center items-center border-8 border-blue-500 rounded-full w-24 h-24">
+                      <span className="font-bold text-xl">75%</span>
                     </div>
                   </div>
                 </div>
               </div>
-              <h3 className="text-xl font-medium mb-4">CPD Activities</h3>
+              <h3 className="mb-4 font-medium text-xl">CPD Activities</h3>
               <div className="space-y-4">
                 {[
                   {
@@ -938,15 +903,15 @@ const MemberDashboard = ({
                 ].map((activity) => (
                   <div
                     key={activity.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
+                    className="flex justify-between items-center p-4 border rounded-lg"
                   >
                     <div className="flex items-center gap-4">
                       <div className="bg-green-100 p-3 rounded-lg">
-                        <Calendar className="h-5 w-5 text-green-600" />
+                        <Calendar className="w-5 h-5 text-green-600" />
                       </div>
                       <div>
                         <h4 className="font-medium">{activity.activity}</h4>
-                        <p className="text-sm text-gray-500">{activity.date}</p>
+                        <p className="text-gray-500 text-sm">{activity.date}</p>
                       </div>
                     </div>
                     <div className="text-right">
@@ -963,8 +928,8 @@ const MemberDashboard = ({
   );
 
   const NotificationsSection = () => (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Notifications</h1>
+    <div className="bg-gray-50 p-6 min-h-screen">
+      <h1 className="mb-6 font-bold text-gray-900 text-3xl">Notifications</h1>
       <Card>
         <CardContent className="p-6">
           <div className="space-y-4">
@@ -983,16 +948,16 @@ const MemberDashboard = ({
                   </div>
                   <div className="flex-1">
                     <h4 className="font-medium">{notification.title}</h4>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="mt-1 text-gray-500 text-sm">
                       {notification.date}
                     </p>
-                    <p className="text-sm mt-2">
+                    <p className="mt-2 text-sm">
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                       Sed do eiusmod tempor incididunt ut labore et dolore magna
                       aliqua.
                     </p>
                     {!notification.read && (
-                      <button className="text-sm text-blue-600 hover:underline mt-2">
+                      <button className="mt-2 text-blue-600 text-sm hover:underline">
                         Mark as read
                       </button>
                     )}
@@ -1007,21 +972,21 @@ const MemberDashboard = ({
   );
 
   const MessagesSection = () => (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Messages</h1>
+    <div className="bg-gray-50 p-6 min-h-screen">
+      <h1 className="mb-6 font-bold text-gray-900 text-3xl">Messages</h1>
       <Card>
         <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row h-[600px] border rounded-lg overflow-hidden">
+          <div className="flex md:flex-row flex-col border rounded-lg h-[600px] overflow-hidden">
             {/* Messages list */}
-            <div className="w-full md:w-1/3 border-r">
+            <div className="border-r w-full md:w-1/3">
               <div className="p-4 border-b">
                 <input
                   type="text"
                   placeholder="Search messages..."
-                  className="w-full p-2 border rounded-md"
+                  className="p-2 border rounded-md w-full"
                 />
               </div>
-              <div className="overflow-y-auto h-[calc(600px-64px)]">
+              <div className="h-[calc(600px-64px)] overflow-y-auto">
                 {[
                   {
                     id: 1,
@@ -1051,11 +1016,11 @@ const MemberDashboard = ({
                   >
                     <div className="flex justify-between items-start">
                       <h4 className="font-medium">{message.sender}</h4>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-gray-500 text-xs">
                         {message.time}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 truncate">
+                    <p className="text-gray-600 text-sm truncate">
                       {message.preview}
                     </p>
                   </div>
@@ -1064,7 +1029,7 @@ const MemberDashboard = ({
             </div>
 
             {/* Message content */}
-            <div className="w-full md:w-2/3 flex flex-col">
+            <div className="flex flex-col w-full md:w-2/3">
               <div className="p-4 border-b">
                 <h3 className="font-medium">ZIP Admin</h3>
               </div>
@@ -1077,7 +1042,7 @@ const MemberDashboard = ({
                         expire in 30 days. Please renew to maintain your active
                         status.
                       </p>
-                      <span className="text-xs text-gray-500 mt-1 block">
+                      <span className="block mt-1 text-gray-500 text-xs">
                         10:30 AM
                       </span>
                     </div>
@@ -1088,7 +1053,7 @@ const MemberDashboard = ({
                         Thank you for the reminder. I'll process the renewal
                         this week.
                       </p>
-                      <span className="text-xs text-gray-500 mt-1 block">
+                      <span className="block mt-1 text-gray-500 text-xs">
                         10:32 AM
                       </span>
                     </div>
@@ -1099,7 +1064,7 @@ const MemberDashboard = ({
                         Great! Let me know if you need any assistance with the
                         payment process.
                       </p>
-                      <span className="text-xs text-gray-500 mt-1 block">
+                      <span className="block mt-1 text-gray-500 text-xs">
                         10:35 AM
                       </span>
                     </div>
@@ -1113,7 +1078,7 @@ const MemberDashboard = ({
                     placeholder="Type your message..."
                     className="flex-1 p-2 border rounded-md"
                   />
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                  <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
                     Send
                   </button>
                 </div>
@@ -1126,8 +1091,8 @@ const MemberDashboard = ({
   );
 
   const SettingsSection = () => (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Settings</h1>
+    <div className="bg-gray-50 p-6 min-h-screen">
+      <h1 className="mb-6 font-bold text-gray-900 text-3xl">Settings</h1>
       <Tabs defaultValue="account">
         <TabsList className="mb-6">
           <TabsTrigger value="account">Account Settings</TabsTrigger>
@@ -1139,39 +1104,39 @@ const MemberDashboard = ({
         <TabsContent value="account">
           <Card>
             <CardContent className="p-6">
-              <h3 className="text-xl font-medium mb-4">Account Settings</h3>
+              <h3 className="mb-4 font-medium text-xl">Account Settings</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">
                     Email Address
                   </label>
                   <input
                     type="email"
-                    className="w-full p-2 border rounded-md"
+                    className="p-2 border rounded-md w-full"
                     value="john.doe@example.com"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">
                     Phone Number
                   </label>
                   <input
                     type="tel"
-                    className="w-full p-2 border rounded-md"
+                    className="p-2 border rounded-md w-full"
                     value="+260 97 1234567"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">
                     Language Preference
                   </label>
-                  <select className="w-full p-2 border rounded-md">
+                  <select className="p-2 border rounded-md w-full">
                     <option>English</option>
                     <option>French</option>
                   </select>
                 </div>
                 <div className="flex justify-end">
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                  <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
                     Save Changes
                   </button>
                 </div>
@@ -1182,14 +1147,14 @@ const MemberDashboard = ({
         <TabsContent value="notifications">
           <Card>
             <CardContent className="p-6">
-              <h3 className="text-xl font-medium mb-4">
+              <h3 className="mb-4 font-medium text-xl">
                 Notification Preferences
               </h3>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 border rounded-md">
+                <div className="flex justify-between items-center p-3 border rounded-md">
                   <div>
                     <h4 className="font-medium">Email Notifications</h4>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-gray-500 text-sm">
                       Receive notifications via email
                     </p>
                   </div>
@@ -1203,10 +1168,10 @@ const MemberDashboard = ({
                     <label htmlFor="email-notifications">Enabled</label>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-3 border rounded-md">
+                <div className="flex justify-between items-center p-3 border rounded-md">
                   <div>
                     <h4 className="font-medium">SMS Notifications</h4>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-gray-500 text-sm">
                       Receive notifications via SMS
                     </p>
                   </div>
@@ -1219,10 +1184,10 @@ const MemberDashboard = ({
                     <label htmlFor="sms-notifications">Disabled</label>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-3 border rounded-md">
+                <div className="flex justify-between items-center p-3 border rounded-md">
                   <div>
                     <h4 className="font-medium">Payment Reminders</h4>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-gray-500 text-sm">
                       Receive reminders about upcoming payments
                     </p>
                   </div>
@@ -1236,10 +1201,10 @@ const MemberDashboard = ({
                     <label htmlFor="payment-reminders">Enabled</label>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-3 border rounded-md">
+                <div className="flex justify-between items-center p-3 border rounded-md">
                   <div>
                     <h4 className="font-medium">Event Notifications</h4>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-gray-500 text-sm">
                       Receive notifications about upcoming events
                     </p>
                   </div>
@@ -1254,7 +1219,7 @@ const MemberDashboard = ({
                   </div>
                 </div>
                 <div className="flex justify-end">
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                  <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
                     Save Preferences
                   </button>
                 </div>
@@ -1265,38 +1230,38 @@ const MemberDashboard = ({
         <TabsContent value="privacy">
           <Card>
             <CardContent className="p-6">
-              <h3 className="text-xl font-medium mb-4">Privacy & Security</h3>
+              <h3 className="mb-4 font-medium text-xl">Privacy & Security</h3>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-medium mb-2">Change Password</h4>
+                  <h4 className="mb-2 font-medium">Change Password</h4>
                   <div className="space-y-3">
                     <input
                       type="password"
-                      className="w-full p-2 border rounded-md"
+                      className="p-2 border rounded-md w-full"
                       placeholder="Current Password"
                     />
                     <input
                       type="password"
-                      className="w-full p-2 border rounded-md"
+                      className="p-2 border rounded-md w-full"
                       placeholder="New Password"
                     />
                     <input
                       type="password"
-                      className="w-full p-2 border rounded-md"
+                      className="p-2 border rounded-md w-full"
                       placeholder="Confirm New Password"
                     />
                   </div>
-                  <button className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                  <button className="bg-blue-600 hover:bg-blue-700 mt-3 px-4 py-2 rounded-md text-white transition-colors">
                     Update Password
                   </button>
                 </div>
-                <div className="border-t pt-4 mt-4">
-                  <h4 className="font-medium mb-2">Profile Visibility</h4>
+                <div className="mt-4 pt-4 border-t">
+                  <h4 className="mb-2 font-medium">Profile Visibility</h4>
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 border rounded-md">
+                    <div className="flex justify-between items-center p-3 border rounded-md">
                       <div>
                         <h5 className="font-medium">Public Profile</h5>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-gray-500 text-sm">
                           Allow your profile to be visible in the public
                           directory
                         </p>
@@ -1311,10 +1276,10 @@ const MemberDashboard = ({
                         <label htmlFor="public-profile">Enabled</label>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between p-3 border rounded-md">
+                    <div className="flex justify-between items-center p-3 border rounded-md">
                       <div>
                         <h5 className="font-medium">Contact Information</h5>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-gray-500 text-sm">
                           Show your contact information to other members
                         </p>
                       </div>
@@ -1328,7 +1293,7 @@ const MemberDashboard = ({
                       </div>
                     </div>
                   </div>
-                  <button className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                  <button className="bg-blue-600 hover:bg-blue-700 mt-3 px-4 py-2 rounded-md text-white transition-colors">
                     Save Privacy Settings
                   </button>
                 </div>
@@ -1377,7 +1342,7 @@ const MemberDashboard = ({
   };
 
   return (
-    <div className="flex h-screen bg-white">
+    <div className="flex bg-white h-screen">
       <Sidebar
         activePage={currentPage}
         userName={userName}

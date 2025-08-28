@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, CreditCard, FileText, Calendar, Bell, MessageSquare, Settings } from 'lucide-react';
 import { useUserStore } from '@/lib/zustand';
+import { auth } from '@/lib/firebase';
 
 interface MemberDashboardProps {
   userName?: string;
@@ -49,10 +50,13 @@ const MemberDashboard = ({
   experience = '5',
   specialization = 'Urban Design',
   bio = 'Experienced urban planner with expertise in sustainable development.',
-  onLogout = () => {},
 }: MemberDashboardProps) => {
   const [currentPage, setCurrentPage] = useState(activePage);
-  const { user } = useUserStore();
+  const { user, clearUser } = useUserStore();
+  const onLogout = async () => {
+    await auth.signOut();
+    clearUser();
+  };
   console.log(user);
   // Generate personalized notifications based on user data
   const notifications = [
@@ -298,8 +302,9 @@ const MemberDashboard = ({
                     ) : (
                       <>
                         <button
-                          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors"
+                          className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-2 rounded-md text-white transition-colors"
                           onClick={() => setIsEditing(true)}
+                          disabled
                         >
                           Edit Profile
                         </button>
@@ -320,7 +325,8 @@ const MemberDashboard = ({
               <div className="flex justify-between items-center mb-4">
                 <h2 className="font-semibold text-xl">Qualifications</h2>
                 <button
-                  className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md text-white transition-colors"
+                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 px-4 py-2 rounded-md text-white transition-colors"
+                  disabled
                   onClick={() => setShowAddQualification(true)}
                 >
                   Add Qualification

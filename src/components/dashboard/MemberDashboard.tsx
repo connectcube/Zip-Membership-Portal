@@ -5,8 +5,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, CreditCard, FileText, Calendar, Bell, MessageSquare, Settings } from 'lucide-react';
 import { useUserStore } from '@/lib/zustand';
-import { auth } from '@/lib/firebase';
+import { auth, fireDataBase } from '@/lib/firebase';
 import { useNavigate } from 'react-router';
+import { doc, updateDoc } from 'firebase/firestore';
 
 interface MemberDashboardProps {
   userName?: string;
@@ -73,41 +74,41 @@ const MemberDashboard = ({
   // Placeholder components for different sections
   const ProfileSection = () => {
     const [isEditing, setIsEditing] = useState(false);
-    const [qualifications, setQualifications] = useState([{ ...user.profile.professionalInfo }]);
-    const [newQualification, setNewQualification] = useState({
-      qualification: '',
-      institution: '',
-      graduationYear: '',
+    const [loading, setLoading] = useState(false);
+
+    const [profileData, setProfileData] = useState({
+      fullName: `${user.profile.firstName} ${user.profile.middleName} ${user.profile.lastName}`,
+      email: user.profile.email,
+      phone: user.profile.phone,
+      address: `${user.profile.address}, ${user.profile.town}, ${user.profile.province}, Zambia`,
     });
-    const [showAddQualification, setShowAddQualification] = useState(false);
 
-    const handleAddQualification = () => {
-      if (
-        newQualification.qualification &&
-        newQualification.institution &&
-        newQualification.graduationYear
-      ) {
-        const newId = Math.max(...qualifications.map(q => q.id)) + 1;
-        setQualifications([
-          ...qualifications,
-          {
-            id: newId,
-            ...newQualification,
-            graduationYear: parseInt(newQualification.graduationYear),
-          },
-        ]);
-        setNewQualification({
-          qualification: '',
-          institution: '',
-          graduationYear: '',
+    const [professionalInfo, setProfessionalInfo] = useState({
+      qualification: user.profile.professionalInfo?.qualification || '',
+      institution: user.profile.professionalInfo?.institution || '',
+      graduationYear: user.profile.professionalInfo?.graduationYear || '',
+      specialization: user.profile.professionalInfo?.specialization || '',
+      jobTitle: user.profile.professionalInfo?.jobTitle || '',
+      currentEmployer: user.profile.professionalInfo?.currentEmployer || '',
+      experience: user.profile.professionalInfo?.experience || '',
+    });
+
+    const saveProfileChanges = async () => {
+      try {
+        setLoading(true);
+        const userRef = doc(fireDataBase, 'users', user.uid);
+        await updateDoc(userRef, {
+          email: profileData.email,
+          phone: profileData.phone,
+          address: profileData.address,
+          fullName: profileData.fullName,
+          professionalInfo: professionalInfo,
         });
-        setShowAddQualification(false);
-      }
-    };
-
-    const handleRemoveQualification = (id: number) => {
-      if (qualifications.length > 1) {
-        setQualifications(qualifications.filter(q => q.id !== id));
+        setIsEditing(false);
+      } catch (err) {
+        console.error('Error updating profile:', err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -126,6 +127,7 @@ const MemberDashboard = ({
                   </div>
                   <button className="text-blue-600 text-sm hover:underline">Change Photo</button>
                 </div>
+
                 <div className="flex-1 space-y-6">
                   <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
                     <div>
@@ -135,13 +137,8 @@ const MemberDashboard = ({
                       <input
                         type="text"
                         className="p-2 border rounded-md w-full"
-                        value={
-                          user.profile.firstName +
-                            ' ' +
-                            user.profile.middleName +
-                            ' ' +
-                            user.profile.lastName || ''
-                        }
+                        value={profileData.fullName}
+                        onChange={e => setProfileData({ ...profileData, fullName: e.target.value })}
                         readOnly={!isEditing}
                       />
                     </div>
@@ -152,7 +149,7 @@ const MemberDashboard = ({
                       <input
                         type="text"
                         className="p-2 border rounded-md w-full"
-                        value={user.profile.membershipType || '' || membershipType}
+                        value={user.profile.membershipType || ''}
                         readOnly
                       />
                     </div>
@@ -163,7 +160,8 @@ const MemberDashboard = ({
                       <input
                         type="email"
                         className="p-2 border rounded-md w-full"
-                        value={user.profile.email || '' || userEmail}
+                        value={profileData.email}
+                        onChange={e => setProfileData({ ...profileData, email: e.target.value })}
                         readOnly={!isEditing}
                       />
                     </div>
@@ -174,7 +172,8 @@ const MemberDashboard = ({
                       <input
                         type="tel"
                         className="p-2 border rounded-md w-full"
-                        value={user.profile.phone || '' || userPhone}
+                        value={profileData.phone}
+                        onChange={e => setProfileData({ ...profileData, phone: e.target.value })}
                         readOnly={!isEditing}
                       />
                     </div>
@@ -185,7 +184,7 @@ const MemberDashboard = ({
                       <input
                         type="text"
                         className="p-2 border rounded-md w-full"
-                        value={user.profile.membershipNumber || '' || plannerID}
+                        value={user.profile.membershipNumber || ''}
                         readOnly
                       />
                     </div>
@@ -201,6 +200,7 @@ const MemberDashboard = ({
                       />
                     </div>
                   </div>
+
                   <div>
                     <label className="block mb-1 font-medium text-gray-700 text-sm">
                       Professional Address
@@ -208,10 +208,12 @@ const MemberDashboard = ({
                     <textarea
                       className="p-2 border rounded-md w-full"
                       rows={3}
-                      value={`${userAddress}, ${userTown}, ${userProvince}, Zambia`}
+                      value={profileData.address}
+                      onChange={e => setProfileData({ ...profileData, address: e.target.value })}
                       readOnly={!isEditing}
                     />
                   </div>
+
                   <div className="flex justify-end space-x-4">
                     {isEditing ? (
                       <>
@@ -221,16 +223,19 @@ const MemberDashboard = ({
                         >
                           Cancel
                         </button>
-                        <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
-                          Save Changes
+                        <button
+                          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors"
+                          disabled={loading}
+                          onClick={() => saveProfileChanges()}
+                        >
+                          {loading ? 'Saving...' : 'Save Changes'}
                         </button>
                       </>
                     ) : (
                       <>
                         <button
-                          className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-2 rounded-md text-white transition-colors"
+                          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors"
                           onClick={() => setIsEditing(true)}
-                          disabled
                         >
                           Edit Profile
                         </button>
@@ -245,122 +250,156 @@ const MemberDashboard = ({
             </CardContent>
           </Card>
 
-          {/* Qualifications Card */}
+          {/* Professional Info Card */}
           <Card>
             <CardContent className="p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="font-semibold text-xl">Qualifications</h2>
-                <button
-                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 px-4 py-2 rounded-md text-white transition-colors"
-                  disabled
-                  onClick={() => setShowAddQualification(true)}
-                >
-                  Add Qualification
-                </button>
+              <h2 className="mb-4 font-semibold text-xl">Professional Information</h2>
+              <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
+                <div>
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">
+                    Qualification
+                  </label>
+                  <input
+                    type="text"
+                    className="p-2 border rounded-md w-full"
+                    value={professionalInfo.qualification}
+                    onChange={e =>
+                      setProfessionalInfo({
+                        ...professionalInfo,
+                        qualification: e.target.value,
+                      })
+                    }
+                    readOnly={!isEditing}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">
+                    Institution
+                  </label>
+                  <input
+                    type="text"
+                    className="p-2 border rounded-md w-full"
+                    value={professionalInfo.institution}
+                    onChange={e =>
+                      setProfessionalInfo({
+                        ...professionalInfo,
+                        institution: e.target.value,
+                      })
+                    }
+                    readOnly={!isEditing}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">
+                    Graduation Year
+                  </label>
+                  <input
+                    type="number"
+                    className="p-2 border rounded-md w-full"
+                    value={professionalInfo.graduationYear}
+                    onChange={e =>
+                      setProfessionalInfo({
+                        ...professionalInfo,
+                        graduationYear: e.target.value,
+                      })
+                    }
+                    readOnly={!isEditing}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">
+                    Specialization
+                  </label>
+                  <input
+                    type="text"
+                    className="p-2 border rounded-md w-full"
+                    value={professionalInfo.specialization}
+                    onChange={e =>
+                      setProfessionalInfo({
+                        ...professionalInfo,
+                        specialization: e.target.value,
+                      })
+                    }
+                    readOnly={!isEditing}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">Job Title</label>
+                  <input
+                    type="text"
+                    className="p-2 border rounded-md w-full"
+                    value={professionalInfo.jobTitle}
+                    onChange={e =>
+                      setProfessionalInfo({
+                        ...professionalInfo,
+                        jobTitle: e.target.value,
+                      })
+                    }
+                    readOnly={!isEditing}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">
+                    Current Employer
+                  </label>
+                  <input
+                    type="text"
+                    className="p-2 border rounded-md w-full"
+                    value={professionalInfo.currentEmployer}
+                    onChange={e =>
+                      setProfessionalInfo({
+                        ...professionalInfo,
+                        currentEmployer: e.target.value,
+                      })
+                    }
+                    readOnly={!isEditing}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">
+                    Experience (years)
+                  </label>
+                  <input
+                    type="number"
+                    className="p-2 border rounded-md w-full"
+                    value={professionalInfo.experience}
+                    onChange={e =>
+                      setProfessionalInfo({
+                        ...professionalInfo,
+                        experience: e.target.value,
+                      })
+                    }
+                    readOnly={!isEditing}
+                  />
+                </div>
               </div>
 
-              <div className="space-y-4">
-                {qualifications.map(qual => (
-                  <div key={qual.id} className="p-4 border rounded-lg">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h3 className="font-medium text-lg">{qual.qualification}</h3>
-                        <p className="text-gray-600">{qual.institution}</p>
-                        <p className="text-gray-500 text-sm">Graduated: {qual.graduationYear}</p>
-                      </div>
-                      {qualifications.length > 1 && (
-                        <button
-                          className="text-red-600 hover:text-red-800 text-sm"
-                          onClick={() => handleRemoveQualification(qual.id)}
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Add Qualification Form */}
-              {showAddQualification && (
-                <div className="mt-6 pt-6 border-t">
-                  <h3 className="mb-4 font-medium text-lg">Add New Qualification</h3>
-                  <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
-                    <div>
-                      <label className="block mb-1 font-medium text-gray-700 text-sm">
-                        Qualification
-                      </label>
-                      <input
-                        type="text"
-                        className="p-2 border rounded-md w-full"
-                        placeholder="e.g., Master of Urban Planning"
-                        value={newQualification.qualification}
-                        onChange={e =>
-                          setNewQualification({
-                            ...newQualification,
-                            qualification: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div>
-                      <label className="block mb-1 font-medium text-gray-700 text-sm">
-                        Institution
-                      </label>
-                      <input
-                        type="text"
-                        className="p-2 border rounded-md w-full"
-                        placeholder="e.g., University of Zambia"
-                        value={newQualification.institution}
-                        onChange={e =>
-                          setNewQualification({
-                            ...newQualification,
-                            institution: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div>
-                      <label className="block mb-1 font-medium text-gray-700 text-sm">
-                        Graduation Year
-                      </label>
-                      <input
-                        type="number"
-                        className="p-2 border rounded-md w-full"
-                        placeholder="e.g., 2020"
-                        value={newQualification.graduationYear}
-                        onChange={e =>
-                          setNewQualification({
-                            ...newQualification,
-                            graduationYear: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="flex justify-end space-x-4 mt-4">
+              <div className="flex justify-end space-x-4 mt-6">
+                {isEditing ? (
+                  <>
                     <button
                       className="hover:bg-gray-50 px-4 py-2 border border-gray-300 rounded-md transition-colors"
-                      onClick={() => {
-                        setShowAddQualification(false);
-                        setNewQualification({
-                          qualification: '',
-                          institution: '',
-                          graduationYear: '',
-                        });
-                      }}
+                      onClick={() => setIsEditing(false)}
                     >
                       Cancel
                     </button>
                     <button
                       className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors"
-                      onClick={handleAddQualification}
+                      disabled={loading}
+                      onClick={saveProfileChanges}
                     >
-                      Add Qualification
+                      {loading ? 'Saving...' : 'Save Changes'}
                     </button>
-                  </div>
-                </div>
-              )}
+                  </>
+                ) : (
+                  <button
+                    className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    Edit Professional Info
+                  </button>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -989,8 +1028,8 @@ const MemberDashboard = ({
       <Tabs defaultValue="account">
         <TabsList className="mb-6">
           <TabsTrigger value="account">Account Settings</TabsTrigger>
-          <TabsTrigger value="notifications">Notification Preferences</TabsTrigger>
-          <TabsTrigger value="privacy">Privacy & Security</TabsTrigger>
+          {/*<TabsTrigger value="notifications">Notification Preferences</TabsTrigger>
+          <TabsTrigger value="privacy">Privacy & Security</TabsTrigger>*/}
         </TabsList>
         <TabsContent value="account">
           <Card>

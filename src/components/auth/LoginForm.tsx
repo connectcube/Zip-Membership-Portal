@@ -28,10 +28,6 @@ const loginSchema = z.object({
   password: z
     .string()
     .min(8, { message: "Password must be at least 8 characters" }),
-  employerType: z
-    .string()
-    .min(1, { message: "Please select your employer type" }),
-  employerName: z.string().optional(),
   rememberMe: z.boolean().optional(),
 });
 
@@ -49,13 +45,22 @@ const LoginForm = ({
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Check for remembered email on component mount
+  React.useEffect(() => {
+    const rememberMe = localStorage.getItem("zipRememberMe");
+    const rememberedEmail = localStorage.getItem("zipRememberedEmail");
+
+    if (rememberMe === "true" && rememberedEmail) {
+      form.setValue("email", rememberedEmail);
+      form.setValue("rememberMe", true);
+    }
+  }, []);
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
-      employerType: "",
-      employerName: "",
       rememberMe: false,
     },
   });
@@ -65,6 +70,16 @@ const LoginForm = ({
     try {
       // In a real implementation, this would call an authentication service
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
+
+      // Handle remember me functionality
+      if (values.rememberMe) {
+        localStorage.setItem("zipRememberMe", "true");
+        localStorage.setItem("zipRememberedEmail", values.email);
+      } else {
+        localStorage.removeItem("zipRememberMe");
+        localStorage.removeItem("zipRememberedEmail");
+      }
+
       onSubmit(values);
     } catch (error) {
       console.error("Login error:", error);
@@ -139,67 +154,6 @@ const LoginForm = ({
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="employerType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Employer Type</FormLabel>
-                <Select
-                  onValueChange={(value) => {
-                    field.onChange(value);
-                    // Reset employer name if not needed
-                    if (["lgsc", "other"].includes(value)) {
-                      form.setValue("employerName", "");
-                    }
-                  }}
-                  value={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your employer type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="lgsc">
-                      Local Government Service Commission
-                    </SelectItem>
-                    <SelectItem value="psc">
-                      Public Service Commission
-                    </SelectItem>
-                    <SelectItem value="private">Private Sector</SelectItem>
-                    <SelectItem value="ngo">
-                      NGO, Bilateral, or Multilateral Organization
-                    </SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {["psc", "private", "ngo", "other"].includes(
-            form.watch("employerType"),
-          ) && (
-            <FormField
-              control={form.control}
-              name="employerName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Employer Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter your employer's name"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
 
           <div className="flex items-center justify-between">
             <FormField

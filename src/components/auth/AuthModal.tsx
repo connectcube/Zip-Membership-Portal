@@ -17,8 +17,8 @@ interface AuthModalProps {
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   defaultTab?: "login" | "register";
-  onLoginSuccess?: () => void;
-  onRegisterSuccess?: () => void;
+  onLoginSuccess?: (data?: any) => void;
+  onRegisterSuccess?: (data?: any) => void;
 }
 
 const AuthModal: React.FC<AuthModalProps> = ({
@@ -35,8 +35,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
     console.log("Login submitted:", values);
     // Simulate successful login
     setTimeout(() => {
-      onLoginSuccess();
-      onOpenChange(false);
+      onLoginSuccess(values);
     }, 1000);
   };
 
@@ -45,8 +44,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
     console.log("Registration submitted:", values);
     // Simulate successful registration
     setTimeout(() => {
-      onRegisterSuccess();
-      onOpenChange(false);
+      onRegisterSuccess(values);
     }, 1000);
   };
 

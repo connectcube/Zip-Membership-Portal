@@ -12,6 +12,7 @@ import {
   MessageSquare,
   Settings,
 } from "lucide-react";
+import { useUserStore } from "@/lib/zustand";
 
 interface MemberDashboardProps {
   userName?: string;
@@ -59,7 +60,8 @@ const MemberDashboard = ({
   onLogout = () => {},
 }: MemberDashboardProps) => {
   const [currentPage, setCurrentPage] = useState(activePage);
-
+  const {user}=useUserStore()
+  console.log(user)
   // Generate personalized notifications based on user data
   const notifications = [
     {
@@ -1345,6 +1347,7 @@ const MemberDashboard = ({
     <div className="flex bg-white h-screen">
       <Sidebar
         activePage={currentPage}
+        setCurrentPage={setCurrentPage}
         userName={userName}
         membershipType={membershipType}
         membershipStatus={membershipStatus}

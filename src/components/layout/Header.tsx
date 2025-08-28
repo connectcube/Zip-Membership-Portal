@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -12,6 +12,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
 import { auth, fireDataBase, fireStorage } from '@/lib/firebase';
 import { doc, getDoc, increment, setDoc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { DialogTitle } from '@radix-ui/react-dialog';
 const personalInfoSchema = z.object({
   firstName: z
     .string()
@@ -93,6 +94,7 @@ interface AuthModalProps {
 const AuthModal: React.FC<AuthModalProps> = ({ activeTab = 'login', setActiveTab = () => {} }) => {
   const { setUser } = useUserStore();
   const [isLoading, setIsLoading] = useState(false);
+  const navigate=useNavigate()
 
   const handleLoginSubmit = async (values: LoginFormValues) => {
     try {
@@ -122,6 +124,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ activeTab = 'login', setActiveTab
       rememberMe: values.rememberMe,
       profile: userData,
     });
+    navigate("/dashboard")
     setIsLoading(false);
     setActiveTab(null);
   } catch (error) {
@@ -231,7 +234,7 @@ const Header = () => {
     <header className="top-0 z-50 sticky bg-gradient-to-r from-blue-300 to-blue-800 shadow-lg border-b border-blue-900 w-full">
       <div className="flex justify-between items-center mx-auto px-4 h-20 container">
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-2 -ml-[4%]">
+        <Link to="/" className="flex items-center space-x-2">
           <img src="/logo.png" alt="ZIP Logo" className="rounded-full size-16" />
           <span className="font-bold text-white text-xl">Zambia Institute of Planners</span>
         </Link>
@@ -253,7 +256,7 @@ const Header = () => {
         </nav>
 
         {/* Auth Buttons */}
-        <div className="hidden md:flex items-center space-x-4 -mr-[4%]">
+        <div className="hidden md:flex items-center space-x-4">
           <Button
             variant="outline"
             className="hover:bg-primary border-primary text-primary hover:text-white"
@@ -271,7 +274,8 @@ const Header = () => {
 
         {/* Auth Modal */}
         <Dialog open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen} >
-          <DialogContent>
+          <DialogTitle></DialogTitle>
+          <DialogContent aria-describedby="Authentication Modal" >
             <AuthModal activeTab={isAuthModalOpen} setActiveTab={setIsAuthModalOpen} onClose={() => setIsAuthModalOpen(false)}  />
           </DialogContent>
         </Dialog>

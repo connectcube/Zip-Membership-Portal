@@ -29,10 +29,12 @@ interface SidebarProps {
   membershipStatus?: string;
   expiryDate?: string;
   onLogout?: () => void;
+  setCurrentPage?: (page: string) => void;
 }
 
 const Sidebar = ({
   activePage = "dashboard",
+   setCurrentPage = () => {},
   userName = "John Doe",
   membershipType = "Professional Planner",
   membershipStatus = "Active",
@@ -108,7 +110,7 @@ const Sidebar = ({
           variant="ghost"
           size="icon"
           onClick={() => setCollapsed(!collapsed)}
-          className="text-white hover:bg-slate-700"
+          className="hover:bg-slate-700 text-white"
         >
           {collapsed ? <Menu size={20} /> : <X size={20} />}
         </Button>
@@ -118,20 +120,20 @@ const Sidebar = ({
       <div
         className={`flex flex-col items-center p-4 border-b border-slate-700 ${collapsed ? "pb-2" : "pb-4"}`}
       >
-        <div className="w-16 h-16 rounded-full bg-slate-600 flex items-center justify-center mb-2">
+        <div className="flex justify-center items-center bg-slate-600 mb-2 rounded-full w-16 h-16">
           <User size={32} />
         </div>
         {!collapsed && (
           <div className="text-center">
             <h3 className="font-medium">{userName}</h3>
-            <p className="text-xs text-slate-300">{membershipType}</p>
-            <div className="mt-2 flex flex-col gap-1">
+            <p className="text-slate-300 text-xs">{membershipType}</p>
+            <div className="flex flex-col gap-1 mt-2">
               <span
                 className={`text-xs px-2 py-1 rounded-full ${membershipStatus === "Active" ? "bg-green-600" : "bg-red-600"}`}
               >
                 {membershipStatus}
               </span>
-              <span className="text-xs text-slate-300">
+              <span className="text-slate-300 text-xs">
                 Expires: {expiryDate}
               </span>
             </div>
@@ -140,20 +142,20 @@ const Sidebar = ({
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-4">
+      <nav className="flex-1 py-4 overflow-y-auto">
         <ul className="space-y-1 px-2">
           {navItems.map((item) => (
             <li key={item.id}>
               <TooltipProvider>
                 <Tooltip delayDuration={300}>
                   <TooltipTrigger asChild>
-                    <Link
-                      to={item.path}
-                      className={`flex items-center p-2 rounded-md ${activePage === item.id ? "bg-slate-700" : "hover:bg-slate-700"} transition-colors ${collapsed ? "justify-center" : "px-4"}`}
+                    <Button
+                      onClick={() => setCurrentPage(item.id)}
+                      className={`flex w-full justify-start items-center p-2 rounded-md ${activePage === item.id ? "bg-slate-700" : "hover:bg-slate-700"} transition-colors ${collapsed ? "justify-center" : "px-4"}`}
                     >
                       <span className="text-slate-300">{item.icon}</span>
                       {!collapsed && <span className="ml-3">{item.label}</span>}
-                    </Link>
+                    </Button>
                   </TooltipTrigger>
                   {collapsed && (
                     <TooltipContent side="right">{item.label}</TooltipContent>
@@ -166,7 +168,7 @@ const Sidebar = ({
       </nav>
 
       {/* Logout button */}
-      <div className="p-4 border-t border-slate-700">
+      <div className="p-4 border-slate-700 border-t">
         <TooltipProvider>
           <Tooltip delayDuration={300}>
             <TooltipTrigger asChild>

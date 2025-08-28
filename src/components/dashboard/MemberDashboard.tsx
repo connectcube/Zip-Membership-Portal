@@ -75,29 +75,37 @@ const MemberDashboard = ({
   ];
 
   // Mock data for payment history
-  const paymentHistory = [
-    {
-      id: "1",
-      description: "Annual Membership Fee",
-      amount: "K1,500",
-      date: "2023-01-15",
-      status: "Paid",
-    },
-    {
-      id: "2",
-      description: "AGM Registration",
-      amount: "K500",
-      date: "2022-12-10",
-      status: "Paid",
-    },
-    {
-      id: "3",
-      description: "Membership Renewal",
-      amount: "K1,500",
-      date: "2022-01-15",
-      status: "Paid",
-    },
-  ];
+    type PaymentStatus = "Pending" | "Paid" | "Failed";
+
+    const paymentHistory: {
+      id: string;
+      description: string;
+      amount: string;
+      date: string;
+      status: PaymentStatus;
+    }[] = [
+      {
+        id: "1",
+        description: "Annual Membership Fee",
+        amount: "K1,500",
+        date: "2023-01-15",
+        status: "Paid",
+      },
+      {
+        id: "2",
+        description: "AGM Registration",
+        amount: "K500",
+        date: "2022-12-10",
+        status: "Paid",
+      },
+      {
+        id: "3",
+        description: "Membership Renewal",
+        amount: "K1,500",
+        date: "2022-01-15",
+        status: "Paid",
+      },
+    ];
 
   // Placeholder components for different sections
   const ProfileSection = () => (

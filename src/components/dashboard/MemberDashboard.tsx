@@ -38,20 +38,6 @@ const MemberDashboard = ({
   membershipStatus = 'Active',
   membershipExpiry = 'December 31, 2023',
   activePage = 'dashboard',
-  userEmail = 'john.doe@example.com',
-  userPhone = '+260 97 1234567',
-  userAddress = '123 Planning Avenue, Lusaka, Zambia',
-  userTown = 'Lusaka',
-  userProvince = 'Lusaka',
-  plannerID = 'ZIP-2020-0123',
-  registrationDate = 'January 15, 2020',
-  qualification = 'Bachelor of Urban Planning',
-  institution = 'University of Zambia',
-  currentEmployer = 'Ministry of Planning',
-  jobTitle = 'Urban Planner',
-  experience = '5',
-  specialization = 'Urban Design',
-  bio = 'Experienced urban planner with expertise in sustainable development.',
 }: MemberDashboardProps) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(activePage);
@@ -1043,7 +1029,7 @@ const MemberDashboard = ({
                   <input
                     type="email"
                     className="p-2 border rounded-md w-full"
-                    value="john.doe@example.com"
+                    value={user.email || 'john.doe@example.com'}
                   />
                 </div>
                 <div>
@@ -1053,7 +1039,7 @@ const MemberDashboard = ({
                   <input
                     type="tel"
                     className="p-2 border rounded-md w-full"
-                    value="+260 97 1234567"
+                    value={user.profile.phone || 'N/A'}
                   />
                 </div>
                 <div>
@@ -1062,7 +1048,6 @@ const MemberDashboard = ({
                   </label>
                   <select className="p-2 border rounded-md w-full">
                     <option>English</option>
-                    <option>French</option>
                   </select>
                 </div>
                 <div className="flex justify-end">

@@ -16,35 +16,32 @@ const MembershipDuration = ({
   membershipType = "Full Member",
   specialization = "Spatial Planning",
 }: MembershipDurationProps) => {
-  // Calculate membership duration
   const calculateDuration = () => {
     const regDate = new Date(registrationDate);
     const today = new Date();
-    
+
     let years = today.getFullYear() - regDate.getFullYear();
     let months = today.getMonth() - regDate.getMonth();
-    
+
     if (months < 0) {
       years--;
       months += 12;
     }
-    
+
     return { years, months };
   };
-  
+
   const duration = calculateDuration();
-  
-  // Determine member level based on years
+
   const getMemberLevel = () => {
     if (duration.years < 2) return "Novice";
     if (duration.years < 5) return "Established";
     if (duration.years < 10) return "Experienced";
     return "Senior";
   };
-  
+
   const memberLevel = getMemberLevel();
-  
-  // Get badge color based on member level
+
   const getLevelBadgeColor = () => {
     switch (memberLevel) {
       case "Novice": return "secondary";
@@ -77,7 +74,7 @@ const MembershipDuration = ({
               {memberLevel} Member
             </Badge>
           </div>
-          
+
           <div className="bg-gray-100 p-4 rounded-lg">
             <div className="flex justify-between items-center mb-2">
               <h4 className="font-medium">Membership Duration</h4>
@@ -97,7 +94,7 @@ const MembershipDuration = ({
               </div>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-blue-50 p-3 rounded-lg">
               <div className="flex items-center gap-2 mb-1">
@@ -114,7 +111,7 @@ const MembershipDuration = ({
               <p className="text-lg font-semibold">{specialization}</p>
             </div>
           </div>
-          
+
           <div className="text-sm text-gray-500">
             <p>
               Your membership level is determined by your years of active membership with the Zambia Institute of Planners. Continue your professional development to maintain and advance your status.
@@ -123,3 +120,7 @@ const MembershipDuration = ({
         </div>
       </CardContent>
     </Card>
+  );
+};
+
+export default MembershipDuration;

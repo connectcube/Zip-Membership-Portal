@@ -122,6 +122,7 @@ const MemberDashboard = ({
     },
   ];
 
+<<<<<<< HEAD
   // Generate payment history based on membership type and registration date
   const paymentHistory = [
     {
@@ -151,6 +152,40 @@ const MemberDashboard = ({
       status: "Paid" as const,
     },
   ];
+=======
+  // Mock data for payment history
+    type PaymentStatus = "Pending" | "Paid" | "Failed";
+
+    const paymentHistory: {
+      id: string;
+      description: string;
+      amount: string;
+      date: string;
+      status: PaymentStatus;
+    }[] = [
+      {
+        id: "1",
+        description: "Annual Membership Fee",
+        amount: "K1,500",
+        date: "2023-01-15",
+        status: "Paid",
+      },
+      {
+        id: "2",
+        description: "AGM Registration",
+        amount: "K500",
+        date: "2022-12-10",
+        status: "Paid",
+      },
+      {
+        id: "3",
+        description: "Membership Renewal",
+        amount: "K1,500",
+        date: "2022-01-15",
+        status: "Paid",
+      },
+    ];
+>>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
 
   // Placeholder components for different sections
   const ProfileSection = () => {

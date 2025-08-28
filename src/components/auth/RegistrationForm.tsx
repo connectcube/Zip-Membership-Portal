@@ -952,10 +952,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           </span>
                         </div>
                         <p className="text-xs text-red-500 mt-1">
-                          {
-                            documentUploadForm.formState.errors.passportPhoto
-                              ?.message
-                          }
+                          {String(documentUploadForm.formState.errors.cv?.message ?? "")}
                         </p>
                       </div>
 
@@ -988,7 +985,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           </span>
                         </div>
                         <p className="text-xs text-red-500 mt-1">
-                          {documentUploadForm.formState.errors.cv?.message}
+                          {String(documentUploadForm.formState.errors.passportPhoto?.message ?? "")}
                         </p>
                       </div>
                     </div>

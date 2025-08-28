@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import React, { useState } from 'react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import {
   Dialog,
   DialogContent,
@@ -7,24 +7,30 @@ import {
   DialogTitle,
   DialogDescription,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import LoginForm from "./LoginForm";
-import RegistrationForm from "./RegistrationForm";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+} from '@/components/ui/dialog';
+import LoginForm from './LoginForm';
+import RegistrationForm from './RegistrationForm';
+import { Button } from '@/components/ui/button';
+import { X } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
+<<<<<<< HEAD
   defaultTab?: "login" | "register";
   onLoginSuccess?: (data?: any) => void;
   onRegisterSuccess?: (data?: any) => void;
+=======
+  defaultTab?: 'login' | 'register';
+  onLoginSuccess?: () => void;
+  onRegisterSuccess?: () => void;
+>>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
 }
 
 const AuthModal: React.FC<AuthModalProps> = ({
   isOpen = false,
   onOpenChange = () => {},
-  defaultTab = "login",
+  defaultTab = 'login',
   onLoginSuccess = () => {},
   onRegisterSuccess = () => {},
 }) => {
@@ -32,7 +38,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
 
   const handleLoginSubmit = (values: any) => {
     // In a real implementation, this would call an authentication service
-    console.log("Login submitted:", values);
+    console.log('Login submitted:', values);
     // Simulate successful login
     setTimeout(() => {
       onLoginSuccess(values);
@@ -41,7 +47,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
 
   const handleRegistrationSubmit = (values: any) => {
     // In a real implementation, this would call a registration service
-    console.log("Registration submitted:", values);
+    console.log('Registration submitted:', values);
     // Simulate successful registration
     setTimeout(() => {
       onRegisterSuccess(values);
@@ -50,31 +56,22 @@ const AuthModal: React.FC<AuthModalProps> = ({
 
   const handleForgotPassword = () => {
     // In a real implementation, this would open a forgot password flow
-    console.log("Forgot password clicked");
+    console.log('Forgot password clicked');
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden bg-white">
+      <DialogContent className="bg-white p-0 sm:max-w-[500px] overflow-hidden">
         <DialogHeader className="p-6 pb-2">
           <div className="flex justify-between items-center">
-            <DialogTitle className="text-2xl font-bold">
-              {activeTab === "login" ? "Welcome Back" : "Join ZIP"}
+            <DialogTitle className="font-bold text-2xl">
+              {activeTab === 'login' ? 'Welcome Back' : 'Join ZIP'}
             </DialogTitle>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onOpenChange(false)}
-              className="h-8 w-8"
-            >
-              <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
-            </Button>
           </div>
           <DialogDescription>
-            {activeTab === "login"
-              ? "Sign in to access your Zambia Institute of Planners account"
-              : "Create an account to join the Zambia Institute of Planners"}
+            {activeTab === 'login'
+              ? 'Sign in to access your Zambia Institute of Planners account'
+              : 'Create an account to join the Zambia Institute of Planners'}
           </DialogDescription>
         </DialogHeader>
 
@@ -85,23 +82,17 @@ const AuthModal: React.FC<AuthModalProps> = ({
           className="w-full"
         >
           <div className="px-6">
-            <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsList className="grid grid-cols-2 mb-4 w-full">
               <TabsTrigger value="login">Login</TabsTrigger>
               <TabsTrigger value="register">Register</TabsTrigger>
             </TabsList>
           </div>
 
           <TabsContent value="login" className="m-0">
-            <LoginForm
-              onSubmit={handleLoginSubmit}
-              onForgotPassword={handleForgotPassword}
-            />
+            <LoginForm onSubmit={handleLoginSubmit} onForgotPassword={handleForgotPassword} />
           </TabsContent>
 
-          <TabsContent
-            value="register"
-            className="m-0 max-h-[70vh] overflow-y-auto"
-          >
+          <TabsContent value="register" className="m-0 max-h-[70vh] overflow-y-auto">
             <RegistrationForm onSubmit={handleRegistrationSubmit} />
           </TabsContent>
         </Tabs>
@@ -113,15 +104,15 @@ const AuthModal: React.FC<AuthModalProps> = ({
 // Example usage component that shows how to use the AuthModal
 export const AuthModalDemo = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+  const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
 
   const openLoginModal = () => {
-    setActiveTab("login");
+    setActiveTab('login');
     setIsOpen(true);
   };
 
   const openRegisterModal = () => {
-    setActiveTab("register");
+    setActiveTab('register');
     setIsOpen(true);
   };
 
@@ -135,8 +126,8 @@ export const AuthModalDemo = () => {
         isOpen={isOpen}
         onOpenChange={setIsOpen}
         defaultTab={activeTab}
-        onLoginSuccess={() => console.log("Login successful")}
-        onRegisterSuccess={() => console.log("Registration successful")}
+        onLoginSuccess={() => console.log('Login successful')}
+        onRegisterSuccess={() => console.log('Registration successful')}
       />
     </div>
   );

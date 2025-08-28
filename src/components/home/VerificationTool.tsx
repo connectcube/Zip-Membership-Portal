@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
-interface VerificationResult {
+export interface VerificationResult {
   isValid: boolean;
   plannerName?: string;
   membershipCategory?: string;
@@ -34,12 +34,9 @@ const VerificationTool = ({ onVerify }: VerificationToolProps = {}) => {
   const [result, setResult] = useState<VerificationResult | null>(null);
   const [error, setError] = useState("");
 
-  // Mock verification function if none is provided
   const mockVerify = async (id: string): Promise<VerificationResult> => {
-    // Simulate API call delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // For demo purposes, consider IDs starting with 'ZIP' as valid
     if (id.toUpperCase().startsWith("ZIP")) {
       return {
         isValid: true,
@@ -84,8 +81,7 @@ const VerificationTool = ({ onVerify }: VerificationToolProps = {}) => {
           Planner Verification Tool
         </h2>
         <p className="text-gray-600 mt-2">
-          Employers can verify the registration status of planners using their
-          Planner ID number
+          Employers can verify the registration status of planners using their Planner ID number
         </p>
       </div>
 
@@ -150,56 +146,21 @@ const VerificationTool = ({ onVerify }: VerificationToolProps = {}) => {
           {result.isValid && (
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    Planner Name
-                  </p>
-                  <p className="text-lg font-semibold">{result.plannerName}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    Planner ID
-                  </p>
-                  <p className="text-lg font-semibold">{result.plannerID}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    Membership Category
-                  </p>
-                  <p className="text-lg font-semibold">
-                    {result.membershipCategory}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    Specialization
-                  </p>
-                  <p className="text-lg font-semibold">
-                    {result.specialization}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    Registration Date
-                  </p>
-                  <p className="text-lg font-semibold">
-                    {result.registrationDate}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    Expiry Date
-                  </p>
-                  <p className="text-lg font-semibold">{result.expiryDate}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Town</p>
-                  <p className="text-lg font-semibold">{result.town}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Province</p>
-                  <p className="text-lg font-semibold">{result.province}</p>
-                </div>
+                {[
+                  { label: "Planner Name", value: result.plannerName },
+                  { label: "Planner ID", value: result.plannerID },
+                  { label: "Membership Category", value: result.membershipCategory },
+                  { label: "Specialization", value: result.specialization },
+                  { label: "Registration Date", value: result.registrationDate },
+                  { label: "Expiry Date", value: result.expiryDate },
+                  { label: "Town", value: result.town },
+                  { label: "Province", value: result.province },
+                ].map(({ label, value }) => (
+                  <div key={label}>
+                    <p className="text-sm font-medium text-gray-500">{label}</p>
+                    <p className="text-lg font-semibold">{value}</p>
+                  </div>
+                ))}
               </div>
             </CardContent>
           )}
@@ -219,8 +180,7 @@ const VerificationTool = ({ onVerify }: VerificationToolProps = {}) => {
 
       <div className="mt-6 text-center text-sm text-gray-500">
         <p>
-          For any verification issues, please contact the Zambia Institute of
-          Planners at support@zip.org.zm
+          For any verification issues, please contact the Zambia Institute of Planners at support@zip.org.zm
         </p>
       </div>
     </div>

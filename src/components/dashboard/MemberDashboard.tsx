@@ -19,6 +19,21 @@ interface MemberDashboardProps {
   membershipStatus?: string;
   membershipExpiry?: string;
   activePage?: string;
+  userEmail?: string;
+  userPhone?: string;
+  userAddress?: string;
+  userTown?: string;
+  userProvince?: string;
+  plannerID?: string;
+  registrationDate?: string;
+  qualification?: string;
+  institution?: string;
+  currentEmployer?: string;
+  jobTitle?: string;
+  experience?: string;
+  specialization?: string;
+  bio?: string;
+  onLogout?: () => void;
 }
 
 const MemberDashboard = ({
@@ -27,32 +42,59 @@ const MemberDashboard = ({
   membershipStatus = "Active",
   membershipExpiry = "December 31, 2023",
   activePage = "dashboard",
+  userEmail = "john.doe@example.com",
+  userPhone = "+260 97 1234567",
+  userAddress = "123 Planning Avenue, Lusaka, Zambia",
+  userTown = "Lusaka",
+  userProvince = "Lusaka",
+  plannerID = "ZIP-2020-0123",
+  registrationDate = "January 15, 2020",
+  qualification = "Bachelor of Urban Planning",
+  institution = "University of Zambia",
+  currentEmployer = "Ministry of Planning",
+  jobTitle = "Urban Planner",
+  experience = "5",
+  specialization = "Urban Design",
+  bio = "Experienced urban planner with expertise in sustainable development.",
+  onLogout = () => {},
 }: MemberDashboardProps) => {
   const [currentPage, setCurrentPage] = useState(activePage);
 
-  // Mock data for notifications
+  // Generate personalized notifications based on user data
   const notifications = [
     {
       id: "1",
-      title: "Your membership renewal is due in 30 days",
-      date: "2023-11-15",
+      title: `Hello ${userName.split(" ")[0]}, your membership renewal is due in 30 days`,
+      date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0],
       read: false,
     },
     {
       id: "2",
-      title: "New planning regulations published",
-      date: "2023-11-10",
+      title: "New planning regulations for " + specialization + " published",
+      date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0],
       read: true,
     },
     {
       id: "3",
-      title: "AGM scheduled for January 15, 2024",
-      date: "2023-11-05",
+      title: "AGM scheduled for January 15, 2024 - Registration now open",
+      date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0],
       read: false,
+    },
+    {
+      id: "4",
+      title: `Welcome to ZIP, ${userName}! Your profile has been approved`,
+      date: registrationDate,
+      read: true,
     },
   ];
 
-  // Mock data for upcoming events
+  // Generate relevant events based on user specialization
   const upcomingEvents = [
     {
       id: "1",
@@ -62,18 +104,55 @@ const MemberDashboard = ({
     },
     {
       id: "2",
-      title: "Urban Planning Workshop",
-      date: "2023-12-10",
+      title: specialization + " Workshop",
+      date: "2024-02-10",
       type: "Workshop",
     },
     {
       id: "3",
-      title: "Membership Committee Meeting",
-      date: "2023-11-25",
+      title: "Professional Development Seminar",
+      date: "2024-03-25",
+      type: "Seminar",
+    },
+    {
+      id: "4",
+      title: userProvince + " Regional Meeting",
+      date: "2024-04-15",
       type: "Meeting",
     },
   ];
 
+<<<<<<< HEAD
+  // Generate payment history based on membership type and registration date
+  const paymentHistory = [
+    {
+      id: "1",
+      description: "Annual Membership Fee - " + membershipType,
+      amount:
+        membershipType === "Full Member"
+          ? "K1,500"
+          : membershipType === "Associate"
+            ? "K1,200"
+            : "K800",
+      date: new Date().getFullYear() + "-01-15",
+      status: "Paid" as const,
+    },
+    {
+      id: "2",
+      description: "Registration Fee",
+      amount: "K500",
+      date: registrationDate,
+      status: "Paid" as const,
+    },
+    {
+      id: "3",
+      description: "Previous Year Membership",
+      amount: membershipType === "Full Member" ? "K1,500" : "K1,200",
+      date: new Date().getFullYear() - 1 + "-01-15",
+      status: "Paid" as const,
+    },
+  ];
+=======
   // Mock data for payment history
     type PaymentStatus = "Pending" | "Paid" | "Failed";
 
@@ -106,116 +185,312 @@ const MemberDashboard = ({
         status: "Paid",
       },
     ];
+>>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
 
   // Placeholder components for different sections
-  const ProfileSection = () => (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">My Profile</h1>
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row gap-8">
-            <div className="flex flex-col items-center">
-              <div className="w-32 h-32 rounded-full bg-slate-200 flex items-center justify-center mb-4">
-                <User size={64} className="text-slate-400" />
+  const ProfileSection = () => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [qualifications, setQualifications] = useState([
+      {
+        id: 1,
+        qualification: qualification,
+        institution: institution,
+        graduationYear: new Date().getFullYear() - 5,
+      },
+    ]);
+    const [newQualification, setNewQualification] = useState({
+      qualification: "",
+      institution: "",
+      graduationYear: "",
+    });
+    const [showAddQualification, setShowAddQualification] = useState(false);
+
+    const handleAddQualification = () => {
+      if (
+        newQualification.qualification &&
+        newQualification.institution &&
+        newQualification.graduationYear
+      ) {
+        const newId = Math.max(...qualifications.map((q) => q.id)) + 1;
+        setQualifications([
+          ...qualifications,
+          {
+            id: newId,
+            ...newQualification,
+            graduationYear: parseInt(newQualification.graduationYear),
+          },
+        ]);
+        setNewQualification({
+          qualification: "",
+          institution: "",
+          graduationYear: "",
+        });
+        setShowAddQualification(false);
+      }
+    };
+
+    const handleRemoveQualification = (id: number) => {
+      if (qualifications.length > 1) {
+        setQualifications(qualifications.filter((q) => q.id !== id));
+      }
+    };
+
+    return (
+      <div className="p-6 bg-gray-50 min-h-screen">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">My Profile</h1>
+        <div className="space-y-6">
+          {/* Basic Information Card */}
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
+              <div className="flex flex-col md:flex-row gap-8">
+                <div className="flex flex-col items-center">
+                  <div className="w-32 h-32 rounded-full bg-slate-200 flex items-center justify-center mb-4">
+                    <User size={64} className="text-slate-400" />
+                  </div>
+                  <button className="text-sm text-blue-600 hover:underline">
+                    Change Photo
+                  </button>
+                </div>
+                <div className="flex-1 space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full p-2 border rounded-md"
+                        value={userName}
+                        readOnly={!isEditing}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Membership Type
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full p-2 border rounded-md"
+                        value={membershipType}
+                        readOnly
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        className="w-full p-2 border rounded-md"
+                        value={userEmail}
+                        readOnly={!isEditing}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        className="w-full p-2 border rounded-md"
+                        value={userPhone}
+                        readOnly={!isEditing}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Planner ID
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full p-2 border rounded-md"
+                        value={plannerID}
+                        readOnly
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Registration Date
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full p-2 border rounded-md"
+                        value={registrationDate}
+                        readOnly
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Professional Address
+                    </label>
+                    <textarea
+                      className="w-full p-2 border rounded-md"
+                      rows={3}
+                      value={`${userAddress}, ${userTown}, ${userProvince}, Zambia`}
+                      readOnly={!isEditing}
+                    />
+                  </div>
+                  <div className="flex justify-end space-x-4">
+                    {isEditing ? (
+                      <>
+                        <button
+                          className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                          onClick={() => setIsEditing(false)}
+                        >
+                          Cancel
+                        </button>
+                        <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                          Save Changes
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                          onClick={() => setIsEditing(true)}
+                        >
+                          Edit Profile
+                        </button>
+                        <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                          Change Password
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
-              <button className="text-sm text-blue-600 hover:underline">
-                Change Photo
-              </button>
-            </div>
-            <div className="flex-1 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border rounded-md"
-                    value={userName}
-                    readOnly
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Membership Type
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border rounded-md"
-                    value={membershipType}
-                    readOnly
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    className="w-full p-2 border rounded-md"
-                    value="john.doe@example.com"
-                    readOnly
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    className="w-full p-2 border rounded-md"
-                    value="+260 97 1234567"
-                    readOnly
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Planner ID
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border rounded-md"
-                    value="ZIP-2020-0123"
-                    readOnly
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Registration Date
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border rounded-md"
-                    value="January 15, 2020"
-                    readOnly
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Professional Address
-                </label>
-                <textarea
-                  className="w-full p-2 border rounded-md"
-                  rows={3}
-                  value="123 Planning Avenue, Lusaka, Zambia"
-                  readOnly
-                />
-              </div>
-              <div className="flex justify-end space-x-4">
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                  Edit Profile
+            </CardContent>
+          </Card>
+
+          {/* Qualifications Card */}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">Qualifications</h2>
+                <button
+                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                  onClick={() => setShowAddQualification(true)}
+                >
+                  Add Qualification
                 </button>
-                <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
-                  Change Password
-                </button>
               </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+
+              <div className="space-y-4">
+                {qualifications.map((qual) => (
+                  <div key={qual.id} className="border rounded-lg p-4">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <h3 className="font-medium text-lg">
+                          {qual.qualification}
+                        </h3>
+                        <p className="text-gray-600">{qual.institution}</p>
+                        <p className="text-sm text-gray-500">
+                          Graduated: {qual.graduationYear}
+                        </p>
+                      </div>
+                      {qualifications.length > 1 && (
+                        <button
+                          className="text-red-600 hover:text-red-800 text-sm"
+                          onClick={() => handleRemoveQualification(qual.id)}
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Add Qualification Form */}
+              {showAddQualification && (
+                <div className="mt-6 border-t pt-6">
+                  <h3 className="text-lg font-medium mb-4">
+                    Add New Qualification
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Qualification
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full p-2 border rounded-md"
+                        placeholder="e.g., Master of Urban Planning"
+                        value={newQualification.qualification}
+                        onChange={(e) =>
+                          setNewQualification({
+                            ...newQualification,
+                            qualification: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Institution
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full p-2 border rounded-md"
+                        placeholder="e.g., University of Zambia"
+                        value={newQualification.institution}
+                        onChange={(e) =>
+                          setNewQualification({
+                            ...newQualification,
+                            institution: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Graduation Year
+                      </label>
+                      <input
+                        type="number"
+                        className="w-full p-2 border rounded-md"
+                        placeholder="e.g., 2020"
+                        value={newQualification.graduationYear}
+                        onChange={(e) =>
+                          setNewQualification({
+                            ...newQualification,
+                            graduationYear: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end space-x-4 mt-4">
+                    <button
+                      className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                      onClick={() => {
+                        setShowAddQualification(false);
+                        setNewQualification({
+                          qualification: "",
+                          institution: "",
+                          graduationYear: "",
+                        });
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                      onClick={handleAddQualification}
+                    >
+                      Add Qualification
+                    </button>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  };
 
   const PaymentsSection = () => (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -1109,6 +1384,7 @@ const MemberDashboard = ({
         membershipType={membershipType}
         membershipStatus={membershipStatus}
         expiryDate={membershipExpiry}
+        onLogout={onLogout}
       />
       <div className="flex-1 overflow-auto">{renderContent()}</div>
     </div>

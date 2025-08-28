@@ -28,6 +28,7 @@ interface SidebarProps {
   membershipType?: string;
   membershipStatus?: string;
   expiryDate?: string;
+  onLogout?: () => void;
 }
 
 const Sidebar = ({
@@ -36,6 +37,7 @@ const Sidebar = ({
   membershipType = "Professional Planner",
   membershipStatus = "Active",
   expiryDate = "31 Dec 2023",
+  onLogout = () => {},
 }: SidebarProps) => {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -171,6 +173,7 @@ const Sidebar = ({
               <Button
                 variant="ghost"
                 className={`w-full text-white hover:bg-red-600 hover:text-white ${collapsed ? "justify-center" : "justify-start"}`}
+                onClick={onLogout}
               >
                 <LogOut size={20} />
                 {!collapsed && <span className="ml-2">Logout</span>}

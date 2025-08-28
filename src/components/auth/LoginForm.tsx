@@ -24,10 +24,17 @@ import {
 } from '@/components/ui/select';
 
 const loginSchema = z.object({
+<<<<<<< HEAD
+  email: z.string().email({ message: "Please enter a valid email address" }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters" }),
+=======
   email: z.string().email({ message: 'Please enter a valid email address' }),
   password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
   employerType: z.string().min(1, { message: 'Please select your employer type' }),
   employerName: z.string().optional(),
+>>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
   rememberMe: z.boolean().optional(),
 });
 
@@ -42,13 +49,29 @@ const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFo
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Check for remembered email on component mount
+  React.useEffect(() => {
+    const rememberMe = localStorage.getItem("zipRememberMe");
+    const rememberedEmail = localStorage.getItem("zipRememberedEmail");
+
+    if (rememberMe === "true" && rememberedEmail) {
+      form.setValue("email", rememberedEmail);
+      form.setValue("rememberMe", true);
+    }
+  }, []);
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
+<<<<<<< HEAD
+      email: "",
+      password: "",
+=======
       email: '',
       password: '',
       employerType: '',
       employerName: '',
+>>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
       rememberMe: false,
     },
   });
@@ -57,7 +80,21 @@ const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFo
     setIsLoading(true);
     try {
       // In a real implementation, this would call an authentication service
+<<<<<<< HEAD
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
+
+      // Handle remember me functionality
+      if (values.rememberMe) {
+        localStorage.setItem("zipRememberMe", "true");
+        localStorage.setItem("zipRememberedEmail", values.email);
+      } else {
+        localStorage.removeItem("zipRememberMe");
+        localStorage.removeItem("zipRememberedEmail");
+      }
+
+=======
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+>>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
       onSubmit(values);
     } catch (error) {
       console.error('Login error:', error);
@@ -129,6 +166,9 @@ const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFo
             )}
           />
 
+<<<<<<< HEAD
+          <div className="flex items-center justify-between">
+=======
           <FormField
             control={form.control}
             name="employerType"
@@ -182,6 +222,7 @@ const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFo
           )}
 
           <div className="flex justify-between items-center">
+>>>>>>> 5bcd31367beedc86601367d59f99e6d640af2318
             <FormField
               control={form.control}
               name="rememberMe"

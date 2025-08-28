@@ -95,7 +95,20 @@ const Sidebar = ({
       path: '/help',
     },
   ];
+  const getFullMembershipType = value => {
+    const typeMap = {
+      technician: 'Technician',
+      associate: 'Associate',
+      full: 'Full Member',
+      fellow: 'Fellow',
+      student: 'Student Chapter',
+      postgrad: 'Post Grad.',
+      'planning-firms': 'Planning Firms',
+      'educational-ngo': 'Educational/Research Institutions or NGO',
+    };
 
+    return typeMap[value] || 'Unknown Type';
+  };
   return (
     <div
       className={`h-full bg-slate-800 text-white flex flex-col transition-all duration-300 ${
@@ -132,7 +145,9 @@ const Sidebar = ({
                 ' ' +
                 user.profile.lastName || userName}
             </h3>
-            <p className="text-slate-300 text-xs">{user.profile.membershipInfo.membershipType}</p>
+            <p className="text-slate-300 text-xs">
+              {getFullMembershipType(user.profile.membershipInfo.membershipType)}
+            </p>
             <div className="flex flex-col gap-1 mt-2">
               <span
                 className={`text-xs px-2 py-1 rounded-full ${
@@ -144,7 +159,8 @@ const Sidebar = ({
                 {user.profile.membershipInfo.membershipStatus ? 'Active' : 'Inactive'}
               </span>
               <span className="text-slate-300 text-xs">
-                Expires: {user.profile.membershipInfo.expiryDate}
+                {user.profile.membershipInfo.expiryDate &&
+                  `Expires: ${user.profile.membershipInfo.expiryDate}`}
               </span>
             </div>
           </div>

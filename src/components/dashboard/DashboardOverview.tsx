@@ -50,6 +50,21 @@ const DashboardOverview = ({
   paymentHistory = [],
 }: DashboardOverviewProps) => {
   const { user } = useUserStore();
+
+  const getFullMembershipType = value => {
+    const typeMap = {
+      technician: 'Technician',
+      associate: 'Associate',
+      full: 'Full Member',
+      fellow: 'Fellow',
+      student: 'Student Chapter',
+      postgrad: 'Post Grad.',
+      'planning-firms': 'Planning Firms',
+      'educational-ngo': 'Educational/Research Institutions or NGO',
+    };
+
+    return typeMap[value] || 'Unknown Type';
+  };
   return (
     <div className="bg-gray-50 p-6 min-h-screen">
       {/* Welcome Section */}
@@ -88,7 +103,9 @@ const DashboardOverview = ({
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="font-medium text-sm">Type:</span>
-                <span className="text-sm">{user.profile.membershipInfo.membershipType}</span>
+                <span className="text-sm">
+                  {getFullMembershipType(user.profile.membershipInfo.membershipType)}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="font-medium text-sm">Expires on:</span>
@@ -148,31 +165,37 @@ const DashboardOverview = ({
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {notifications.slice(0, 3).map(notification => (
-                <div
-                  key={notification.id}
-                  className={`p-3 rounded-lg ${
-                    notification.read ? 'bg-gray-50' : 'bg-blue-50'
-                  } flex items-start gap-3`}
-                >
-                  {notification.read ? (
-                    <CheckCircle className="mt-0.5 w-5 h-5 text-gray-400" />
-                  ) : (
-                    <Bell className="mt-0.5 w-5 h-5 text-blue-500" />
-                  )}
-                  <div>
-                    <p className="font-medium text-sm">{notification.title}</p>
-                    <p className="text-gray-500 text-xs">{notification.date}</p>
+              {notifications.length > 0 ? (
+                notifications.slice(0, 3).map(notification => (
+                  <div
+                    key={notification.id}
+                    className={`p-3 rounded-lg ${
+                      notification.read ? 'bg-gray-50' : 'bg-blue-50'
+                    } flex items-start gap-3`}
+                  >
+                    {notification.read ? (
+                      <CheckCircle className="mt-0.5 w-5 h-5 text-gray-400" />
+                    ) : (
+                      <Bell className="mt-0.5 w-5 h-5 text-blue-500" />
+                    )}
+                    <div>
+                      <p className="font-medium text-sm">{notification.title}</p>
+                      <p className="text-gray-500 text-xs">{notification.date}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div className="p-3 text-gray-500">No notifications</div>
+              )}
             </div>
           </CardContent>
-          <CardFooter>
-            <Button variant="outline" className="w-full">
-              View All Notifications
-            </Button>
-          </CardFooter>
+          {notifications.length > 0 && (
+            <CardFooter>
+              <Button variant="outline" className="w-full">
+                View All Notifications
+              </Button>
+            </CardFooter>
+          )}
         </Card>
       </div>
 
@@ -186,27 +209,33 @@ const DashboardOverview = ({
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {upcomingEvents.map(event => (
-                <div key={event.id} className="flex items-start gap-4 p-3 border rounded-lg">
-                  <div className="bg-blue-100 p-3 rounded-lg">
-                    <Calendar className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-medium text-sm">{event.title}</h4>
-                    <div className="flex justify-between mt-1">
-                      <p className="text-gray-500 text-xs">{event.date}</p>
-                      <Badge variant="outline">{event.type}</Badge>
+              {upcomingEvents.length > 0 ? (
+                upcomingEvents.map(event => (
+                  <div key={event.id} className="flex items-start gap-4 p-3 border rounded-lg">
+                    <div className="bg-blue-100 p-3 rounded-lg">
+                      <Calendar className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-sm">{event.title}</h4>
+                      <div className="flex justify-between mt-1">
+                        <p className="text-gray-500 text-xs">{event.date}</p>
+                        <Badge variant="outline">{event.type}</Badge>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div className="p-3 text-gray-500">No upcoming events</div>
+              )}
             </div>
           </CardContent>
-          <CardFooter>
-            <Button variant="outline" className="w-full">
-              View All Events
-            </Button>
-          </CardFooter>
+          {upcomingEvents.length > 0 && (
+            <CardFooter>
+              <Button variant="outline" className="w-full">
+                View All Events
+              </Button>
+            </CardFooter>
+          )}
         </Card>
 
         {/* Recent Payments */}
@@ -217,55 +246,61 @@ const DashboardOverview = ({
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {paymentHistory.map(payment => (
-                <div key={payment.id} className="flex items-start gap-4 p-3 border rounded-lg">
-                  <div className="bg-green-100 p-3 rounded-lg">
-                    <CreditCard className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex justify-between">
-                      <h4 className="font-medium text-sm">{payment.description}</h4>
-                      <span className="font-bold text-sm">{payment.amount}</span>
+              {paymentHistory.length > 0 ? (
+                paymentHistory.map(payment => (
+                  <div key={payment.id} className="flex items-start gap-4 p-3 border rounded-lg">
+                    <div className="bg-green-100 p-3 rounded-lg">
+                      <CreditCard className="w-5 h-5 text-green-600" />
                     </div>
-                    <div className="flex justify-between mt-1">
-                      <p className="text-gray-500 text-xs">{payment.date}</p>
-                      <Badge
-                        variant={
-                          payment.status === 'Paid'
-                            ? 'default'
-                            : payment.status === 'Pending'
-                            ? 'secondary'
-                            : 'destructive'
-                        }
-                        className="text-xs"
-                      >
-                        {payment.status}
-                      </Badge>
+                    <div className="flex-1">
+                      <div className="flex justify-between">
+                        <h4 className="font-medium text-sm">{payment.description}</h4>
+                        <span className="font-bold text-sm">{payment.amount}</span>
+                      </div>
+                      <div className="flex justify-between mt-1">
+                        <p className="text-gray-500 text-xs">{payment.date}</p>
+                        <Badge
+                          variant={
+                            payment.status === 'Paid'
+                              ? 'default'
+                              : payment.status === 'Pending'
+                              ? 'secondary'
+                              : 'destructive'
+                          }
+                          className="text-xs"
+                        >
+                          {payment.status}
+                        </Badge>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div className="p-3 text-gray-500">No recent payments</div>
+              )}
             </div>
           </CardContent>
-          <CardFooter>
-            <Button variant="outline" className="w-full">
-              View Payment History
-            </Button>
-          </CardFooter>
+          {paymentHistory.length > 0 && (
+            <CardFooter>
+              <Button variant="outline" className="w-full">
+                View Payment History
+              </Button>
+            </CardFooter>
+          )}
         </Card>
       </div>
 
       {/* Action Buttons */}
       <div className="gap-4 grid grid-cols-1 md:grid-cols-3 mt-6">
-        <Button className="flex items-center gap-2">
+        <Button disabled className="flex items-center gap-2">
           <FileText className="w-4 h-4" />
           Upload Documents
         </Button>
-        <Button variant="outline" className="flex items-center gap-2">
+        <Button disabled variant="outline" className="flex items-center gap-2">
           <BarChart3 className="w-4 h-4" />
           View Reports
         </Button>
-        <Button variant="secondary" className="flex items-center gap-2">
+        <Button disabled variant="secondary" className="flex items-center gap-2">
           <AlertCircle className="w-4 h-4" />
           Request Support
         </Button>

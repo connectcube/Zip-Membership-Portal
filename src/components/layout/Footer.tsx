@@ -10,7 +10,7 @@ const Footer = () => {
     <footer className="bg-slate-900 py-8 w-full text-white">
       <div className="mx-auto px-4 container">
         <div className="gap-8 grid grid-cols-1 md:grid-cols-4">
-          {/* About Section */}
+          {/* About Section 
           <div>
             <h3 className="mb-4 font-bold text-xl">Zambia Institute of Planners</h3>
             <p className="mb-4 text-slate-300">
@@ -27,38 +27,39 @@ const Footer = () => {
                 <Instagram size={20} />
               </a>
             </div>
-          </div>
+          </div>*/}
 
           {/* Quick Links */}
           <div>
             <h3 className="mb-4 font-bold text-xl">Quick Links</h3>
             <ul className="space-y-2">
-              <li>
-                <Link to="/" className="text-slate-300 hover:text-white transition-colors">
+              <li className="font-thin">
+                <Link to="/" className="font-medium hover:text-primary text-lg">
                   Home
                 </Link>
               </li>
-              <li>
-                <Link to="/about" className="text-slate-300 hover:text-white transition-colors">
-                  About Us
+              <li className="font-thin">
+                <Link
+                  to="https://zambiainstituteofplanners.org.zm/about"
+                  className="font-medium hover:text-primary text-lg"
+                >
+                  About
                 </Link>
               </li>
-              <li>
+              <li className="font-thin">
                 <Link
-                  to="/membership"
-                  className="text-slate-300 hover:text-white transition-colors"
+                  to="https://zambiainstituteofplanners.org.zm/membership"
+                  className="font-medium hover:text-primary text-lg"
                 >
                   Membership
                 </Link>
               </li>
-              <li>
-                <Link to="/events" className="text-slate-300 hover:text-white transition-colors">
-                  Events
-                </Link>
-              </li>
-              <li>
-                <Link to="/resources" className="text-slate-300 hover:text-white transition-colors">
-                  Resources
+              <li className="font-thin">
+                <Link
+                  to="https://zambiainstituteofplanners.org.zm/contact"
+                  className="font-medium hover:text-primary text-lg"
+                >
+                  Contact
                 </Link>
               </li>
             </ul>

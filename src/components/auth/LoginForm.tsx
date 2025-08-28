@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -15,19 +14,12 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
   password: z
     .string()
-    .min(8, { message: "Password must be at least 8 characters" }),
+    .min(6, { message: "Password must be at least 8 characters" }),
   rememberMe: z.boolean().optional(),
 });
 
@@ -36,6 +28,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 interface LoginFormProps {
   onSubmit?: (values: LoginFormValues) => void;
   onForgotPassword?: () => void;
+  isLoading?: boolean;
 }
 
 const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFormProps) => {
@@ -65,21 +58,9 @@ const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFo
   const handleSubmit = async (values: LoginFormValues) => {
     setIsLoading(true);
     try {
-      // In a real implementation, this would call an authentication service
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
-
-      // Handle remember me functionality
-      if (values.rememberMe) {
-        localStorage.setItem("zipRememberMe", "true");
-        localStorage.setItem("zipRememberedEmail", values.email);
-      } else {
-        localStorage.removeItem("zipRememberMe");
-        localStorage.removeItem("zipRememberedEmail");
-      }
-
-      onSubmit(values);
+      await onSubmit(values);
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login failed:", error);
     } finally {
       setIsLoading(false);
     }

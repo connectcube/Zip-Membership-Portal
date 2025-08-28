@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
   CardContent,
@@ -54,6 +53,7 @@ const personalInfoSchema = z.object({
     .string()
     .min(2, { message: "Last name must be at least 2 characters" }),
   email: z.string().email({ message: "Please enter a valid email address" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
   phone: z
     .string()
     .min(10, { message: "Phone number must be at least 10 digits" }),
@@ -107,6 +107,7 @@ const documentUploadSchema = z.object({
 interface RegistrationFormProps {
   onSubmit?: (data: RegistrationFormData) => void;
   isOpen?: boolean;
+  isLoading?: boolean;
 }
 
 interface RegistrationFormData {
@@ -118,6 +119,7 @@ interface RegistrationFormData {
 
 const RegistrationForm: React.FC<RegistrationFormProps> = ({
   onSubmit = (data) => console.log("Form submitted:", data),
+  isLoading,
   isOpen = true,
 }) => {
   const [step, setStep] = useState<number>(1);
@@ -223,9 +225,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+    <div className="bg-white shadow-md mx-auto rounded-xl w-full max-w-md overflow-hidden">
       <div className="p-6">
-        <h2 className="text-2xl font-bold text-center mb-6 text-primary">
+        <h2 className="mb-6 font-bold text-primary text-2xl text-center">
           Register as a Planner
         </h2>
 
@@ -239,7 +241,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                 >
                   {i}
                 </div>
-                <span className="text-xs mt-1">
+                <span className="mt-1 text-xs">
                   {i === 1
                     ? "Personal"
                     : i === 2
@@ -252,9 +254,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             ))}
           </div>
           <div className="relative mt-2">
-            <div className="absolute top-0 left-0 h-1 bg-gray-200 w-full"></div>
+            <div className="top-0 left-0 absolute bg-gray-200 w-full h-1"></div>
             <div
-              className="absolute top-0 left-0 h-1 bg-primary transition-all duration-300"
+              className="top-0 left-0 absolute bg-primary h-1 transition-all duration-300"
               style={{ width: `${(step - 1) * 33.33}%` }}
             ></div>
           </div>
@@ -283,7 +285,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                     )}
                     className="space-y-4"
                   >
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="gap-4 grid grid-cols-3">
                       <FormField
                         control={personalInfoForm.control}
                         name="firstName"
@@ -292,7 +294,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             <FormLabel>First Name</FormLabel>
                             <FormControl>
                               <div className="relative">
-                                <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <User className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
                                 <Input
                                   className="pl-10"
                                   placeholder="John"
@@ -312,7 +314,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             <FormLabel>Middle Name</FormLabel>
                             <FormControl>
                               <div className="relative">
-                                <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <User className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
                                 <Input
                                   className="pl-10"
                                   placeholder="Middle Name (Optional)"
@@ -332,7 +334,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             <FormLabel>Last Name</FormLabel>
                             <FormControl>
                               <div className="relative">
-                                <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <User className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
                                 <Input
                                   className="pl-10"
                                   placeholder="Doe"
@@ -353,7 +355,27 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           <FormLabel>Email</FormLabel>
                           <FormControl>
                             <div className="relative">
-                              <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <Mail className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
+                              <Input
+                                className="pl-10"
+                                placeholder="john.doe@example.com"
+                                {...field}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={personalInfoForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Mail className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
                               <Input
                                 className="pl-10"
                                 placeholder="john.doe@example.com"
@@ -373,7 +395,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           <FormLabel>Phone Number</FormLabel>
                           <FormControl>
                             <div className="relative">
-                              <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <Phone className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
                               <Input
                                 className="pl-10"
                                 placeholder="+260 97X XXX XXX"
@@ -393,7 +415,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           <FormLabel>Address</FormLabel>
                           <FormControl>
                             <div className="relative">
-                              <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <MapPin className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
                               <Input
                                 className="pl-10"
                                 placeholder="123 Main St"
@@ -405,7 +427,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                         </FormItem>
                       )}
                     />
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="gap-4 grid grid-cols-2">
                       <FormField
                         control={personalInfoForm.control}
                         name="town"
@@ -482,7 +504,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           </FormLabel>
                           <FormControl>
                             <div className="relative">
-                              <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <Calendar className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
                               <Input className="pl-10" type="date" {...field} />
                             </div>
                           </FormControl>
@@ -533,7 +555,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           <FormLabel>Highest Qualification</FormLabel>
                           <FormControl>
                             <div className="relative">
-                              <GraduationCap className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <GraduationCap className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
                               <Input
                                 className="pl-10"
                                 placeholder="Bachelor of Urban Planning"
@@ -545,7 +567,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                         </FormItem>
                       )}
                     />
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="gap-4 grid grid-cols-2">
                       <FormField
                         control={professionalInfoForm.control}
                         name="institution"
@@ -554,7 +576,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             <FormLabel>Institution</FormLabel>
                             <FormControl>
                               <div className="relative">
-                                <Building className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Building className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
                                 <Input
                                   className="pl-10"
                                   placeholder="University of Zambia"
@@ -574,7 +596,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             <FormLabel>Graduation Year</FormLabel>
                             <FormControl>
                               <div className="relative">
-                                <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Calendar className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
                                 <Input
                                   className="pl-10"
                                   placeholder="2020"
@@ -587,7 +609,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                         )}
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="gap-4 grid grid-cols-2">
                       <FormField
                         control={professionalInfoForm.control}
                         name="currentEmployer"
@@ -618,7 +640,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                         )}
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="gap-4 grid grid-cols-2">
                       <FormField
                         control={professionalInfoForm.control}
                         name="experience"
@@ -826,8 +848,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                     )}
                     className="space-y-4"
                   >
-                    <div className="grid gap-4">
-                      <div className="border rounded-md p-4">
+                    <div className="gap-4 grid">
+                      <div className="p-4 border rounded-md">
                         <FormLabel className="block mb-2">ID Copy</FormLabel>
                         <div className="flex items-center gap-2">
                           <Input
@@ -842,19 +864,19 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             onClick={() =>
                               document.getElementById("idCopy")?.click()
                             }
-                            className="w-full flex items-center justify-center gap-2"
+                            className="flex justify-center items-center gap-2 w-full"
                           >
-                            <Upload className="h-4 w-4" />
+                            <Upload className="w-4 h-4" />
                             <span>Upload ID</span>
                           </Button>
-                          <span className="text-sm text-muted-foreground">
+                          <span className="text-muted-foreground text-sm">
                             {documentUploadForm.watch("idCopy")?.name ||
                               "No file chosen"}
                           </span>
                         </div>
                       </div>
 
-                      <div className="border rounded-md p-4">
+                      <div className="p-4 border rounded-md">
                         <FormLabel className="block mb-2">
                           Qualification Certificate
                         </FormLabel>
@@ -875,12 +897,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                                 .getElementById("qualificationCertificate")
                                 ?.click()
                             }
-                            className="w-full flex items-center justify-center gap-2"
+                            className="flex justify-center items-center gap-2 w-full"
                           >
-                            <Upload className="h-4 w-4" />
+                            <Upload className="w-4 h-4" />
                             <span>Upload Certificate</span>
                           </Button>
-                          <span className="text-sm text-muted-foreground">
+                          <span className="text-muted-foreground text-sm">
                             {documentUploadForm.watch(
                               "qualificationCertificate",
                             )?.name || "No file chosen"}
@@ -888,7 +910,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                         </div>
                       </div>
 
-                      <div className="border rounded-md p-4">
+                      <div className="p-4 border rounded-md">
                         <FormLabel className="block mb-2">
                           Professional References
                         </FormLabel>
@@ -909,19 +931,19 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                                 .getElementById("professionalReferences")
                                 ?.click()
                             }
-                            className="w-full flex items-center justify-center gap-2"
+                            className="flex justify-center items-center gap-2 w-full"
                           >
-                            <Upload className="h-4 w-4" />
+                            <Upload className="w-4 h-4" />
                             <span>Upload References</span>
                           </Button>
-                          <span className="text-sm text-muted-foreground">
+                          <span className="text-muted-foreground text-sm">
                             {documentUploadForm.watch("professionalReferences")
                               ?.name || "No file chosen"}
                           </span>
                         </div>
                       </div>
 
-                      <div className="border rounded-md p-4">
+                      <div className="p-4 border rounded-md">
                         <FormLabel className="block mb-2">
                           Passport Photo <span className="text-red-500">*</span>
                         </FormLabel>
@@ -941,22 +963,22 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             onClick={() =>
                               document.getElementById("passportPhoto")?.click()
                             }
-                            className="w-full flex items-center justify-center gap-2"
+                            className="flex justify-center items-center gap-2 w-full"
                           >
-                            <Upload className="h-4 w-4" />
+                            <Upload className="w-4 h-4" />
                             <span>Upload Photo</span>
                           </Button>
-                          <span className="text-sm text-muted-foreground">
+                          <span className="text-muted-foreground text-sm">
                             {documentUploadForm.watch("passportPhoto")?.name ||
                               "No file chosen"}
                           </span>
                         </div>
-                        <p className="text-xs text-red-500 mt-1">
+                        <p className="mt-1 text-red-500 text-xs">
                           {String(documentUploadForm.formState.errors.cv?.message ?? "")}
                         </p>
                       </div>
 
-                      <div className="border rounded-md p-4">
+                      <div className="p-4 border rounded-md">
                         <FormLabel className="block mb-2">
                           CV/Resume <span className="text-red-500">*</span>
                         </FormLabel>
@@ -974,17 +996,17 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             onClick={() =>
                               document.getElementById("cv")?.click()
                             }
-                            className="w-full flex items-center justify-center gap-2"
+                            className="flex justify-center items-center gap-2 w-full"
                           >
-                            <Upload className="h-4 w-4" />
+                            <Upload className="w-4 h-4" />
                             <span>Upload CV</span>
                           </Button>
-                          <span className="text-sm text-muted-foreground">
+                          <span className="text-muted-foreground text-sm">
                             {documentUploadForm.watch("cv")?.name ||
                               "No file chosen"}
                           </span>
                         </div>
-                        <p className="text-xs text-red-500 mt-1">
+                        <p className="mt-1 text-red-500 text-xs">
                           {String(documentUploadForm.formState.errors.passportPhoto?.message ?? "")}
                         </p>
                       </div>
@@ -998,7 +1020,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                       >
                         Back
                       </Button>
-                      <Button type="submit">Complete Registration</Button>
+                      <Button type="submit">{isLoading?"Registering...":"Complete Registration"}</Button>
                     </div>
                   </form>
                 </Form>

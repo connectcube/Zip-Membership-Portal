@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, CreditCard, FileText, Calendar, Bell, MessageSquare, Settings } from 'lucide-react';
 import { useUserStore } from '@/lib/zustand';
 import { auth } from '@/lib/firebase';
+import { useNavigate } from 'react-router';
 
 interface MemberDashboardProps {
   userName?: string;
@@ -51,99 +52,24 @@ const MemberDashboard = ({
   specialization = 'Urban Design',
   bio = 'Experienced urban planner with expertise in sustainable development.',
 }: MemberDashboardProps) => {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(activePage);
   const { user, clearUser } = useUserStore();
   const onLogout = async () => {
     await auth.signOut();
+    navigate('/');
     clearUser();
   };
-  console.log(user);
   // Generate personalized notifications based on user data
-  const notifications = [
-    {
-      id: '1',
-      title: `Hello ${userName.split(' ')[0]}, your membership renewal is due in 30 days`,
-      date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      read: false,
-    },
-    {
-      id: '2',
-      title: 'New planning regulations for ' + specialization + ' published',
-      date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      read: true,
-    },
-    {
-      id: '3',
-      title: 'AGM scheduled for January 15, 2024 - Registration now open',
-      date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      read: false,
-    },
-    {
-      id: '4',
-      title: `Welcome to ZIP, ${userName}! Your profile has been approved`,
-      date: registrationDate,
-      read: true,
-    },
-  ];
+  const notifications = [];
 
   // Generate relevant events based on user specialization
-  const upcomingEvents = [
-    {
-      id: '1',
-      title: 'Annual General Meeting',
-      date: '2024-01-15',
-      type: 'Conference',
-    },
-    {
-      id: '2',
-      title: specialization + ' Workshop',
-      date: '2024-02-10',
-      type: 'Workshop',
-    },
-    {
-      id: '3',
-      title: 'Professional Development Seminar',
-      date: '2024-03-25',
-      type: 'Seminar',
-    },
-    {
-      id: '4',
-      title: userProvince + ' Regional Meeting',
-      date: '2024-04-15',
-      type: 'Meeting',
-    },
-  ];
+  const upcomingEvents = [];
 
   // Generate payment history based on membership type and registration date
-  const paymentHistory = [
-    {
-      id: '1',
-      description: 'Annual Membership Fee - ' + membershipType,
-      amount:
-        membershipType === 'Full Member'
-          ? 'K1,500'
-          : membershipType === 'Associate'
-          ? 'K1,200'
-          : 'K800',
-      date: new Date().getFullYear() + '-01-15',
-      status: 'Paid' as const,
-    },
-    {
-      id: '2',
-      description: 'Registration Fee',
-      amount: 'K500',
-      date: registrationDate,
-      status: 'Paid' as const,
-    },
-    {
-      id: '3',
-      description: 'Previous Year Membership',
-      amount: membershipType === 'Full Member' ? 'K1,500' : 'K1,200',
-      date: new Date().getFullYear() - 1 + '-01-15',
-      status: 'Paid' as const,
-    },
-  ];
+  const paymentHistory = [];
 
+  const messages = [];
   // Placeholder components for different sections
   const ProfileSection = () => {
     const [isEditing, setIsEditing] = useState(false);
@@ -455,28 +381,34 @@ const MemberDashboard = ({
           <Card>
             <CardContent className="p-6">
               <div className="space-y-4">
-                {paymentHistory.map(payment => (
-                  <div
-                    key={payment.id}
-                    className="flex justify-between items-center p-4 border rounded-lg"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="bg-green-100 p-3 rounded-lg">
-                        <CreditCard className="w-5 h-5 text-green-600" />
+                {paymentHistory.length > 0 ? (
+                  paymentHistory.map(payment => (
+                    <div
+                      key={payment.id}
+                      className="flex justify-between items-center p-4 border rounded-lg"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="bg-green-100 p-3 rounded-lg">
+                          <CreditCard className="w-5 h-5 text-green-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium">{payment.description}</h4>
+                          <p className="text-gray-500 text-sm">{payment.date}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="font-medium">{payment.description}</h4>
-                        <p className="text-gray-500 text-sm">{payment.date}</p>
+                      <div className="text-right">
+                        <p className="font-bold">{payment.amount}</p>
+                        <span className="inline-block bg-green-100 px-2 py-1 rounded-full text-green-800 text-xs">
+                          {payment.status}
+                        </span>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold">{payment.amount}</p>
-                      <span className="inline-block bg-green-100 px-2 py-1 rounded-full text-green-800 text-xs">
-                        {payment.status}
-                      </span>
-                    </div>
+                  ))
+                ) : (
+                  <div className="py-4 text-center">
+                    <p className="text-gray-500">No payment history available.</p>
                   </div>
-                ))}
+                )}
               </div>
             </CardContent>
           </Card>
@@ -731,41 +663,47 @@ const MemberDashboard = ({
           <Card>
             <CardContent className="p-6">
               <div className="space-y-6">
-                {upcomingEvents.map(event => (
-                  <div key={event.id} className="border rounded-lg overflow-hidden">
-                    <div className="flex justify-between items-center bg-blue-50 p-4">
-                      <div className="flex items-center gap-3">
-                        <Calendar className="w-5 h-5 text-blue-600" />
-                        <h3 className="font-medium">{event.title}</h3>
+                {upcomingEvents.length > 0 ? (
+                  upcomingEvents.map(event => (
+                    <div key={event.id} className="border rounded-lg overflow-hidden">
+                      <div className="flex justify-between items-center bg-blue-50 p-4">
+                        <div className="flex items-center gap-3">
+                          <Calendar className="w-5 h-5 text-blue-600" />
+                          <h3 className="font-medium">{event.title}</h3>
+                        </div>
+                        <span className="bg-blue-100 px-2 py-1 rounded-full text-blue-800 text-xs">
+                          {event.type}
+                        </span>
                       </div>
-                      <span className="bg-blue-100 px-2 py-1 rounded-full text-blue-800 text-xs">
-                        {event.type}
-                      </span>
+                      <div className="p-4">
+                        <div className="flex justify-between mb-4">
+                          <p className="text-sm">
+                            <strong>Date:</strong> {event.date}
+                          </p>
+                          <p className="text-sm">
+                            <strong>Location:</strong> Lusaka, Zambia
+                          </p>
+                        </div>
+                        <p className="mb-4 text-gray-600 text-sm">
+                          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+                          tempor incididunt ut labore et dolore magna aliqua.
+                        </p>
+                        <div className="flex justify-between items-center">
+                          <p className="text-sm">
+                            <strong>CPD Points:</strong> 5
+                          </p>
+                          <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
+                            Register Now
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <div className="p-4">
-                      <div className="flex justify-between mb-4">
-                        <p className="text-sm">
-                          <strong>Date:</strong> {event.date}
-                        </p>
-                        <p className="text-sm">
-                          <strong>Location:</strong> Lusaka, Zambia
-                        </p>
-                      </div>
-                      <p className="mb-4 text-gray-600 text-sm">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua.
-                      </p>
-                      <div className="flex justify-between items-center">
-                        <p className="text-sm">
-                          <strong>CPD Points:</strong> 5
-                        </p>
-                        <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
-                          Register Now
-                        </button>
-                      </div>
-                    </div>
+                  ))
+                ) : (
+                  <div className="py-4 text-center">
+                    <p className="text-gray-500">No upcoming events found.</p>
                   </div>
-                ))}
+                )}
               </div>
             </CardContent>
           </Card>
@@ -900,39 +838,47 @@ const MemberDashboard = ({
       <Card>
         <CardContent className="p-6">
           <div className="space-y-4">
-            {notifications.map(notification => (
-              <div
-                key={notification.id}
-                className={`p-4 rounded-lg ${
-                  notification.read ? 'bg-white border' : 'bg-blue-50 border-blue-100 border'
-                }`}
-              >
-                <div className="flex items-start gap-4">
-                  <div
-                    className={`p-2 rounded-full ${
-                      notification.read ? 'bg-gray-100' : 'bg-blue-100'
-                    }`}
-                  >
-                    <Bell
-                      className={`h-5 w-5 ${notification.read ? 'text-gray-500' : 'text-blue-500'}`}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-medium">{notification.title}</h4>
-                    <p className="mt-1 text-gray-500 text-sm">{notification.date}</p>
-                    <p className="mt-2 text-sm">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                      incididunt ut labore et dolore magna aliqua.
-                    </p>
-                    {!notification.read && (
-                      <button className="mt-2 text-blue-600 text-sm hover:underline">
-                        Mark as read
-                      </button>
-                    )}
+            {notifications.length > 0 ? (
+              notifications.map(notification => (
+                <div
+                  key={notification.id}
+                  className={`p-4 rounded-lg ${
+                    notification.read ? 'bg-white border' : 'bg-blue-50 border-blue-100 border'
+                  }`}
+                >
+                  <div className="flex items-start gap-4">
+                    <div
+                      className={`p-2 rounded-full ${
+                        notification.read ? 'bg-gray-100' : 'bg-blue-100'
+                      }`}
+                    >
+                      <Bell
+                        className={`h-5 w-5 ${
+                          notification.read ? 'text-gray-500' : 'text-blue-500'
+                        }`}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium">{notification.title}</h4>
+                      <p className="mt-1 text-gray-500 text-sm">{notification.date}</p>
+                      <p className="mt-2 text-sm">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua.
+                      </p>
+                      {!notification.read && (
+                        <button className="mt-2 text-blue-600 text-sm hover:underline">
+                          Mark as read
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="p-4 text-center">
+                <p className="text-gray-500">No notifications</p>
               </div>
-            ))}
+            )}
           </div>
         </CardContent>
       </Card>
@@ -955,92 +901,82 @@ const MemberDashboard = ({
                 />
               </div>
               <div className="h-[calc(600px-64px)] overflow-y-auto">
-                {[
-                  {
-                    id: 1,
-                    sender: 'ZIP Admin',
-                    preview: 'Your membership renewal...',
-                    time: '10:30 AM',
-                    unread: true,
-                  },
-                  {
-                    id: 2,
-                    sender: 'Events Committee',
-                    preview: 'Regarding the upcoming workshop...',
-                    time: 'Yesterday',
-                    unread: false,
-                  },
-                  {
-                    id: 3,
-                    sender: 'Membership Officer',
-                    preview: 'Your documents have been...',
-                    time: 'Aug 15',
-                    unread: false,
-                  },
-                ].map(message => (
-                  <div
-                    key={message.id}
-                    className={`p-4 border-b cursor-pointer hover:bg-gray-50 ${
-                      message.unread ? 'bg-blue-50' : ''
-                    }`}
-                  >
-                    <div className="flex justify-between items-start">
-                      <h4 className="font-medium">{message.sender}</h4>
-                      <span className="text-gray-500 text-xs">{message.time}</span>
+                {messages.length > 0 ? (
+                  messages.map(message => (
+                    <div
+                      key={message.id}
+                      className={`p-4 border-b cursor-pointer hover:bg-gray-50 ${
+                        message.unread ? 'bg-blue-50' : ''
+                      }`}
+                    >
+                      <div className="flex justify-between items-start">
+                        <h4 className="font-medium">{message.sender}</h4>
+                        <span className="text-gray-500 text-xs">{message.time}</span>
+                      </div>
+                      <p className="text-gray-600 text-sm truncate">{message.preview}</p>
                     </div>
-                    <p className="text-gray-600 text-sm truncate">{message.preview}</p>
+                  ))
+                ) : (
+                  <div className="p-4 text-center">
+                    <p className="text-gray-500">No messages</p>
                   </div>
-                ))}
+                )}
               </div>
             </div>
 
             {/* Message content */}
-            <div className="flex flex-col w-full md:w-2/3">
-              <div className="p-4 border-b">
-                <h3 className="font-medium">ZIP Admin</h3>
-              </div>
-              <div className="flex-1 p-4 overflow-y-auto">
-                <div className="space-y-4">
-                  <div className="flex justify-start">
-                    <div className="bg-gray-100 p-3 rounded-lg max-w-[80%]">
-                      <p className="text-sm">
-                        Hello John, this is a reminder that your membership will expire in 30 days.
-                        Please renew to maintain your active status.
-                      </p>
-                      <span className="block mt-1 text-gray-500 text-xs">10:30 AM</span>
+            {messages.length > 0 ? (
+              <div className="flex flex-col w-full md:w-2/3">
+                <div className="p-4 border-b">
+                  <h3 className="font-medium">ZIP Admin</h3>
+                </div>
+                <div className="flex-1 p-4 overflow-y-auto">
+                  <div className="space-y-4">
+                    <div className="flex justify-start">
+                      <div className="bg-gray-100 p-3 rounded-lg max-w-[80%]">
+                        <p className="text-sm">
+                          Hello John, this is a reminder that your membership will expire in 30
+                          days. Please renew to maintain your active status.
+                        </p>
+                        <span className="block mt-1 text-gray-500 text-xs">10:30 AM</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex justify-end">
-                    <div className="bg-blue-100 p-3 rounded-lg max-w-[80%]">
-                      <p className="text-sm">
-                        Thank you for the reminder. I'll process the renewal this week.
-                      </p>
-                      <span className="block mt-1 text-gray-500 text-xs">10:32 AM</span>
+                    <div className="flex justify-end">
+                      <div className="bg-blue-100 p-3 rounded-lg max-w-[80%]">
+                        <p className="text-sm">
+                          Thank you for the reminder. I'll process the renewal this week.
+                        </p>
+                        <span className="block mt-1 text-gray-500 text-xs">10:32 AM</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex justify-start">
-                    <div className="bg-gray-100 p-3 rounded-lg max-w-[80%]">
-                      <p className="text-sm">
-                        Great! Let me know if you need any assistance with the payment process.
-                      </p>
-                      <span className="block mt-1 text-gray-500 text-xs">10:35 AM</span>
+                    <div className="flex justify-start">
+                      <div className="bg-gray-100 p-3 rounded-lg max-w-[80%]">
+                        <p className="text-sm">
+                          Great! Let me know if you need any assistance with the payment process.
+                        </p>
+                        <span className="block mt-1 text-gray-500 text-xs">10:35 AM</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="p-4 border-t">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Type your message..."
-                    className="flex-1 p-2 border rounded-md"
-                  />
-                  <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
-                    Send
-                  </button>
+                <div className="p-4 border-t">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Type your message..."
+                      className="flex-1 p-2 border rounded-md"
+                    />
+                    <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
+                      Send
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-col justify-center items-center w-full md:w-2/3">
+                <p className="text-gray-500">No message</p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

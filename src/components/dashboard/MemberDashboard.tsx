@@ -1,18 +1,10 @@
-import React, { useState } from "react";
-import Sidebar from "./Sidebar";
-import DashboardOverview from "./DashboardOverview";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  User,
-  CreditCard,
-  FileText,
-  Calendar,
-  Bell,
-  MessageSquare,
-  Settings,
-} from "lucide-react";
-import { useUserStore } from "@/lib/zustand";
+import React, { useState } from 'react';
+import Sidebar from './Sidebar';
+import DashboardOverview from './DashboardOverview';
+import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { User, CreditCard, FileText, Calendar, Bell, MessageSquare, Settings } from 'lucide-react';
+import { useUserStore } from '@/lib/zustand';
 
 interface MemberDashboardProps {
   userName?: string;
@@ -38,58 +30,52 @@ interface MemberDashboardProps {
 }
 
 const MemberDashboard = ({
-  userName = "John Doe",
-  membershipType = "Professional Planner",
-  membershipStatus = "Active",
-  membershipExpiry = "December 31, 2023",
-  activePage = "dashboard",
-  userEmail = "john.doe@example.com",
-  userPhone = "+260 97 1234567",
-  userAddress = "123 Planning Avenue, Lusaka, Zambia",
-  userTown = "Lusaka",
-  userProvince = "Lusaka",
-  plannerID = "ZIP-2020-0123",
-  registrationDate = "January 15, 2020",
-  qualification = "Bachelor of Urban Planning",
-  institution = "University of Zambia",
-  currentEmployer = "Ministry of Planning",
-  jobTitle = "Urban Planner",
-  experience = "5",
-  specialization = "Urban Design",
-  bio = "Experienced urban planner with expertise in sustainable development.",
+  userName = 'John Doe',
+  membershipType = 'Professional Planner',
+  membershipStatus = 'Active',
+  membershipExpiry = 'December 31, 2023',
+  activePage = 'dashboard',
+  userEmail = 'john.doe@example.com',
+  userPhone = '+260 97 1234567',
+  userAddress = '123 Planning Avenue, Lusaka, Zambia',
+  userTown = 'Lusaka',
+  userProvince = 'Lusaka',
+  plannerID = 'ZIP-2020-0123',
+  registrationDate = 'January 15, 2020',
+  qualification = 'Bachelor of Urban Planning',
+  institution = 'University of Zambia',
+  currentEmployer = 'Ministry of Planning',
+  jobTitle = 'Urban Planner',
+  experience = '5',
+  specialization = 'Urban Design',
+  bio = 'Experienced urban planner with expertise in sustainable development.',
   onLogout = () => {},
 }: MemberDashboardProps) => {
   const [currentPage, setCurrentPage] = useState(activePage);
-  const {user}=useUserStore()
-  console.log(user)
+  const { user } = useUserStore();
+  console.log(user);
   // Generate personalized notifications based on user data
   const notifications = [
     {
-      id: "1",
-      title: `Hello ${userName.split(" ")[0]}, your membership renewal is due in 30 days`,
-      date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split("T")[0],
+      id: '1',
+      title: `Hello ${userName.split(' ')[0]}, your membership renewal is due in 30 days`,
+      date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       read: false,
     },
     {
-      id: "2",
-      title: "New planning regulations for " + specialization + " published",
-      date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split("T")[0],
+      id: '2',
+      title: 'New planning regulations for ' + specialization + ' published',
+      date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       read: true,
     },
     {
-      id: "3",
-      title: "AGM scheduled for January 15, 2024 - Registration now open",
-      date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split("T")[0],
+      id: '3',
+      title: 'AGM scheduled for January 15, 2024 - Registration now open',
+      date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       read: false,
     },
     {
-      id: "4",
+      id: '4',
       title: `Welcome to ZIP, ${userName}! Your profile has been approved`,
       date: registrationDate,
       read: true,
@@ -99,76 +85,69 @@ const MemberDashboard = ({
   // Generate relevant events based on user specialization
   const upcomingEvents = [
     {
-      id: "1",
-      title: "Annual General Meeting",
-      date: "2024-01-15",
-      type: "Conference",
+      id: '1',
+      title: 'Annual General Meeting',
+      date: '2024-01-15',
+      type: 'Conference',
     },
     {
-      id: "2",
-      title: specialization + " Workshop",
-      date: "2024-02-10",
-      type: "Workshop",
+      id: '2',
+      title: specialization + ' Workshop',
+      date: '2024-02-10',
+      type: 'Workshop',
     },
     {
-      id: "3",
-      title: "Professional Development Seminar",
-      date: "2024-03-25",
-      type: "Seminar",
+      id: '3',
+      title: 'Professional Development Seminar',
+      date: '2024-03-25',
+      type: 'Seminar',
     },
     {
-      id: "4",
-      title: userProvince + " Regional Meeting",
-      date: "2024-04-15",
-      type: "Meeting",
+      id: '4',
+      title: userProvince + ' Regional Meeting',
+      date: '2024-04-15',
+      type: 'Meeting',
     },
   ];
 
   // Generate payment history based on membership type and registration date
   const paymentHistory = [
     {
-      id: "1",
-      description: "Annual Membership Fee - " + membershipType,
+      id: '1',
+      description: 'Annual Membership Fee - ' + membershipType,
       amount:
-        membershipType === "Full Member"
-          ? "K1,500"
-          : membershipType === "Associate"
-            ? "K1,200"
-            : "K800",
-      date: new Date().getFullYear() + "-01-15",
-      status: "Paid" as const,
+        membershipType === 'Full Member'
+          ? 'K1,500'
+          : membershipType === 'Associate'
+          ? 'K1,200'
+          : 'K800',
+      date: new Date().getFullYear() + '-01-15',
+      status: 'Paid' as const,
     },
     {
-      id: "2",
-      description: "Registration Fee",
-      amount: "K500",
+      id: '2',
+      description: 'Registration Fee',
+      amount: 'K500',
       date: registrationDate,
-      status: "Paid" as const,
+      status: 'Paid' as const,
     },
     {
-      id: "3",
-      description: "Previous Year Membership",
-      amount: membershipType === "Full Member" ? "K1,500" : "K1,200",
-      date: new Date().getFullYear() - 1 + "-01-15",
-      status: "Paid" as const,
+      id: '3',
+      description: 'Previous Year Membership',
+      amount: membershipType === 'Full Member' ? 'K1,500' : 'K1,200',
+      date: new Date().getFullYear() - 1 + '-01-15',
+      status: 'Paid' as const,
     },
   ];
 
   // Placeholder components for different sections
   const ProfileSection = () => {
     const [isEditing, setIsEditing] = useState(false);
-    const [qualifications, setQualifications] = useState([
-      {
-        id: 1,
-        qualification: qualification,
-        institution: institution,
-        graduationYear: new Date().getFullYear() - 5,
-      },
-    ]);
+    const [qualifications, setQualifications] = useState([{ ...user.profile.professionalInfo }]);
     const [newQualification, setNewQualification] = useState({
-      qualification: "",
-      institution: "",
-      graduationYear: "",
+      qualification: '',
+      institution: '',
+      graduationYear: '',
     });
     const [showAddQualification, setShowAddQualification] = useState(false);
 
@@ -178,7 +157,7 @@ const MemberDashboard = ({
         newQualification.institution &&
         newQualification.graduationYear
       ) {
-        const newId = Math.max(...qualifications.map((q) => q.id)) + 1;
+        const newId = Math.max(...qualifications.map(q => q.id)) + 1;
         setQualifications([
           ...qualifications,
           {
@@ -188,9 +167,9 @@ const MemberDashboard = ({
           },
         ]);
         setNewQualification({
-          qualification: "",
-          institution: "",
-          graduationYear: "",
+          qualification: '',
+          institution: '',
+          graduationYear: '',
         });
         setShowAddQualification(false);
       }
@@ -198,7 +177,7 @@ const MemberDashboard = ({
 
     const handleRemoveQualification = (id: number) => {
       if (qualifications.length > 1) {
-        setQualifications(qualifications.filter((q) => q.id !== id));
+        setQualifications(qualifications.filter(q => q.id !== id));
       }
     };
 
@@ -215,9 +194,7 @@ const MemberDashboard = ({
                   <div className="flex justify-center items-center bg-slate-200 mb-4 rounded-full w-32 h-32">
                     <User size={64} className="text-slate-400" />
                   </div>
-                  <button className="text-blue-600 text-sm hover:underline">
-                    Change Photo
-                  </button>
+                  <button className="text-blue-600 text-sm hover:underline">Change Photo</button>
                 </div>
                 <div className="flex-1 space-y-6">
                   <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
@@ -228,7 +205,13 @@ const MemberDashboard = ({
                       <input
                         type="text"
                         className="p-2 border rounded-md w-full"
-                        value={userName}
+                        value={
+                          user.profile.firstName +
+                            ' ' +
+                            user.profile.middleName +
+                            ' ' +
+                            user.profile.lastName || ''
+                        }
                         readOnly={!isEditing}
                       />
                     </div>
@@ -239,7 +222,7 @@ const MemberDashboard = ({
                       <input
                         type="text"
                         className="p-2 border rounded-md w-full"
-                        value={membershipType}
+                        value={user.profile.membershipType || '' || membershipType}
                         readOnly
                       />
                     </div>
@@ -250,7 +233,7 @@ const MemberDashboard = ({
                       <input
                         type="email"
                         className="p-2 border rounded-md w-full"
-                        value={userEmail}
+                        value={user.profile.email || '' || userEmail}
                         readOnly={!isEditing}
                       />
                     </div>
@@ -261,7 +244,7 @@ const MemberDashboard = ({
                       <input
                         type="tel"
                         className="p-2 border rounded-md w-full"
-                        value={userPhone}
+                        value={user.profile.phone || '' || userPhone}
                         readOnly={!isEditing}
                       />
                     </div>
@@ -272,7 +255,7 @@ const MemberDashboard = ({
                       <input
                         type="text"
                         className="p-2 border rounded-md w-full"
-                        value={plannerID}
+                        value={user.profile.membershipNumber || '' || plannerID}
                         readOnly
                       />
                     </div>
@@ -283,7 +266,7 @@ const MemberDashboard = ({
                       <input
                         type="text"
                         className="p-2 border rounded-md w-full"
-                        value={registrationDate}
+                        value={user.profile.createdAt.toDate().toLocaleDateString() || ''}
                         readOnly
                       />
                     </div>
@@ -345,17 +328,13 @@ const MemberDashboard = ({
               </div>
 
               <div className="space-y-4">
-                {qualifications.map((qual) => (
+                {qualifications.map(qual => (
                   <div key={qual.id} className="p-4 border rounded-lg">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <h3 className="font-medium text-lg">
-                          {qual.qualification}
-                        </h3>
+                        <h3 className="font-medium text-lg">{qual.qualification}</h3>
                         <p className="text-gray-600">{qual.institution}</p>
-                        <p className="text-gray-500 text-sm">
-                          Graduated: {qual.graduationYear}
-                        </p>
+                        <p className="text-gray-500 text-sm">Graduated: {qual.graduationYear}</p>
                       </div>
                       {qualifications.length > 1 && (
                         <button
@@ -373,9 +352,7 @@ const MemberDashboard = ({
               {/* Add Qualification Form */}
               {showAddQualification && (
                 <div className="mt-6 pt-6 border-t">
-                  <h3 className="mb-4 font-medium text-lg">
-                    Add New Qualification
-                  </h3>
+                  <h3 className="mb-4 font-medium text-lg">Add New Qualification</h3>
                   <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
                     <div>
                       <label className="block mb-1 font-medium text-gray-700 text-sm">
@@ -386,7 +363,7 @@ const MemberDashboard = ({
                         className="p-2 border rounded-md w-full"
                         placeholder="e.g., Master of Urban Planning"
                         value={newQualification.qualification}
-                        onChange={(e) =>
+                        onChange={e =>
                           setNewQualification({
                             ...newQualification,
                             qualification: e.target.value,
@@ -403,7 +380,7 @@ const MemberDashboard = ({
                         className="p-2 border rounded-md w-full"
                         placeholder="e.g., University of Zambia"
                         value={newQualification.institution}
-                        onChange={(e) =>
+                        onChange={e =>
                           setNewQualification({
                             ...newQualification,
                             institution: e.target.value,
@@ -420,7 +397,7 @@ const MemberDashboard = ({
                         className="p-2 border rounded-md w-full"
                         placeholder="e.g., 2020"
                         value={newQualification.graduationYear}
-                        onChange={(e) =>
+                        onChange={e =>
                           setNewQualification({
                             ...newQualification,
                             graduationYear: e.target.value,
@@ -435,9 +412,9 @@ const MemberDashboard = ({
                       onClick={() => {
                         setShowAddQualification(false);
                         setNewQualification({
-                          qualification: "",
-                          institution: "",
-                          graduationYear: "",
+                          qualification: '',
+                          institution: '',
+                          graduationYear: '',
                         });
                       }}
                     >
@@ -472,7 +449,7 @@ const MemberDashboard = ({
           <Card>
             <CardContent className="p-6">
               <div className="space-y-4">
-                {paymentHistory.map((payment) => (
+                {paymentHistory.map(payment => (
                   <div
                     key={payment.id}
                     className="flex justify-between items-center p-4 border rounded-lg"
@@ -501,9 +478,7 @@ const MemberDashboard = ({
         <TabsContent value="pending">
           <Card>
             <CardContent className="p-6 text-center">
-              <p className="text-gray-500">
-                You have no pending payments at this time.
-              </p>
+              <p className="text-gray-500">You have no pending payments at this time.</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -524,9 +499,7 @@ const MemberDashboard = ({
                   </select>
                 </div>
                 <div>
-                  <label className="block mb-1 font-medium text-gray-700 text-sm">
-                    Amount
-                  </label>
+                  <label className="block mb-1 font-medium text-gray-700 text-sm">Amount</label>
                   <input
                     type="text"
                     className="p-2 border rounded-md w-full"
@@ -540,27 +513,15 @@ const MemberDashboard = ({
                   </label>
                   <div className="gap-4 grid grid-cols-1 md:grid-cols-3">
                     <div className="flex items-center gap-2 hover:bg-gray-50 p-4 border rounded-md cursor-pointer">
-                      <input
-                        type="radio"
-                        name="payment-method"
-                        id="mobile-money"
-                      />
+                      <input type="radio" name="payment-method" id="mobile-money" />
                       <label htmlFor="mobile-money">Mobile Money</label>
                     </div>
                     <div className="flex items-center gap-2 hover:bg-gray-50 p-4 border rounded-md cursor-pointer">
-                      <input
-                        type="radio"
-                        name="payment-method"
-                        id="bank-transfer"
-                      />
+                      <input type="radio" name="payment-method" id="bank-transfer" />
                       <label htmlFor="bank-transfer">Bank Transfer</label>
                     </div>
                     <div className="flex items-center gap-2 hover:bg-gray-50 p-4 border rounded-md cursor-pointer">
-                      <input
-                        type="radio"
-                        name="payment-method"
-                        id="card-payment"
-                      />
+                      <input type="radio" name="payment-method" id="card-payment" />
                       <label htmlFor="card-payment">Card Payment</label>
                     </div>
                   </div>
@@ -578,174 +539,178 @@ const MemberDashboard = ({
     </div>
   );
 
-  const DocumentsSection = () => (
-    <div className="bg-gray-50 p-6 min-h-screen">
-      <h1 className="mb-6 font-bold text-gray-900 text-3xl">Documents</h1>
-      <Tabs defaultValue="my-documents">
-        <TabsList className="mb-6">
-          <TabsTrigger value="my-documents">My Documents</TabsTrigger>
-          <TabsTrigger value="institute-documents">
-            Institute Documents
-          </TabsTrigger>
-          <TabsTrigger value="upload">Upload Document</TabsTrigger>
-        </TabsList>
-        <TabsContent value="my-documents">
-          <Card>
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                {[
-                  {
-                    id: 1,
-                    name: "Professional Certificate",
-                    date: "2020-01-15",
-                    type: "PDF",
-                  },
-                  {
-                    id: 2,
-                    name: "Academic Transcript",
-                    date: "2020-01-15",
-                    type: "PDF",
-                  },
-                  { id: 3, name: "CV", date: "2020-01-15", type: "DOCX" },
-                ].map((doc) => (
-                  <div
-                    key={doc.id}
-                    className="flex justify-between items-center p-4 border rounded-lg"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="bg-blue-100 p-3 rounded-lg">
-                        <FileText className="w-5 h-5 text-blue-600" />
+  const DocumentsSection = () => {
+    const documentLabels = {
+      cvURL: 'CV',
+      idCopyURL: 'ID Copy',
+      passportPhotoURL: 'Passport Photo',
+      professionalReferencesURL: 'Professional References',
+      qualificationCertificateURL: 'Qualification Certificate',
+    };
+
+    return (
+      <div className="bg-gray-50 p-6 min-h-screen">
+        <h1 className="mb-6 font-bold text-gray-900 text-3xl">Documents</h1>
+        <Tabs defaultValue="my-documents">
+          <TabsList className="mb-6">
+            <TabsTrigger value="my-documents">My Documents</TabsTrigger>
+            <TabsTrigger value="institute-documents">Institute Documents</TabsTrigger>
+            <TabsTrigger value="upload">Upload Document</TabsTrigger>
+          </TabsList>
+          <TabsContent value="my-documents">
+            <Card>
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  {Object.entries(user.profile.documents)
+                    .filter(([_, url]) => url) // Only include non-null URLs
+                    .map(([key, url], index) => (
+                      <div
+                        key={key}
+                        className="flex justify-between items-center p-4 border rounded-lg"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="bg-blue-100 p-3 rounded-lg">
+                            <FileText className="w-5 h-5 text-blue-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-medium">{documentLabels[key]}</h4>
+                            <p className="text-gray-500 text-sm">
+                              Uploaded on: {/* You can add a timestamp if available */}
+                              {new Date().toISOString().split('T')[0]}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <a
+                            href={url as string}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:bg-gray-50 px-3 py-1 border rounded-md text-sm"
+                          >
+                            View
+                          </a>
+                          <a
+                            href={url as string}
+                            download
+                            className="hover:bg-gray-50 px-3 py-1 border rounded-md text-sm"
+                          >
+                            Download
+                          </a>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="font-medium">{doc.name}</h4>
-                        <p className="text-gray-500 text-sm">
-                          Uploaded on: {doc.date}
-                        </p>
+                    ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="institute-documents">
+            <Card>
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  {[
+                    {
+                      id: 1,
+                      name: 'ZIP Constitution',
+                      date: '2022-05-10',
+                      type: 'PDF',
+                    },
+                    {
+                      id: 2,
+                      name: 'Code of Ethics',
+                      date: '2022-03-15',
+                      type: 'PDF',
+                    },
+                    {
+                      id: 3,
+                      name: 'Membership Guidelines',
+                      date: '2022-01-20',
+                      type: 'PDF',
+                    },
+                  ].map(doc => (
+                    <div
+                      key={doc.id}
+                      className="flex justify-between items-center p-4 border rounded-lg"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="bg-purple-100 p-3 rounded-lg">
+                          <FileText className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium">{doc.name}</h4>
+                          <p className="text-gray-500 text-sm">Published on: {doc.date}</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button className="hover:bg-gray-50 px-3 py-1 border rounded-md text-sm">
+                          View
+                        </button>
+                        <button className="hover:bg-gray-50 px-3 py-1 border rounded-md text-sm">
+                          Download
+                        </button>
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <button className="hover:bg-gray-50 px-3 py-1 border rounded-md text-sm">
-                        View
-                      </button>
-                      <button className="hover:bg-gray-50 px-3 py-1 border rounded-md text-sm">
-                        Download
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="upload">
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="mb-4 font-medium text-xl">Upload New Document</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block mb-1 font-medium text-gray-700 text-sm">
+                      Document Type
+                    </label>
+                    <select className="p-2 border rounded-md w-full">
+                      <option>Professional Certificate</option>
+                      <option>Academic Transcript</option>
+                      <option>CV</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block mb-1 font-medium text-gray-700 text-sm">
+                      Document Title
+                    </label>
+                    <input
+                      type="text"
+                      className="p-2 border rounded-md w-full"
+                      placeholder="Enter document title"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-1 font-medium text-gray-700 text-sm">
+                      Upload File
+                    </label>
+                    <div className="p-6 border-2 border-gray-300 border-dashed rounded-md text-center">
+                      <FileText className="mx-auto mb-2 w-10 h-10 text-gray-400" />
+                      <p className="mb-2 text-gray-500 text-sm">
+                        Drag and drop your file here, or click to browse
+                      </p>
+                      <p className="text-gray-400 text-xs">
+                        Supported formats: PDF, DOCX, JPG, PNG (Max 10MB)
+                      </p>
+                      <input type="file" className="hidden" />
+                      <button className="bg-blue-600 hover:bg-blue-700 mt-4 px-4 py-2 rounded-md text-white transition-colors">
+                        Browse Files
                       </button>
                     </div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="institute-documents">
-          <Card>
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                {[
-                  {
-                    id: 1,
-                    name: "ZIP Constitution",
-                    date: "2022-05-10",
-                    type: "PDF",
-                  },
-                  {
-                    id: 2,
-                    name: "Code of Ethics",
-                    date: "2022-03-15",
-                    type: "PDF",
-                  },
-                  {
-                    id: 3,
-                    name: "Membership Guidelines",
-                    date: "2022-01-20",
-                    type: "PDF",
-                  },
-                ].map((doc) => (
-                  <div
-                    key={doc.id}
-                    className="flex justify-between items-center p-4 border rounded-lg"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="bg-purple-100 p-3 rounded-lg">
-                        <FileText className="w-5 h-5 text-purple-600" />
-                      </div>
-                      <div>
-                        <h4 className="font-medium">{doc.name}</h4>
-                        <p className="text-gray-500 text-sm">
-                          Published on: {doc.date}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <button className="hover:bg-gray-50 px-3 py-1 border rounded-md text-sm">
-                        View
-                      </button>
-                      <button className="hover:bg-gray-50 px-3 py-1 border rounded-md text-sm">
-                        Download
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="upload">
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="mb-4 font-medium text-xl">Upload New Document</h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block mb-1 font-medium text-gray-700 text-sm">
-                    Document Type
-                  </label>
-                  <select className="p-2 border rounded-md w-full">
-                    <option>Professional Certificate</option>
-                    <option>Academic Transcript</option>
-                    <option>CV</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block mb-1 font-medium text-gray-700 text-sm">
-                    Document Title
-                  </label>
-                  <input
-                    type="text"
-                    className="p-2 border rounded-md w-full"
-                    placeholder="Enter document title"
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1 font-medium text-gray-700 text-sm">
-                    Upload File
-                  </label>
-                  <div className="p-6 border-2 border-gray-300 border-dashed rounded-md text-center">
-                    <FileText className="mx-auto mb-2 w-10 h-10 text-gray-400" />
-                    <p className="mb-2 text-gray-500 text-sm">
-                      Drag and drop your file here, or click to browse
-                    </p>
-                    <p className="text-gray-400 text-xs">
-                      Supported formats: PDF, DOCX, JPG, PNG (Max 10MB)
-                    </p>
-                    <input type="file" className="hidden" />
-                    <button className="bg-blue-600 hover:bg-blue-700 mt-4 px-4 py-2 rounded-md text-white transition-colors">
-                      Browse Files
+                  <div className="flex justify-end">
+                    <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
+                      Upload Document
                     </button>
                   </div>
                 </div>
-                <div className="flex justify-end">
-                  <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
-                    Upload Document
-                  </button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
-  );
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+    );
+  };
 
   const EventsSection = () => (
     <div className="bg-gray-50 p-6 min-h-screen">
@@ -760,11 +725,8 @@ const MemberDashboard = ({
           <Card>
             <CardContent className="p-6">
               <div className="space-y-6">
-                {upcomingEvents.map((event) => (
-                  <div
-                    key={event.id}
-                    className="border rounded-lg overflow-hidden"
-                  >
+                {upcomingEvents.map(event => (
+                  <div key={event.id} className="border rounded-lg overflow-hidden">
                     <div className="flex justify-between items-center bg-blue-50 p-4">
                       <div className="flex items-center gap-3">
                         <Calendar className="w-5 h-5 text-blue-600" />
@@ -784,9 +746,8 @@ const MemberDashboard = ({
                         </p>
                       </div>
                       <p className="mb-4 text-gray-600 text-sm">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua.
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua.
                       </p>
                       <div className="flex justify-between items-center">
                         <p className="text-sm">
@@ -810,26 +771,26 @@ const MemberDashboard = ({
                 {[
                   {
                     id: 1,
-                    title: "Urban Planning Conference",
-                    date: "2022-10-15",
-                    type: "Conference",
+                    title: 'Urban Planning Conference',
+                    date: '2022-10-15',
+                    type: 'Conference',
                     attended: true,
                   },
                   {
                     id: 2,
-                    title: "Sustainable Development Workshop",
-                    date: "2022-08-22",
-                    type: "Workshop",
+                    title: 'Sustainable Development Workshop',
+                    date: '2022-08-22',
+                    type: 'Workshop',
                     attended: true,
                   },
                   {
                     id: 3,
-                    title: "Planning Law Seminar",
-                    date: "2022-06-10",
-                    type: "Seminar",
+                    title: 'Planning Law Seminar',
+                    date: '2022-06-10',
+                    type: 'Seminar',
                     attended: false,
                   },
-                ].map((event) => (
+                ].map(event => (
                   <div
                     key={event.id}
                     className="flex justify-between items-center p-4 border rounded-lg"
@@ -870,9 +831,7 @@ const MemberDashboard = ({
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <div className="flex justify-between items-center">
                     <div>
-                      <p className="text-gray-600 text-sm">
-                        Current Year (2023)
-                      </p>
+                      <p className="text-gray-600 text-sm">Current Year (2023)</p>
                       <p className="font-bold text-2xl">15 / 20 Points</p>
                     </div>
                     <div className="flex justify-center items-center border-8 border-blue-500 rounded-full w-24 h-24">
@@ -886,23 +845,23 @@ const MemberDashboard = ({
                 {[
                   {
                     id: 1,
-                    activity: "Urban Planning Conference",
-                    date: "2022-10-15",
+                    activity: 'Urban Planning Conference',
+                    date: '2022-10-15',
                     points: 5,
                   },
                   {
                     id: 2,
-                    activity: "Sustainable Development Workshop",
-                    date: "2022-08-22",
+                    activity: 'Sustainable Development Workshop',
+                    date: '2022-08-22',
                     points: 3,
                   },
                   {
                     id: 3,
-                    activity: "Planning Journal Publication",
-                    date: "2022-07-05",
+                    activity: 'Planning Journal Publication',
+                    date: '2022-07-05',
                     points: 7,
                   },
-                ].map((activity) => (
+                ].map(activity => (
                   <div
                     key={activity.id}
                     className="flex justify-between items-center p-4 border rounded-lg"
@@ -935,28 +894,29 @@ const MemberDashboard = ({
       <Card>
         <CardContent className="p-6">
           <div className="space-y-4">
-            {notifications.map((notification) => (
+            {notifications.map(notification => (
               <div
                 key={notification.id}
-                className={`p-4 rounded-lg ${notification.read ? "bg-white border" : "bg-blue-50 border-blue-100 border"}`}
+                className={`p-4 rounded-lg ${
+                  notification.read ? 'bg-white border' : 'bg-blue-50 border-blue-100 border'
+                }`}
               >
                 <div className="flex items-start gap-4">
                   <div
-                    className={`p-2 rounded-full ${notification.read ? "bg-gray-100" : "bg-blue-100"}`}
+                    className={`p-2 rounded-full ${
+                      notification.read ? 'bg-gray-100' : 'bg-blue-100'
+                    }`}
                   >
                     <Bell
-                      className={`h-5 w-5 ${notification.read ? "text-gray-500" : "text-blue-500"}`}
+                      className={`h-5 w-5 ${notification.read ? 'text-gray-500' : 'text-blue-500'}`}
                     />
                   </div>
                   <div className="flex-1">
                     <h4 className="font-medium">{notification.title}</h4>
-                    <p className="mt-1 text-gray-500 text-sm">
-                      {notification.date}
-                    </p>
+                    <p className="mt-1 text-gray-500 text-sm">{notification.date}</p>
                     <p className="mt-2 text-sm">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua.
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                      incididunt ut labore et dolore magna aliqua.
                     </p>
                     {!notification.read && (
                       <button className="mt-2 text-blue-600 text-sm hover:underline">
@@ -992,39 +952,37 @@ const MemberDashboard = ({
                 {[
                   {
                     id: 1,
-                    sender: "ZIP Admin",
-                    preview: "Your membership renewal...",
-                    time: "10:30 AM",
+                    sender: 'ZIP Admin',
+                    preview: 'Your membership renewal...',
+                    time: '10:30 AM',
                     unread: true,
                   },
                   {
                     id: 2,
-                    sender: "Events Committee",
-                    preview: "Regarding the upcoming workshop...",
-                    time: "Yesterday",
+                    sender: 'Events Committee',
+                    preview: 'Regarding the upcoming workshop...',
+                    time: 'Yesterday',
                     unread: false,
                   },
                   {
                     id: 3,
-                    sender: "Membership Officer",
-                    preview: "Your documents have been...",
-                    time: "Aug 15",
+                    sender: 'Membership Officer',
+                    preview: 'Your documents have been...',
+                    time: 'Aug 15',
                     unread: false,
                   },
-                ].map((message) => (
+                ].map(message => (
                   <div
                     key={message.id}
-                    className={`p-4 border-b cursor-pointer hover:bg-gray-50 ${message.unread ? "bg-blue-50" : ""}`}
+                    className={`p-4 border-b cursor-pointer hover:bg-gray-50 ${
+                      message.unread ? 'bg-blue-50' : ''
+                    }`}
                   >
                     <div className="flex justify-between items-start">
                       <h4 className="font-medium">{message.sender}</h4>
-                      <span className="text-gray-500 text-xs">
-                        {message.time}
-                      </span>
+                      <span className="text-gray-500 text-xs">{message.time}</span>
                     </div>
-                    <p className="text-gray-600 text-sm truncate">
-                      {message.preview}
-                    </p>
+                    <p className="text-gray-600 text-sm truncate">{message.preview}</p>
                   </div>
                 ))}
               </div>
@@ -1040,35 +998,26 @@ const MemberDashboard = ({
                   <div className="flex justify-start">
                     <div className="bg-gray-100 p-3 rounded-lg max-w-[80%]">
                       <p className="text-sm">
-                        Hello John, this is a reminder that your membership will
-                        expire in 30 days. Please renew to maintain your active
-                        status.
+                        Hello John, this is a reminder that your membership will expire in 30 days.
+                        Please renew to maintain your active status.
                       </p>
-                      <span className="block mt-1 text-gray-500 text-xs">
-                        10:30 AM
-                      </span>
+                      <span className="block mt-1 text-gray-500 text-xs">10:30 AM</span>
                     </div>
                   </div>
                   <div className="flex justify-end">
                     <div className="bg-blue-100 p-3 rounded-lg max-w-[80%]">
                       <p className="text-sm">
-                        Thank you for the reminder. I'll process the renewal
-                        this week.
+                        Thank you for the reminder. I'll process the renewal this week.
                       </p>
-                      <span className="block mt-1 text-gray-500 text-xs">
-                        10:32 AM
-                      </span>
+                      <span className="block mt-1 text-gray-500 text-xs">10:32 AM</span>
                     </div>
                   </div>
                   <div className="flex justify-start">
                     <div className="bg-gray-100 p-3 rounded-lg max-w-[80%]">
                       <p className="text-sm">
-                        Great! Let me know if you need any assistance with the
-                        payment process.
+                        Great! Let me know if you need any assistance with the payment process.
                       </p>
-                      <span className="block mt-1 text-gray-500 text-xs">
-                        10:35 AM
-                      </span>
+                      <span className="block mt-1 text-gray-500 text-xs">10:35 AM</span>
                     </div>
                   </div>
                 </div>
@@ -1098,9 +1047,7 @@ const MemberDashboard = ({
       <Tabs defaultValue="account">
         <TabsList className="mb-6">
           <TabsTrigger value="account">Account Settings</TabsTrigger>
-          <TabsTrigger value="notifications">
-            Notification Preferences
-          </TabsTrigger>
+          <TabsTrigger value="notifications">Notification Preferences</TabsTrigger>
           <TabsTrigger value="privacy">Privacy & Security</TabsTrigger>
         </TabsList>
         <TabsContent value="account">
@@ -1149,40 +1096,25 @@ const MemberDashboard = ({
         <TabsContent value="notifications">
           <Card>
             <CardContent className="p-6">
-              <h3 className="mb-4 font-medium text-xl">
-                Notification Preferences
-              </h3>
+              <h3 className="mb-4 font-medium text-xl">Notification Preferences</h3>
               <div className="space-y-4">
                 <div className="flex justify-between items-center p-3 border rounded-md">
                   <div>
                     <h4 className="font-medium">Email Notifications</h4>
-                    <p className="text-gray-500 text-sm">
-                      Receive notifications via email
-                    </p>
+                    <p className="text-gray-500 text-sm">Receive notifications via email</p>
                   </div>
                   <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="email-notifications"
-                      className="mr-2"
-                      checked
-                    />
+                    <input type="checkbox" id="email-notifications" className="mr-2" checked />
                     <label htmlFor="email-notifications">Enabled</label>
                   </div>
                 </div>
                 <div className="flex justify-between items-center p-3 border rounded-md">
                   <div>
                     <h4 className="font-medium">SMS Notifications</h4>
-                    <p className="text-gray-500 text-sm">
-                      Receive notifications via SMS
-                    </p>
+                    <p className="text-gray-500 text-sm">Receive notifications via SMS</p>
                   </div>
                   <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="sms-notifications"
-                      className="mr-2"
-                    />
+                    <input type="checkbox" id="sms-notifications" className="mr-2" />
                     <label htmlFor="sms-notifications">Disabled</label>
                   </div>
                 </div>
@@ -1194,12 +1126,7 @@ const MemberDashboard = ({
                     </p>
                   </div>
                   <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="payment-reminders"
-                      className="mr-2"
-                      checked
-                    />
+                    <input type="checkbox" id="payment-reminders" className="mr-2" checked />
                     <label htmlFor="payment-reminders">Enabled</label>
                   </div>
                 </div>
@@ -1211,12 +1138,7 @@ const MemberDashboard = ({
                     </p>
                   </div>
                   <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="event-notifications"
-                      className="mr-2"
-                      checked
-                    />
+                    <input type="checkbox" id="event-notifications" className="mr-2" checked />
                     <label htmlFor="event-notifications">Enabled</label>
                   </div>
                 </div>
@@ -1264,17 +1186,11 @@ const MemberDashboard = ({
                       <div>
                         <h5 className="font-medium">Public Profile</h5>
                         <p className="text-gray-500 text-sm">
-                          Allow your profile to be visible in the public
-                          directory
+                          Allow your profile to be visible in the public directory
                         </p>
                       </div>
                       <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="public-profile"
-                          className="mr-2"
-                          checked
-                        />
+                        <input type="checkbox" id="public-profile" className="mr-2" checked />
                         <label htmlFor="public-profile">Enabled</label>
                       </div>
                     </div>
@@ -1286,11 +1202,7 @@ const MemberDashboard = ({
                         </p>
                       </div>
                       <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="contact-info"
-                          className="mr-2"
-                        />
+                        <input type="checkbox" id="contact-info" className="mr-2" />
                         <label htmlFor="contact-info">Disabled</label>
                       </div>
                     </div>
@@ -1310,13 +1222,11 @@ const MemberDashboard = ({
   // Render the appropriate content based on the current page
   const renderContent = () => {
     switch (currentPage) {
-      case "dashboard":
+      case 'dashboard':
         return (
           <DashboardOverview
             memberName={userName}
-            membershipStatus={
-              membershipStatus as "Active" | "Pending" | "Expired"
-            }
+            membershipStatus={membershipStatus as 'Active' | 'Pending' | 'Expired'}
             membershipType={membershipType}
             membershipExpiry={membershipExpiry}
             notifications={notifications}
@@ -1324,19 +1234,19 @@ const MemberDashboard = ({
             paymentHistory={paymentHistory}
           />
         );
-      case "profile":
+      case 'profile':
         return <ProfileSection />;
-      case "payments":
+      case 'payments':
         return <PaymentsSection />;
-      case "documents":
+      case 'documents':
         return <DocumentsSection />;
-      case "events":
+      case 'events':
         return <EventsSection />;
-      case "notifications":
+      case 'notifications':
         return <NotificationsSection />;
-      case "messages":
+      case 'messages':
         return <MessagesSection />;
-      case "settings":
+      case 'settings':
         return <SettingsSection />;
       default:
         return <DashboardOverview />;

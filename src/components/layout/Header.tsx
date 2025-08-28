@@ -40,7 +40,7 @@ const Header = () => {
     <header className="top-0 z-50 sticky bg-gradient-to-r from-blue-300 to-blue-800 shadow-lg border-b border-blue-900 w-full">
       <div className="flex justify-between items-center mx-auto px-4 h-20 container">
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-2">
+        <Link to="/" className="flex items-center space-x-2 -ml-[4%]">
           <img src="/logo.png" alt="ZIP Logo" className="rounded-full size-16" />
           <span className="font-bold text-white text-xl">Zambia Institute of Planners</span>
         </Link>
@@ -62,7 +62,7 @@ const Header = () => {
         </nav>
 
         {/* Auth Buttons */}
-        <div className="hidden md:flex items-center space-x-4">
+        <div className="hidden md:flex items-center space-x-4 -mr-[4%]">
           <Button
             variant="outline"
             className="hover:bg-primary border-primary text-primary hover:text-white"

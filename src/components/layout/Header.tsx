@@ -4,6 +4,8 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Menu, X } from 'lucide-react';
+import LoginForm from '../auth/LoginForm';
+import RegistrationForm from '../auth/RegistrationForm';
 
 // Define interface for AuthModal props to ensure type safety
 interface AuthModalProps {
@@ -13,19 +15,22 @@ interface AuthModalProps {
 
 // Create a placeholder AuthModal component until the real one is implemented
 const AuthModal: React.FC<AuthModalProps> = ({ activeTab = 'login', onClose = () => {} }) => {
-  return (
-    <div className="bg-white p-6 rounded-lg">
-      <h2 className="mb-4 font-bold text-xl">{activeTab === 'login' ? 'Login' : 'Register'}</h2>
-      <div className="flex justify-end">
-        <Button onClick={onClose}>Close</Button>
+  if (activeTab === 'login') {
+    return (
+      <LoginForm />
+    );
+  }
+  if (activeTab === 'register') {
+    return (
+      <div className='h-[80svh] overflow-auto'>
+        <RegistrationForm />
       </div>
-    </div>
-  );
-};
-
+    );
+  }
+}
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(null);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -61,22 +66,22 @@ const Header = () => {
           <Button
             variant="outline"
             className="hover:bg-primary border-primary text-primary hover:text-white"
-            onClick={() => setIsAuthModalOpen(true)}
+            onClick={() => setIsAuthModalOpen("login")}
           >
             Login
           </Button>
           <Button
             className="bg-primary hover:bg-primary/90 text-white"
-            onClick={() => setIsAuthModalOpen(true)}
+            onClick={() => setIsAuthModalOpen("register")}
           >
             Register
           </Button>
         </div>
 
         {/* Auth Modal */}
-        <Dialog open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen}>
+        <Dialog open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen} >
           <DialogContent>
-            <AuthModal activeTab="login" onClose={() => setIsAuthModalOpen(false)} />
+            <AuthModal activeTab={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
           </DialogContent>
         </Dialog>
 

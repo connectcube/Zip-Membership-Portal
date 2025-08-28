@@ -13,19 +13,19 @@ interface HeroSectionProps {
 }
 
 const HeroSection = ({
-  title = "Welcome to Zambia Institute of Planners",
+  title = "Welcome to Zambia Institute of Planners- Membership Portal",
   subtitle = "A comprehensive membership portal for professional planners in Zambia. Register, manage your profile, and stay updated with the latest industry news and events.",
   ctaText = "Register Now",
   secondaryCtaText = "Member Login",
   onCtaClick = () => {},
   onSecondaryCtaClick = () => {},
-  backgroundImage = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80",
+  backgroundImage = "/heroImg.jpg",
 }: HeroSectionProps) => {
   return (
-    <div className="relative w-full h-[600px] bg-gray-900 text-white overflow-hidden">
+    <div className="relative bg-gray-900 w-full h-[600px] overflow-hidden text-white">
       {/* Background Image with Overlay */}
       <div
-        className="absolute inset-0 z-0"
+        className="z-0 absolute inset-0 bg-start bg-cover"
         style={{
           backgroundImage: `url(${backgroundImage})`,
           backgroundSize: "cover",
@@ -36,38 +36,38 @@ const HeroSection = ({
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center items-start max-w-4xl">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+      <div className="z-10 relative flex flex-col justify-center items-start mx-auto px-4 max-w-4xl h-full container">
+        <h1 className="mb-6 font-bold text-4xl md:text-5xl lg:text-6xl text-pretty leading-tight">
           {title}
         </h1>
 
-        <p className="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl">
+        <p className="mb-10 max-w-2xl text-gray-200 text-lg md:text-xl">
           {subtitle}
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-5">
+        <div className="flex sm:flex-row flex-col gap-5">
           <Button
             size="lg"
             onClick={onCtaClick}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-4 rounded-md transition-all duration-300 transform hover:scale-105"
+            className="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-md font-semibold text-white hover:scale-105 transition-all duration-300 transform"
           >
             {ctaText}
-            <ArrowRight className="ml-2 h-5 w-5" />
+            <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
 
           <Button
             variant="outline"
             size="lg"
             onClick={onSecondaryCtaClick}
-            className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-gray-900 font-semibold transition-all duration-300 shadow-lg"
+            className="bg-transparent hover:bg-white shadow-lg border-2 border-white font-semibold text-white hover:text-gray-900 transition-all duration-300"
           >
             {secondaryCtaText}
           </Button>
         </div>
 
-        <div className="mt-16 flex items-center">
-          <div className="h-1 w-20 bg-emerald-500 mr-4"></div>
-          <p className="text-sm text-gray-300">
+        <div className="flex items-center mt-16">
+          <div className="bg-blue-500 mr-4 w-20 h-1"></div>
+          <p className="text-gray-300 text-sm">
             Empowering Planning Professionals Since 1988
           </p>
         </div>

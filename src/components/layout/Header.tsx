@@ -32,32 +32,26 @@ const Header = () => {
   };
 
   return (
-    <header className="top-0 z-50 sticky bg-white shadow-sm border-gray-200 border-b w-full">
+    <header className="top-0 z-50 sticky bg-gradient-to-r from-blue-300 to-blue-800 shadow-lg border-b border-blue-900 w-full">
       <div className="flex justify-between items-center mx-auto px-4 h-20 container">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
-          <img src="/src/assets/logo.png" alt="ZIP Logo" className="rounded-full size-16" />
-          <span className="font-bold text-primary text-xl">Zambia Institute of Planners</span>
+          <img src="/logo.png" alt="ZIP Logo" className="rounded-full size-16" />
+          <span className="font-bold text-white text-xl">Zambia Institute of Planners</span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-6">
-          <Link to="/" className="font-medium hover:text-primary text-sm">
+        <nav className="hidden md:flex items-center space-x-6 text-white">
+          <Link to="/" className="font-medium hover:text-primary text-lg">
             Home
           </Link>
-          <Link to="/about" className="font-medium hover:text-primary text-sm">
+          <Link to="https://zambiainstituteofplanners.org.zm/about" className="font-medium hover:text-primary text-lg">
             About
           </Link>
-          <Link to="/membership" className="font-medium hover:text-primary text-sm">
+          <Link to="https://zambiainstituteofplanners.org.zm/membership" className="font-medium hover:text-primary text-lg">
             Membership
           </Link>
-          <Link to="/events" className="font-medium hover:text-primary text-sm">
-            Events
-          </Link>
-          <Link to="/resources" className="font-medium hover:text-primary text-sm">
-            Resources
-          </Link>
-          <Link to="/contact" className="font-medium hover:text-primary text-sm">
+          <Link to="https://zambiainstituteofplanners.org.zm/contact" className="font-medium hover:text-primary text-lg">
             Contact
           </Link>
         </nav>

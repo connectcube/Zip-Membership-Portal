@@ -1,10 +1,11 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 interface UserProfile {
+  isAdmin?: boolean;
   uid: string;
   email: string;
   rememberMe?: boolean;
-  profile: Record<string, any>; // Replace with a typed interface if you prefer
+  profile: Record<string, any>;
 }
 
 interface UserStore {
@@ -13,8 +14,8 @@ interface UserStore {
   clearUser: () => void;
 }
 
-export const useUserStore = create<UserStore>((set) => ({
+export const useUserStore = create<UserStore>(set => ({
   user: null,
-  setUser: (user) => set({ user }),
+  setUser: user => set({ user }),
   clearUser: () => set({ user: null }),
 }));

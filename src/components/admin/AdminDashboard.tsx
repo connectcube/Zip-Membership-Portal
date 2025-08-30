@@ -211,7 +211,101 @@ const MainDashboard = () => {
                 <CardTitle>Member Management</CardTitle>
                 <CardDescription>View and manage all registered members</CardDescription>
               </CardHeader>
-              <CardContent>{/* Member management content */}</CardContent>
+
+              <CardContent>
+                {allUser.length > 0 ? (
+                  <div className="space-y-6">
+                    {allUser.map(user => (
+                      <div
+                        key={user.id}
+                        className="gap-6 grid grid-cols-1 md:grid-cols-2 bg-white shadow-sm p-4 border rounded-lg"
+                      >
+                        <div>
+                          <h2 className="font-semibold text-xl">
+                            {user.firstName} {user.middleName} {user.lastName}
+                          </h2>
+                          <p className="text-gray-500 text-sm">
+                            Membership #: {user.membershipNumber}
+                          </p>
+                          <p className="mt-2 text-gray-700">📍 {user.address}</p>
+                          <p className="text-gray-700">📞 {user.phone}</p>
+                          <p className="text-gray-700">📧 {user.email}</p>
+                          <p className="text-gray-700">🗓️ Joined: {user.dateJoined}</p>
+                        </div>
+
+                        <div>
+                          <h3 className="font-medium text-gray-800">Membership Info</h3>
+                          <p className="text-gray-600 text-sm">
+                            Type: {user.membershipInfo.membershipType}
+                          </p>
+                          <p className="text-gray-600 text-sm">
+                            Specialization: {user.membershipInfo.specialization}
+                          </p>
+                          <p className="mt-2 text-gray-700 text-sm italic">
+                            “{user.membershipInfo.bio}”
+                          </p>
+
+                          <h3 className="mt-4 font-medium text-gray-800">Professional Info</h3>
+                          <ul className="space-y-1 text-gray-600 text-sm">
+                            <li>🏢 Employer: {user.professionalInfo.currentEmployer}</li>
+                            <li>🎓 Institution: {user.professionalInfo.institution}</li>
+                            <li>📅 Graduation Year: {user.professionalInfo.graduationYear}</li>
+                            <li>🧠 Specialization: {user.professionalInfo.specialization}</li>
+                            <li>🧪 Experience: {user.professionalInfo.experience} years</li>
+                          </ul>
+                        </div>
+
+                        <div className="col-span-2">
+                          <h3 className="mb-2 font-medium text-gray-800">Documents</h3>
+                          <div className="gap-4 grid grid-cols-2 text-blue-600 text-sm">
+                            <a
+                              href={user.documents.cvURL}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              📄 CV
+                            </a>
+                            {user.documents.idCopyURL ? (
+                              <a
+                                href={user.documents.idCopyURL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                🪪 ID Copy
+                              </a>
+                            ) : (
+                              <span className="text-gray-400">🪪 ID Copy: Not uploaded</span>
+                            )}
+                            <a
+                              href={user.documents.qualificationCertificateURL}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              🎓 Qualification Certificate
+                            </a>
+                            <a
+                              href={user.documents.professionalReferencesURL}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              📁 Professional References
+                            </a>
+                            <a
+                              href={user.documents.passportPhotoURL}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              🖼️ Passport Photo
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <>No data available</>
+                )}
+              </CardContent>
             </Card>
           </TabsContent>
 

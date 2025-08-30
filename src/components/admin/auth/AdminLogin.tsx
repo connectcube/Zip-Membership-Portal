@@ -55,7 +55,6 @@ const AdminLogin = ({ handleStateUpdate, setActiveTab }) => {
       }
 
       const userData = userSnap.data();
-      // call parent handler
       await handleStateUpdate(userData);
     } catch (error) {
       console.error('Login failed:', error);

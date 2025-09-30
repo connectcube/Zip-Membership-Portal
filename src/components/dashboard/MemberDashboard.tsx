@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Sidebar from './Sidebar';
 import DashboardOverview from './DashboardOverview';
 import { Card, CardContent } from '@/components/ui/card';
@@ -7,8 +7,9 @@ import { User, CreditCard, FileText, Calendar, Bell, MessageSquare, Settings } f
 import { useUserStore } from '@/lib/zustand';
 import { auth, fireDataBase, fireStorage } from '@/lib/firebase';
 import { useNavigate } from 'react-router';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 interface MemberDashboardProps {
   userName?: string;
@@ -42,12 +43,51 @@ const MemberDashboard = ({
 }: MemberDashboardProps) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(activePage);
-  const { user, clearUser } = useUserStore();
+  const { user, clearUser, setUser } = useUserStore();
+
   const onLogout = async () => {
-    await auth.signOut();
-    navigate('/');
+    await signOut(auth);
     clearUser();
+    navigate('/');
   };
+
+  const fetchUserData = async uid => {
+    try {
+      const userRef = doc(fireDataBase, 'users', uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        setUser({ ...user, profile: userSnap.data() });
+      } else {
+        console.log('No such user!');
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
+  useEffect(() => {
+    // 🔹 Subscribe to auth changes
+    const unsubscribe = onAuthStateChanged(auth, authUser => {
+      if (authUser) {
+        // User signed in or session restored → fetch profile
+        fetchUserData(authUser.uid);
+      } else {
+        // User signed out
+        clearUser();
+      }
+    });
+
+    // Clean up on unmount
+    return () => unsubscribe();
+  }, [setUser, clearUser]);
+
+  if (!user) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p className="text-gray-500">Loading user data...</p>
+      </div>
+    );
+  }
   // Generate personalized notifications based on user data
   const notifications = [];
 
@@ -93,7 +133,8 @@ const MemberDashboard = ({
           phone: profileData.phone,
           address: profileData.address,
           fullName: profileData.fullName,
-          photoURL: profileData.photoURL || null,
+          firstName: profileData.fullName.split(' ')[0] || '',
+          lastName: profileData.fullName.split(' ').slice(-1)[0] || '',
           professionalInfo: professionalInfo,
         });
         setIsEditing(false);
@@ -104,7 +145,6 @@ const MemberDashboard = ({
       }
     };
 
-    // 🔹 Handle profile photo upload
     const handlePhotoChange = async e => {
       const file = e.target.files[0];
       if (!file) return;
@@ -119,7 +159,6 @@ const MemberDashboard = ({
         snapshot => {
           // Optional: track progress
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log('Upload is ' + progress + '% done');
         },
         error => {
           console.error('Upload error:', error);
@@ -132,7 +171,7 @@ const MemberDashboard = ({
           // 🔹 Update Firestore immediately
           const userRef = doc(fireDataBase, 'users', user.uid);
           await updateDoc(userRef, { photoURL: downloadURL });
-
+          await saveProfileChanges();
           setUploading(false);
         }
       );

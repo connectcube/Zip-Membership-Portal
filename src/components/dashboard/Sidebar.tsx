@@ -139,11 +139,13 @@ const Sidebar = ({
         {!collapsed && (
           <div className="text-center">
             <h3 className="font-medium">
-              {user.profile.firstName +
-                ' ' +
-                user.profile.middleName +
-                ' ' +
-                user.profile.lastName || userName}
+              {(user &&
+                user.profile.firstName +
+                  ' ' +
+                  user.profile.middleName +
+                  ' ' +
+                  user.profile.lastName) ||
+                userName}
             </h3>
             <p className="text-slate-300 text-xs">
               {getFullMembershipType(user.profile.membershipInfo.membershipType)}

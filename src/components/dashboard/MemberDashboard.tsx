@@ -83,11 +83,59 @@ const MemberDashboard = ({
 
   if (!user) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p className="text-gray-500">Loading user data...</p>
+      <div className="flex min-h-screen">
+        {/* Sidebar Skeleton */}
+        <div className="flex flex-col bg-gray-900 p-6 w-64">
+          <div className="flex flex-col items-center mb-8">
+            <div className="bg-gray-700 rounded-full w-20 h-20 animate-pulse"></div>
+            <div className="bg-gray-700 mt-4 rounded-md w-24 h-4 animate-pulse"></div>
+            <div className="bg-gray-700 mt-2 rounded-md w-16 h-3 animate-pulse"></div>
+          </div>
+          <div className="space-y-4">
+            {Array(7)
+              .fill(0)
+              .map((_, i) => (
+                <div key={i} className="bg-gray-700 rounded-md w-full h-10 animate-pulse"></div>
+              ))}
+          </div>
+        </div>
+
+        {/* Main Content Skeleton */}
+        <div className="flex-1 bg-gray-50 p-8">
+          {/* Header */}
+          <div className="mb-6">
+            <div className="bg-gray-300 rounded-md w-64 h-6 animate-pulse"></div>
+            <div className="bg-gray-200 mt-2 rounded-md w-96 h-4 animate-pulse"></div>
+          </div>
+
+          {/* Top Stats Row */}
+          <div className="gap-6 grid grid-cols-1 md:grid-cols-3 mb-6">
+            {Array(3)
+              .fill(0)
+              .map((_, i) => (
+                <div key={i} className="space-y-4 bg-white shadow p-6 rounded-lg">
+                  <div className="bg-gray-300 rounded-md w-32 h-4 animate-pulse"></div>
+                  <div className="bg-gray-200 rounded-md w-16 h-6 animate-pulse"></div>
+                </div>
+              ))}
+          </div>
+
+          {/* Bottom Section */}
+          <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
+            <div className="space-y-4 bg-white shadow p-6 rounded-lg">
+              <div className="bg-gray-300 rounded-md w-40 h-4 animate-pulse"></div>
+              <div className="bg-gray-200 rounded-md w-full h-20 animate-pulse"></div>
+            </div>
+            <div className="space-y-4 bg-white shadow p-6 rounded-lg">
+              <div className="bg-gray-300 rounded-md w-40 h-4 animate-pulse"></div>
+              <div className="bg-gray-200 rounded-md w-full h-20 animate-pulse"></div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
+
   // Generate personalized notifications based on user data
   const notifications = [];
 

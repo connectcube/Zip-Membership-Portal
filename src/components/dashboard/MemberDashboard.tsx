@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Sidebar from './Sidebar';
 import DashboardOverview from './DashboardOverview';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, CreditCard, FileText, Calendar, Bell, MessageSquare, Settings } from 'lucide-react';
 import { useUserStore } from '@/lib/zustand';
-import { auth, fireDataBase } from '@/lib/firebase';
+import { auth, fireDataBase, fireStorage } from '@/lib/firebase';
 import { useNavigate } from 'react-router';
 import { doc, updateDoc } from 'firebase/firestore';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 
 interface MemberDashboardProps {
   userName?: string;
@@ -61,12 +62,16 @@ const MemberDashboard = ({
   const ProfileSection = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [uploading, setUploading] = useState(false);
+
+    const fileInputRef = useRef(null);
 
     const [profileData, setProfileData] = useState({
       fullName: `${user.profile.firstName} ${user.profile.middleName} ${user.profile.lastName}`,
       email: user.profile.email,
       phone: user.profile.phone,
       address: `${user.profile.address}, ${user.profile.town}, ${user.profile.province}, Zambia`,
+      photoURL: user.profile.photoURL || null,
     });
 
     const [professionalInfo, setProfessionalInfo] = useState({
@@ -88,6 +93,7 @@ const MemberDashboard = ({
           phone: profileData.phone,
           address: profileData.address,
           fullName: profileData.fullName,
+          photoURL: profileData.photoURL || null,
           professionalInfo: professionalInfo,
         });
         setIsEditing(false);
@@ -98,6 +104,39 @@ const MemberDashboard = ({
       }
     };
 
+    // 🔹 Handle profile photo upload
+    const handlePhotoChange = async e => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const storageRef = ref(fireStorage, `profilePhotos/${user.uid}/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      setUploading(true);
+
+      uploadTask.on(
+        'state_changed',
+        snapshot => {
+          // Optional: track progress
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log('Upload is ' + progress + '% done');
+        },
+        error => {
+          console.error('Upload error:', error);
+          setUploading(false);
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          setProfileData(prev => ({ ...prev, photoURL: downloadURL }));
+
+          // 🔹 Update Firestore immediately
+          const userRef = doc(fireDataBase, 'users', user.uid);
+          await updateDoc(userRef, { photoURL: downloadURL });
+
+          setUploading(false);
+        }
+      );
+    };
     return (
       <div className="bg-gray-50 p-6 min-h-screen">
         <h1 className="mb-6 font-bold text-gray-900 text-3xl">My Profile</h1>
@@ -108,10 +147,31 @@ const MemberDashboard = ({
               <h2 className="mb-4 font-semibold text-xl">Basic Information</h2>
               <div className="flex md:flex-row flex-col gap-8">
                 <div className="flex flex-col items-center">
-                  <div className="flex justify-center items-center bg-slate-200 mb-4 rounded-full w-32 h-32">
-                    <User size={64} className="text-slate-400" />
+                  <div className="flex justify-center items-center bg-slate-200 mb-4 rounded-full w-32 h-32 overflow-hidden">
+                    {profileData.photoURL ? (
+                      <img
+                        src={profileData.photoURL}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <User size={64} className="text-slate-400" />
+                    )}
                   </div>
-                  <button className="text-blue-600 text-sm hover:underline">Change Photo</button>
+                  <button
+                    className="text-blue-600 text-sm hover:underline"
+                    onClick={() => fileInputRef.current.click()}
+                    disabled={uploading}
+                  >
+                    {uploading ? 'Uploading...' : 'Change Photo'}
+                  </button>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    ref={fileInputRef}
+                    onChange={handlePhotoChange}
+                  />
                 </div>
 
                 <div className="flex-1 space-y-6">

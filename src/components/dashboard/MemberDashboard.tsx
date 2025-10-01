@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface MemberDashboardProps {
   userName?: string;
@@ -146,7 +147,63 @@ const MemberDashboard = ({
   const paymentHistory = [];
 
   const messages = [];
-  // Placeholder components for different sections
+
+  // Reusable components
+  const EditableField = ({ label, value, isEditing, onChange, type = 'text' }) => (
+    <div>
+      <label className="block mb-1 font-medium text-gray-700 text-sm">{label}</label>
+      {isEditing ? (
+        <input
+          type={type}
+          className="px-1 py-1 border-gray-300 border-b focus:border-blue-500 focus:outline-none w-full"
+          value={value}
+          onChange={e => onChange(e.target.value)}
+        />
+      ) : (
+        <p className="text-gray-900">{value || '—'}</p>
+      )}
+    </div>
+  );
+
+  const EditableTextarea = ({ label, value, isEditing, onChange }) => (
+    <div>
+      <label className="block mb-1 font-medium text-gray-700 text-sm">{label}</label>
+      {isEditing ? (
+        <textarea
+          rows={3}
+          className="px-1 py-1 border-gray-300 border-b focus:border-blue-500 focus:outline-none w-full"
+          value={value}
+          onChange={e => onChange(e.target.value)}
+        />
+      ) : (
+        <p className="text-gray-900 whitespace-pre-line">{value || '—'}</p>
+      )}
+    </div>
+  );
+
+  const EditableSelect = ({ label, value, isEditing, onChange, options }) => (
+    <div>
+      <label className="block mb-1 font-medium text-gray-700 text-sm">{label}</label>
+      {isEditing ? (
+        <Select value={value} onValueChange={onChange}>
+          <SelectTrigger className="border-gray-300 border-b focus:border-blue-500 w-full">
+            <SelectValue placeholder="Select..." />
+          </SelectTrigger>
+          <SelectContent>
+            {options.map(opt => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      ) : (
+        <p className="text-gray-900 capitalize">{value || '—'}</p>
+      )}
+    </div>
+  );
+
+  // 🔹 Main Component
   const ProfileSection = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -159,6 +216,9 @@ const MemberDashboard = ({
       email: user.profile.email,
       phone: user.profile.phone,
       address: `${user.profile.address}, ${user.profile.town}, ${user.profile.province}, Zambia`,
+      membershipType: user.profile.membershipType,
+      membershipStatus: user.profile.membershipStatus,
+      membershipExpiry: user.profile.membershipExpiry,
       photoURL: user.profile.photoURL || null,
     });
 
@@ -181,6 +241,7 @@ const MemberDashboard = ({
           phone: profileData.phone,
           address: profileData.address,
           fullName: profileData.fullName,
+          membershipType: profileData.membershipType,
           firstName: profileData.fullName.split(' ')[0] || '',
           lastName: profileData.fullName.split(' ').slice(-1)[0] || '',
           professionalInfo: professionalInfo,
@@ -204,10 +265,7 @@ const MemberDashboard = ({
 
       uploadTask.on(
         'state_changed',
-        snapshot => {
-          // Optional: track progress
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        },
+        () => {},
         error => {
           console.error('Upload error:', error);
           setUploading(false);
@@ -216,7 +274,6 @@ const MemberDashboard = ({
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
           setProfileData(prev => ({ ...prev, photoURL: downloadURL }));
 
-          // 🔹 Update Firestore immediately
           const userRef = doc(fireDataBase, 'users', user.uid);
           await updateDoc(userRef, { photoURL: downloadURL });
           await saveProfileChanges();
@@ -224,15 +281,17 @@ const MemberDashboard = ({
         }
       );
     };
+
     return (
       <div className="bg-gray-50 p-6 min-h-screen">
         <h1 className="mb-6 font-bold text-gray-900 text-3xl">My Profile</h1>
         <div className="space-y-6">
-          {/* Basic Information Card */}
+          {/* Basic Information */}
           <Card>
             <CardContent className="p-6">
               <h2 className="mb-4 font-semibold text-xl">Basic Information</h2>
               <div className="flex md:flex-row flex-col gap-8">
+                {/* Profile Picture */}
                 <div className="flex flex-col items-center">
                   <div className="flex justify-center items-center bg-slate-200 mb-4 rounded-full w-32 h-32 overflow-hidden">
                     {profileData.photoURL ? (
@@ -261,91 +320,68 @@ const MemberDashboard = ({
                   />
                 </div>
 
+                {/* Info Fields */}
                 <div className="flex-1 space-y-6">
                   <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
-                    <div>
-                      <label className="block mb-1 font-medium text-gray-700 text-sm">
-                        Full Name
-                      </label>
-                      <input
-                        type="text"
-                        className="p-2 border rounded-md w-full"
-                        value={profileData.fullName}
-                        onChange={e => setProfileData({ ...profileData, fullName: e.target.value })}
-                        readOnly={!isEditing}
-                      />
-                    </div>
-                    <div>
-                      <label className="block mb-1 font-medium text-gray-700 text-sm">
-                        Membership Type
-                      </label>
-                      <input
-                        type="text"
-                        className="p-2 border rounded-md w-full"
-                        value={user.profile.membershipType || ''}
-                        readOnly
-                      />
-                    </div>
-                    <div>
-                      <label className="block mb-1 font-medium text-gray-700 text-sm">
-                        Email Address
-                      </label>
-                      <input
-                        type="email"
-                        className="p-2 border rounded-md w-full"
-                        value={profileData.email}
-                        onChange={e => setProfileData({ ...profileData, email: e.target.value })}
-                        readOnly={!isEditing}
-                      />
-                    </div>
-                    <div>
-                      <label className="block mb-1 font-medium text-gray-700 text-sm">
-                        Phone Number
-                      </label>
-                      <input
-                        type="tel"
-                        className="p-2 border rounded-md w-full"
-                        value={profileData.phone}
-                        onChange={e => setProfileData({ ...profileData, phone: e.target.value })}
-                        readOnly={!isEditing}
-                      />
-                    </div>
+                    <EditableField
+                      label="Full Name"
+                      value={profileData.fullName}
+                      isEditing={isEditing}
+                      onChange={val => setProfileData({ ...profileData, fullName: val })}
+                    />
+
+                    <EditableSelect
+                      label="Membership Type"
+                      value={profileData.membershipType}
+                      isEditing={isEditing}
+                      onChange={val => setProfileData({ ...profileData, membershipType: val })}
+                      options={[
+                        { value: 'spatial', label: 'Spatial Planning' },
+                        { value: 'socio-economic', label: 'Socio-economic Planning' },
+                        { value: 'environmental', label: 'Environmental Planning' },
+                      ]}
+                    />
+
+                    <EditableField
+                      label="Email Address"
+                      value={profileData.email}
+                      isEditing={isEditing}
+                      type="email"
+                      onChange={val => setProfileData({ ...profileData, email: val })}
+                    />
+
+                    <EditableField
+                      label="Phone Number"
+                      value={profileData.phone}
+                      isEditing={isEditing}
+                      type="tel"
+                      onChange={val => setProfileData({ ...profileData, phone: val })}
+                    />
+
+                    {/* Always readonly fields */}
                     <div>
                       <label className="block mb-1 font-medium text-gray-700 text-sm">
                         Planner ID
                       </label>
-                      <input
-                        type="text"
-                        className="p-2 border rounded-md w-full"
-                        value={user.profile.membershipNumber || ''}
-                        readOnly
-                      />
+                      <p className="text-gray-900">{user.profile.membershipNumber || '—'}</p>
                     </div>
+
                     <div>
                       <label className="block mb-1 font-medium text-gray-700 text-sm">
                         Registration Date
                       </label>
-                      <input
-                        type="text"
-                        className="p-2 border rounded-md w-full"
-                        value={user.profile.createdAt.toDate().toLocaleDateString() || ''}
-                        readOnly
-                      />
+                      <p className="text-gray-900">
+                        {user.profile.createdAt.toDate().toLocaleDateString() || '—'}
+                      </p>
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block mb-1 font-medium text-gray-700 text-sm">
-                      Professional Address
-                    </label>
-                    <textarea
-                      className="p-2 border rounded-md w-full"
-                      rows={3}
-                      value={profileData.address}
-                      onChange={e => setProfileData({ ...profileData, address: e.target.value })}
-                      readOnly={!isEditing}
-                    />
-                  </div>
+                  <EditableTextarea
+                    label="Professional Address"
+                    value={profileData.address}
+                    isEditing={isEditing}
+                    onChange={val => setProfileData({ ...profileData, address: val })}
+                  />
 
                   <div className="flex justify-end space-x-4">
                     {isEditing ? (
@@ -359,7 +395,7 @@ const MemberDashboard = ({
                         <button
                           className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors"
                           disabled={loading}
-                          onClick={() => saveProfileChanges()}
+                          onClick={saveProfileChanges}
                         >
                           {loading ? 'Saving...' : 'Save Changes'}
                         </button>
@@ -383,128 +419,67 @@ const MemberDashboard = ({
             </CardContent>
           </Card>
 
-          {/* Professional Info Card */}
+          {/* Professional Info */}
           <Card>
             <CardContent className="p-6">
               <h2 className="mb-4 font-semibold text-xl">Professional Information</h2>
               <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
-                <div>
-                  <label className="block mb-1 font-medium text-gray-700 text-sm">
-                    Qualification
-                  </label>
-                  <input
-                    type="text"
-                    className="p-2 border rounded-md w-full"
-                    value={professionalInfo.qualification}
-                    onChange={e =>
-                      setProfessionalInfo({
-                        ...professionalInfo,
-                        qualification: e.target.value,
-                      })
-                    }
-                    readOnly={!isEditing}
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1 font-medium text-gray-700 text-sm">
-                    Institution
-                  </label>
-                  <input
-                    type="text"
-                    className="p-2 border rounded-md w-full"
-                    value={professionalInfo.institution}
-                    onChange={e =>
-                      setProfessionalInfo({
-                        ...professionalInfo,
-                        institution: e.target.value,
-                      })
-                    }
-                    readOnly={!isEditing}
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1 font-medium text-gray-700 text-sm">
-                    Graduation Year
-                  </label>
-                  <input
-                    type="number"
-                    className="p-2 border rounded-md w-full"
-                    value={professionalInfo.graduationYear}
-                    onChange={e =>
-                      setProfessionalInfo({
-                        ...professionalInfo,
-                        graduationYear: e.target.value,
-                      })
-                    }
-                    readOnly={!isEditing}
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1 font-medium text-gray-700 text-sm">
-                    Specialization
-                  </label>
-                  <input
-                    type="text"
-                    className="p-2 border rounded-md w-full"
-                    value={professionalInfo.specialization}
-                    onChange={e =>
-                      setProfessionalInfo({
-                        ...professionalInfo,
-                        specialization: e.target.value,
-                      })
-                    }
-                    readOnly={!isEditing}
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1 font-medium text-gray-700 text-sm">Job Title</label>
-                  <input
-                    type="text"
-                    className="p-2 border rounded-md w-full"
-                    value={professionalInfo.jobTitle}
-                    onChange={e =>
-                      setProfessionalInfo({
-                        ...professionalInfo,
-                        jobTitle: e.target.value,
-                      })
-                    }
-                    readOnly={!isEditing}
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1 font-medium text-gray-700 text-sm">
-                    Current Employer
-                  </label>
-                  <input
-                    type="text"
-                    className="p-2 border rounded-md w-full"
-                    value={professionalInfo.currentEmployer}
-                    onChange={e =>
-                      setProfessionalInfo({
-                        ...professionalInfo,
-                        currentEmployer: e.target.value,
-                      })
-                    }
-                    readOnly={!isEditing}
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1 font-medium text-gray-700 text-sm">
-                    Experience (years)
-                  </label>
-                  <input
-                    type="number"
-                    className="p-2 border rounded-md w-full"
-                    value={professionalInfo.experience}
-                    onChange={e =>
-                      setProfessionalInfo({
-                        ...professionalInfo,
-                        experience: e.target.value,
-                      })
-                    }
-                    readOnly={!isEditing}
-                  />
-                </div>
+                <EditableField
+                  label="Qualification"
+                  value={professionalInfo.qualification}
+                  isEditing={isEditing}
+                  onChange={val => setProfessionalInfo({ ...professionalInfo, qualification: val })}
+                />
+
+                <EditableField
+                  label="Institution"
+                  value={professionalInfo.institution}
+                  isEditing={isEditing}
+                  onChange={val => setProfessionalInfo({ ...professionalInfo, institution: val })}
+                />
+
+                <EditableField
+                  label="Graduation Year"
+                  value={professionalInfo.graduationYear}
+                  isEditing={isEditing}
+                  type="number"
+                  onChange={val =>
+                    setProfessionalInfo({ ...professionalInfo, graduationYear: val })
+                  }
+                />
+
+                <EditableField
+                  label="Specialization"
+                  value={professionalInfo.specialization}
+                  isEditing={isEditing}
+                  onChange={val =>
+                    setProfessionalInfo({ ...professionalInfo, specialization: val })
+                  }
+                />
+
+                <EditableField
+                  label="Job Title"
+                  value={professionalInfo.jobTitle}
+                  isEditing={isEditing}
+                  onChange={val => setProfessionalInfo({ ...professionalInfo, jobTitle: val })}
+                />
+
+                <EditableField
+                  label="Current Employer"
+                  value={professionalInfo.currentEmployer}
+                  isEditing={isEditing}
+                  onChange={val =>
+                    setProfessionalInfo({ ...professionalInfo, currentEmployer: val })
+                  }
+                />
+
+                <EditableField
+                  label="Experience (years)"
+                  value={professionalInfo.experience}
+                  isEditing={isEditing}
+                  type="number"
+                  onChange={val => setProfessionalInfo({ ...professionalInfo, experience: val })}
+                />
               </div>
 
               <div className="flex justify-end space-x-4 mt-6">

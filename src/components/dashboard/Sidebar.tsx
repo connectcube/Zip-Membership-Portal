@@ -133,8 +133,13 @@ const Sidebar = ({
           collapsed ? 'pb-2' : 'pb-4'
         }`}
       >
-        <div className="flex justify-center items-center bg-slate-600 mb-2 rounded-full w-16 h-16">
-          <User size={32} />
+        <div
+          style={{ backgroundImage: `url(${user.profile.photoURL})`, backgroundSize: 'cover' }}
+          className={`flex justify-center ${
+            !user.profile.photoURL && 'bg-gray-500'
+          } items-center mb-2 rounded-full w-16 h-16`}
+        >
+          {!user.profile.photoURL && <User />}
         </div>
         {!collapsed && (
           <div className="text-center">

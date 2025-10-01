@@ -67,24 +67,38 @@ const EditableSelect = ({ label, value, isEditing, onChange, options }) => (
   </div>
 );
 const ProfileSection = () => {
-  const { user } = useUserStore();
+  const { user, setUser } = useUserStore();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
 
   const fileInputRef = useRef(null);
 
-  const [profileData, setProfileData] = useState({
+  const [profileData, setProfileDatas] = useState({
     fullName: `${user.profile.firstName} ${user.profile.middleName} ${user.profile.lastName}`,
     email: user.profile.email,
     phone: user.profile.phone,
     address: `${user.profile.address}, ${user.profile.town}, ${user.profile.province}, Zambia`,
-    membershipType: user.profile.membershipType,
-    membershipStatus: user.profile.membershipStatus,
-    membershipExpiry: user.profile.membershipExpiry,
+    membershipInfo: {
+      expiryDate: user.profile.membershipInfo.expiryDate || '',
+      membershipType: user.profile.membershipInfo.membershipType,
+      membershipStatus: user.profile.membershipInfo.membershipStatus,
+    },
     photoURL: user.profile.photoURL || null,
   });
-
+  const setProfileData = value => {
+    setProfileDatas({
+      ...profileData,
+      ...value,
+    });
+    setUser({
+      ...user,
+      profile: {
+        ...user.profile,
+        ...value,
+      },
+    });
+  };
   const [professionalInfo, setProfessionalInfo] = useState({
     qualification: user.profile.professionalInfo?.qualification || '',
     institution: user.profile.professionalInfo?.institution || '',
@@ -104,7 +118,7 @@ const ProfileSection = () => {
         phone: profileData.phone,
         address: profileData.address,
         fullName: profileData.fullName,
-        membershipType: profileData.membershipType,
+        membershipInfo: profileData.membershipInfo,
         firstName: profileData.fullName.split(' ')[0] || '',
         lastName: profileData.fullName.split(' ').slice(-1)[0] || '',
         professionalInfo: professionalInfo,
@@ -195,13 +209,26 @@ const ProfileSection = () => {
 
                   <EditableSelect
                     label="Membership Type"
-                    value={profileData.membershipType}
+                    value={profileData.membershipInfo.membershipType}
                     isEditing={isEditing}
-                    onChange={val => setProfileData({ ...profileData, membershipType: val })}
+                    onChange={val =>
+                      setProfileData({
+                        ...profileData,
+                        membershipInfo: { ...user.profile.membershipInfo, membershipType: val },
+                      })
+                    }
                     options={[
-                      { value: 'spatial', label: 'Spatial Planning' },
-                      { value: 'socio-economic', label: 'Socio-economic Planning' },
-                      { value: 'environmental', label: 'Environmental Planning' },
+                      { value: 'technician', label: 'Technician' },
+                      { value: 'associate', label: 'Associate' },
+                      { value: 'full', label: 'Full Member' },
+                      { value: 'fellow', label: 'Fellow' },
+                      { value: 'student', label: 'Student Chapter' },
+                      { value: 'postgrad', label: 'Post Grad.' },
+                      { value: 'planning-firms', label: 'Planning Firms' },
+                      {
+                        value: 'educational-ngo',
+                        label: 'Educational/Research Institutions or NGO',
+                      },
                     ]}
                   />
 

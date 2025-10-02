@@ -205,6 +205,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
         createdAt: Timestamp.now(),
         authRef: userRef, // Optional: for relational queries
       };
+      setIsLoading(false);
       setActiveTab('login');
       // 4. Save to Firestore
       await setDoc(userRef, userData);
@@ -213,7 +214,6 @@ const AuthModal: React.FC<AuthModalProps> = ({
         { lastUserIndex: increment(1) },
         { merge: true }
       );
-      setIsLoading(false);
     } catch (error) {
       console.error('Registration failed:', error);
       // Optionally show toast or error feedback

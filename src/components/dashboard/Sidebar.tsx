@@ -158,12 +158,10 @@ const Sidebar = ({
             <div className="flex flex-col gap-1 mt-2">
               <span
                 className={`text-xs px-2 py-1 rounded-full ${
-                  user.profile.membershipInfo.membershipStatus === 'Active'
-                    ? 'bg-green-600'
-                    : 'bg-red-600'
+                  user.profile.membershipInfo.isActive ? 'bg-green-600' : 'bg-red-600'
                 }`}
               >
-                {user.profile.membershipInfo.membershipStatus ? 'Active' : 'Inactive'}
+                {user.profile.membershipInfo.isActive ? 'Active' : 'Inactive'}
               </span>
               <span className="text-slate-300 text-xs">
                 {user.profile.membershipInfo.expiryDate &&

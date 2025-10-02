@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { useUserStore } from '@/lib/zustand';
 import formatTimestamp from '@/lib/formatTimestamp';
+import { membershipServices } from '@/lib/memberShipHelpers';
+import { Timestamp } from 'firebase/firestore';
 
 interface DashboardOverviewProps {
   memberName?: string;
@@ -89,14 +91,14 @@ const DashboardOverview = ({
                 <span>Membership Status</span>
                 <Badge
                   variant={
-                    user.profile.membershipInfo.membershipStatus === 'Active'
+                    user.profile.membershipInfo.isActive
                       ? 'default'
                       : membershipStatus === 'Pending'
                       ? 'secondary'
                       : 'destructive'
                   }
                 >
-                  {user.profile.membershipInfo.membershipStatus ? 'Active' : 'Inactive'}
+                  {user.profile.membershipInfo.isActive ? 'Active' : 'Inactive'}
                 </Badge>
               </CardTitle>
               <CardDescription>Your current membership details</CardDescription>
@@ -112,7 +114,16 @@ const DashboardOverview = ({
                 <div className="flex justify-between">
                   <span className="font-medium text-sm">Expires on:</span>
                   <span className="text-sm">
-                    {formatTimestamp(user.profile.membershipInfo.membershipExpiry)}
+                    {formatTimestamp(user.profile.membershipInfo.membershipExpiry, 'long')}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-sm">Remaining days:</span>
+                  <span className="text-sm">
+                    {membershipServices.calculateRemainingDays(
+                      user.profile.membershipInfo.startDate,
+                      user.profile.membershipInfo.membershipExpiry
+                    )}
                   </span>
                 </div>
               </div>

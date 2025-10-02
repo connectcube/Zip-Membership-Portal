@@ -41,6 +41,10 @@ import {
 } from 'recharts';
 import AdminLogin from './auth/AdminLogin';
 import AdminSignup from './auth/AdminSignup';
+import { set } from 'date-fns';
+import MembersManagement from './components/MembersManagement';
+import NotificationManagement from './components/NotificationManagement';
+import EventsManagement from './components/EventsManagement';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -138,16 +142,20 @@ const AdminDashboard = () => {
 
 const MainDashboard = () => {
   const [allUser, setAllUser] = useState<any[]>([]);
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const fetchAllUsers = async () => {
+    try {
+      setIsLoading(true);
+      const docs = await getDocs(collection(fireDataBase, 'users'));
+      setAllUser(docs.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchAllUsers = async () => {
-      try {
-        const docs = await getDocs(collection(fireDataBase, 'users'));
-        setAllUser(docs.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    };
     fetchAllUsers();
   }, []);
 
@@ -200,115 +208,18 @@ const MainDashboard = () => {
           <TabsList className="mb-4">
             <TabsTrigger value="members">Members</TabsTrigger>
             {/* <TabsTrigger value="mentors">Mentors</TabsTrigger> */}
+            <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="reports">Reports</TabsTrigger>
           </TabsList>
 
           {/* Members Tab */}
-          <TabsContent value="members">
-            <Card>
-              <CardHeader>
-                <CardTitle>Member Management</CardTitle>
-                <CardDescription>View and manage all registered members</CardDescription>
-              </CardHeader>
-
-              <CardContent>
-                {allUser.length > 0 ? (
-                  <div className="space-y-6">
-                    {allUser.map(user => (
-                      <div
-                        key={user.id}
-                        className="gap-6 grid grid-cols-1 md:grid-cols-2 bg-white shadow-sm p-4 border rounded-lg"
-                      >
-                        <div>
-                          <h2 className="font-semibold text-xl">
-                            {user.firstName} {user.middleName} {user.lastName}
-                          </h2>
-                          <p className="text-gray-500 text-sm">
-                            Membership #: {user.membershipNumber}
-                          </p>
-                          <p className="mt-2 text-gray-700">📍 {user.address}</p>
-                          <p className="text-gray-700">📞 {user.phone}</p>
-                          <p className="text-gray-700">📧 {user.email}</p>
-                          <p className="text-gray-700">🗓️ Joined: {user.dateJoined}</p>
-                        </div>
-
-                        <div>
-                          <h3 className="font-medium text-gray-800">Membership Info</h3>
-                          <p className="text-gray-600 text-sm">
-                            Type: {user.membershipInfo.membershipType}
-                          </p>
-                          <p className="text-gray-600 text-sm">
-                            Specialization: {user.membershipInfo.specialization}
-                          </p>
-                          <p className="mt-2 text-gray-700 text-sm italic">
-                            “{user.membershipInfo.bio}”
-                          </p>
-
-                          <h3 className="mt-4 font-medium text-gray-800">Professional Info</h3>
-                          <ul className="space-y-1 text-gray-600 text-sm">
-                            <li>🏢 Employer: {user.professionalInfo.currentEmployer}</li>
-                            <li>🎓 Institution: {user.professionalInfo.institution}</li>
-                            <li>📅 Graduation Year: {user.professionalInfo.graduationYear}</li>
-                            <li>🧠 Specialization: {user.professionalInfo.specialization}</li>
-                            <li>🧪 Experience: {user.professionalInfo.experience} years</li>
-                          </ul>
-                        </div>
-
-                        <div className="col-span-2">
-                          <h3 className="mb-2 font-medium text-gray-800">Documents</h3>
-                          <div className="gap-4 grid grid-cols-2 text-blue-600 text-sm">
-                            <a
-                              href={user.documents.cvURL}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              📄 CV
-                            </a>
-                            {user.documents.idCopyURL ? (
-                              <a
-                                href={user.documents.idCopyURL}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                🪪 ID Copy
-                              </a>
-                            ) : (
-                              <span className="text-gray-400">🪪 ID Copy: Not uploaded</span>
-                            )}
-                            <a
-                              href={user.documents.qualificationCertificateURL}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              🎓 Qualification Certificate
-                            </a>
-                            <a
-                              href={user.documents.professionalReferencesURL}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              📁 Professional References
-                            </a>
-                            <a
-                              href={user.documents.passportPhotoURL}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              🖼️ Passport Photo
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <>No data available</>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
+          <MembersManagement
+            allUser={allUser}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+            fetchAllUser={fetchAllUsers}
+          />
           {/* Mentors Tab */}
           <TabsContent value="mentors">
             <Card>
@@ -365,99 +276,10 @@ const MainDashboard = () => {
               </CardContent>
             </Card>
           </TabsContent>
-
           {/* Notifications Tab */}
-          <TabsContent value="notifications">
-            <Card>
-              <CardHeader>
-                <CardTitle>Send Notifications</CardTitle>
-                <CardDescription>Send notifications and announcements to members</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div>
-                    <label className="block mb-1 font-medium text-gray-700 text-sm">
-                      Notification Type
-                    </label>
-                    <Select defaultValue="membership">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select notification type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="membership">Membership Fees</SelectItem>
-                        <SelectItem value="renewal">Membership Renewal</SelectItem>
-                        <SelectItem value="event">Event Announcement</SelectItem>
-                        <SelectItem value="general">General Announcement</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <label className="block mb-1 font-medium text-gray-700 text-sm">
-                      Recipients
-                    </label>
-                    <Select defaultValue="all">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select recipients" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Members</SelectItem>
-                        <SelectItem value="active">Active Members Only</SelectItem>
-                        <SelectItem value="expired">Expired Memberships</SelectItem>
-                        <SelectItem value="spatial">Spatial Planning Specialists</SelectItem>
-                        <SelectItem value="socioeconomic">
-                          Socio-economic Planning Specialists
-                        </SelectItem>
-                        <SelectItem value="environmental">
-                          Environmental Planning Specialists
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <label className="block mb-1 font-medium text-gray-700 text-sm">Subject</label>
-                    <Input placeholder="Enter notification subject" />
-                  </div>
-
-                  <div>
-                    <label className="block mb-1 font-medium text-gray-700 text-sm">Message</label>
-                    <textarea
-                      className="p-2 border rounded-md w-full min-h-[200px]"
-                      placeholder="Enter your message here..."
-                    ></textarea>
-                  </div>
-
-                  <div className="bg-blue-50 p-4 border rounded-md">
-                    <h3 className="mb-2 font-medium text-blue-800">
-                      Membership Categories and Fees
-                    </h3>
-                    <p className="mb-2 text-blue-700 text-sm">
-                      Include the following information in your notification:
-                    </p>
-                    <ul className="space-y-1 pl-5 text-blue-700 text-sm list-disc">
-                      <li>Student Member: K500 per year</li>
-                      <li>Associate Member: K1,000 per year</li>
-                      <li>Full Member: K1,500 per year</li>
-                      <li>Fellow: K2,000 per year</li>
-                      <li>Corporate Member: K5,000 per year</li>
-                    </ul>
-                    <Button className="mt-3" variant="outline" size="sm">
-                      <FileText className="mr-2 w-4 h-4" /> Insert Fee Template
-                    </Button>
-                  </div>
-
-                  <div className="flex justify-end space-x-3">
-                    <Button variant="outline">Preview</Button>
-                    <Button>
-                      <Mail className="mr-2 w-4 h-4" /> Send Notification
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
+          <NotificationManagement allUsers={allUser} />
+          {/* Events Tab */}
+          <EventsManagement />
           {/* Reports Tab */}
           <TabsContent value="reports">
             <Card>

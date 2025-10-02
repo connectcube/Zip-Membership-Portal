@@ -186,7 +186,15 @@ const AuthModal: React.FC<AuthModalProps> = ({
         ...values.personalInfo,
         membershipNumber: uniqueMembershipNumber,
         professionalInfo: values.professionalInfo,
-        membershipInfo: { ...values.membershipInfo, membershipExpiry: Timestamp.now() },
+        membershipInfo: {
+          ...values.membershipInfo,
+          membershipNumber: uniqueMembershipNumber,
+          membershipExpiry: Timestamp.fromMillis(
+            Timestamp.now().toMillis() + 7 * 24 * 60 * 60 * 1000 // add 7 days
+          ),
+          isActive: true,
+          startDate: Timestamp.now(),
+        },
         documents: {
           passportPhotoURL,
           cvURL,
@@ -194,7 +202,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
           qualificationCertificateURL,
           professionalReferencesURL,
         },
-        createdAt: new Date(),
+        createdAt: Timestamp.now(),
         authRef: userRef, // Optional: for relational queries
       };
       setActiveTab('login');

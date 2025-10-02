@@ -52,7 +52,7 @@ const MemberDashboard = ({
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(activePage);
   const { user, clearUser, setUser } = useUserStore();
-
+  console.log('User:', user);
   const onLogout = async () => {
     await signOut(auth);
     clearUser();
@@ -177,9 +177,9 @@ const MemberDashboard = ({
       case 'documents':
         return <DocumentsSection />;
       case 'events':
-        return <EventsSection />;
+        return <EventsSection userId={user.profile.authRef.id} />;
       case 'notifications':
-        return <NotificationsSection />;
+        return <NotificationsSection userId={user.profile.authRef.id} />;
       case 'messages':
         return <MessagesSection />;
       case 'settings':

@@ -13,6 +13,7 @@ import {
   BarChart3,
 } from 'lucide-react';
 import { useUserStore } from '@/lib/zustand';
+import formatTimestamp from '@/lib/formatTimestamp';
 
 interface DashboardOverviewProps {
   memberName?: string;
@@ -81,41 +82,43 @@ const DashboardOverview = ({
 
       {/* Membership Status Card */}
       <div className="gap-6 grid grid-cols-1 md:grid-cols-3 mb-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <span>Membership Status</span>
-              <Badge
-                variant={
-                  user.profile.membershipInfo.membershipStatus === 'Active'
-                    ? 'default'
-                    : membershipStatus === 'Pending'
-                    ? 'secondary'
-                    : 'destructive'
-                }
-              >
-                {user.profile.membershipInfo.membershipStatus ? 'Active' : 'Inactive'}
-              </Badge>
-            </CardTitle>
-            <CardDescription>Your current membership details</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="font-medium text-sm">Type:</span>
-                <span className="text-sm">
-                  {getFullMembershipType(user.profile.membershipInfo.membershipType)}
-                </span>
+        <Card className="flex flex-col justify-between">
+          <div>
+            <CardHeader>
+              <CardTitle className="flex justify-between items-center">
+                <span>Membership Status</span>
+                <Badge
+                  variant={
+                    user.profile.membershipInfo.membershipStatus === 'Active'
+                      ? 'default'
+                      : membershipStatus === 'Pending'
+                      ? 'secondary'
+                      : 'destructive'
+                  }
+                >
+                  {user.profile.membershipInfo.membershipStatus ? 'Active' : 'Inactive'}
+                </Badge>
+              </CardTitle>
+              <CardDescription>Your current membership details</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="font-medium text-sm">Type:</span>
+                  <span className="text-sm">
+                    {getFullMembershipType(user.profile.membershipInfo.membershipType)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-sm">Expires on:</span>
+                  <span className="text-sm">
+                    {formatTimestamp(user.profile.membershipInfo.membershipExpiry)}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="font-medium text-sm">Expires on:</span>
-                <span className="text-sm">
-                  {user.profile.membershipInfo.membershipExpiry || 'N/A'}
-                </span>
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter>
+            </CardContent>
+          </div>
+          <CardFooter className="place-self-end w-full">
             <Button className="place-self-end w-full">Renew Membership</Button>
           </CardFooter>
         </Card>

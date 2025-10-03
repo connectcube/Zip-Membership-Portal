@@ -95,7 +95,7 @@ const Sidebar = ({
       path: '/help',
     },
   ];
-  const getFullMembershipType = value => {
+  const getFullMembershipType = (value: string) => {
     const typeMap = {
       technician: 'Technician',
       associate: 'Associate',
@@ -187,7 +187,12 @@ const Sidebar = ({
                       } transition-colors ${collapsed ? 'justify-center' : 'px-4'}`}
                     >
                       <span className="text-slate-300">{item.icon}</span>
-                      {!collapsed && <span className="ml-3">{item.label}</span>}
+                      {!collapsed && (
+                        <span className="flex justify-between items-center px-1 w-full">
+                          <span className="pl-2">{item.label}</span>{' '}
+                          <NumberBadge itemId={item.id} />
+                        </span>
+                      )}
                     </Button>
                   </TooltipTrigger>
                   {collapsed && <TooltipContent side="right">{item.label}</TooltipContent>}
@@ -221,5 +226,21 @@ const Sidebar = ({
     </div>
   );
 };
-
+const NumberBadge = ({ itemId }: { itemId: string }) => {
+  const { notificationCount } = useUserStore();
+  if (itemId === 'notifications' && notificationCount > 0) {
+    return (
+      <div className="flex justify-center items-center bg-red-500 rounded-full w-4 h-4 text-white text-xs">
+        {notificationCount}
+      </div>
+    );
+  }
+  if (notificationCount < 0) {
+    return (
+      <div className="justify-center items-center bg-red-500 rounded-full w-4 h-4 text-white text-xs">
+        5
+      </div>
+    );
+  }
+};
 export default Sidebar;

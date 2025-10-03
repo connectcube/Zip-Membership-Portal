@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -15,25 +15,10 @@ import {
 import { useUserStore } from '@/lib/zustand';
 import formatTimestamp from '@/lib/formatTimestamp';
 import { membershipServices } from '@/lib/memberShipHelpers';
-import { Timestamp } from 'firebase/firestore';
+import { doc, getDoc, Timestamp } from 'firebase/firestore';
+import { fireDataBase } from '@/lib/firebase';
 
 interface DashboardOverviewProps {
-  memberName?: string;
-  membershipStatus?: 'Active' | 'Pending' | 'Expired';
-  membershipType?: string;
-  membershipExpiry?: string;
-  notifications?: Array<{
-    id: string;
-    title: string;
-    date: string;
-    read: boolean;
-  }>;
-  upcomingEvents?: Array<{
-    id: string;
-    title: string;
-    date: string;
-    type: string;
-  }>;
   paymentHistory?: Array<{
     id: string;
     description: string;
@@ -41,19 +26,26 @@ interface DashboardOverviewProps {
     date: string;
     status: 'Paid' | 'Pending' | 'Failed';
   }>;
+  userId: string;
+  setCurrentPage: (page: string) => void;
 }
-
+const countNotifications = notifications => {
+  let count = 0;
+  notifications.forEach(notification => {
+    notification.isRead ? null : count++;
+  });
+  return count;
+};
 const DashboardOverview = ({
-  memberName = 'John Doe',
-  membershipStatus = 'Active',
-  membershipType = 'Full Member',
-  membershipExpiry = 'December 31, 2023',
-  notifications = [],
-  upcomingEvents = [],
   paymentHistory = [],
+  userId,
+  setCurrentPage,
 }: DashboardOverviewProps) => {
-  const { user } = useUserStore();
-
+  const { user, notificationCount, setNotificationCount } = useUserStore();
+  const [notifications, setNotifications] = useState([]);
+  const [isLoadingnotification, setIsLoadingNotification] = useState(true);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [isLoadingupcomingEvents, setIsLoadingUpcomingEvents] = useState(true);
   const getFullMembershipType = value => {
     const typeMap = {
       technician: 'Technician',
@@ -68,6 +60,45 @@ const DashboardOverview = ({
 
     return typeMap[value] || 'Unknown Type';
   };
+  const fetchNotifications = async () => {
+    try {
+      const notifRef = doc(fireDataBase, 'notifications', userId);
+      const notifSnap = await getDoc(notifRef);
+      if (notifSnap.exists()) {
+        const notifData = notifSnap.data();
+        setNotifications(notifData.notifications);
+
+        setIsLoadingNotification(false);
+        const count = countNotifications(notifData.notifications);
+        setNotificationCount(count);
+      }
+    } catch (err) {
+      console.error('Error fetching notifications:', err);
+    }
+  };
+  const fetchEvents = async () => {
+    try {
+      const currentYear = new Date().getFullYear();
+      const eventsRef = doc(fireDataBase, 'events', `${currentYear}`);
+      const snap = await getDoc(eventsRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        const events = data.eventsList || [];
+        const now = new Date();
+
+        setUpcomingEvents(events.filter(e => e.date.toDate() >= now));
+      }
+    } catch (err) {
+      console.error('Error fetching events:', err);
+    } finally {
+      setIsLoadingUpcomingEvents(false);
+    }
+  };
+  useEffect(() => {
+    fetchEvents();
+    fetchNotifications();
+  });
+
   return (
     <div className="bg-gray-50 p-6 min-h-screen">
       {/* Welcome Section */}
@@ -93,7 +124,7 @@ const DashboardOverview = ({
                   variant={
                     user.profile.membershipInfo.isActive
                       ? 'default'
-                      : membershipStatus === 'Pending'
+                      : user.profile.membershipInfo.status === 'Pending'
                       ? 'secondary'
                       : 'destructive'
                   }
@@ -173,7 +204,7 @@ const DashboardOverview = ({
           <CardHeader>
             <CardTitle className="flex justify-between items-center">
               <span>Notifications</span>
-              <Badge variant="secondary">{notifications.filter(n => !n.read).length} New</Badge>
+              <Badge variant="secondary">{notifications.filter(n => !n.isRead).length} New</Badge>
             </CardTitle>
             <CardDescription>Recent updates and alerts</CardDescription>
           </CardHeader>
@@ -184,17 +215,19 @@ const DashboardOverview = ({
                   <div
                     key={notification.id}
                     className={`p-3 rounded-lg ${
-                      notification.read ? 'bg-gray-50' : 'bg-blue-50'
+                      notification.isRead ? 'bg-gray-50' : 'bg-blue-50'
                     } flex items-start gap-3`}
                   >
-                    {notification.read ? (
+                    {notification.isRead ? (
                       <CheckCircle className="mt-0.5 w-5 h-5 text-gray-400" />
                     ) : (
                       <Bell className="mt-0.5 w-5 h-5 text-blue-500" />
                     )}
                     <div>
-                      <p className="font-medium text-sm">{notification.title}</p>
-                      <p className="text-gray-500 text-xs">{notification.date}</p>
+                      <p className="font-medium text-sm">{notification.message}</p>
+                      <p className="text-gray-500 text-xs">
+                        {formatTimestamp(notification.sentAt)}
+                      </p>
                     </div>
                   </div>
                 ))
@@ -205,7 +238,11 @@ const DashboardOverview = ({
           </CardContent>
           {notifications.length > 0 && (
             <CardFooter>
-              <Button variant="outline" className="w-full">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => setCurrentPage('notifications')}
+              >
                 View All Notifications
               </Button>
             </CardFooter>
@@ -232,7 +269,9 @@ const DashboardOverview = ({
                     <div className="flex-1">
                       <h4 className="font-medium text-sm">{event.title}</h4>
                       <div className="flex justify-between mt-1">
-                        <p className="text-gray-500 text-xs">{event.date}</p>
+                        <p className="text-gray-500 text-xs">
+                          {formatTimestamp(event.date, 'long')}
+                        </p>
                         <Badge variant="outline">{event.type}</Badge>
                       </div>
                     </div>
@@ -245,7 +284,7 @@ const DashboardOverview = ({
           </CardContent>
           {upcomingEvents.length > 0 && (
             <CardFooter>
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full" onClick={() => setCurrentPage('events')}>
                 View All Events
               </Button>
             </CardFooter>

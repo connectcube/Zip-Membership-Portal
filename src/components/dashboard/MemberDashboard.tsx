@@ -52,7 +52,6 @@ const MemberDashboard = ({
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(activePage);
   const { user, clearUser, setUser } = useUserStore();
-  console.log('User:', user);
   const onLogout = async () => {
     await signOut(auth);
     clearUser();
@@ -160,15 +159,7 @@ const MemberDashboard = ({
     switch (currentPage) {
       case 'dashboard':
         return (
-          <DashboardOverview
-            memberName={userName}
-            membershipStatus={membershipStatus as 'Active' | 'Pending' | 'Expired'}
-            membershipType={membershipType}
-            membershipExpiry={membershipExpiry}
-            notifications={notifications}
-            upcomingEvents={upcomingEvents}
-            paymentHistory={paymentHistory}
-          />
+          <DashboardOverview userId={user.profile.authRef.id} setCurrentPage={setCurrentPage} />
         );
       case 'profile':
         return <ProfileSection />;
@@ -185,7 +176,9 @@ const MemberDashboard = ({
       case 'settings':
         return <SettingsSection />;
       default:
-        return <DashboardOverview />;
+        return (
+          <DashboardOverview userId={user.profile.authRef.id} setCurrentPage={setCurrentPage} />
+        );
     }
   };
 

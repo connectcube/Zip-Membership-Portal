@@ -209,8 +209,22 @@ const DashboardOverview = ({
             <CardDescription>Recent updates and alerts</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {notifications.length > 0 ? (
+            <div className="space-y-4">
+              {isLoadingnotification ? (
+                // Skeleton for loading notifications
+                Array.from({ length: 3 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex items-start gap-3 bg-gray-100 p-3 rounded-lg animate-pulse"
+                  >
+                    <div className="bg-gray-300 mt-1.5 rounded-full w-5 h-5" />
+                    <div className="flex-1 space-y-2">
+                      <div className="bg-gray-300 rounded w-3/4 h-4"></div>
+                      <div className="bg-gray-200 rounded w-1/2 h-3"></div>
+                    </div>
+                  </div>
+                ))
+              ) : notifications.length > 0 ? (
                 notifications.slice(0, 3).map(notification => (
                   <div
                     key={notification.id}
@@ -260,7 +274,21 @@ const DashboardOverview = ({
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {upcomingEvents.length > 0 ? (
+              {isLoadingupcomingEvents ? (
+                // Skeleton for loading events
+                Array.from({ length: 3 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex items-start gap-4 p-3 border rounded-lg animate-pulse"
+                  >
+                    <div className="bg-gray-200 p-3 rounded-lg w-12 h-12" />
+                    <div className="flex-1 space-y-2">
+                      <div className="bg-gray-300 rounded w-3/4 h-4"></div>
+                      <div className="bg-gray-200 rounded w-1/2 h-3"></div>
+                    </div>
+                  </div>
+                ))
+              ) : upcomingEvents.length > 0 ? (
                 upcomingEvents.map(event => (
                   <div key={event.id} className="flex items-start gap-4 p-3 border rounded-lg">
                     <div className="bg-blue-100 p-3 rounded-lg">

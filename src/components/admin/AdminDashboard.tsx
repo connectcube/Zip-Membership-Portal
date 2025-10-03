@@ -23,7 +23,7 @@ import {
 import { useUserStore } from '@/lib/zustand';
 import LoginForm from '../auth/LoginForm';
 import * as z from 'zod';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth, fireDataBase } from '@/lib/firebase';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import {
@@ -45,6 +45,8 @@ import { set } from 'date-fns';
 import MembersManagement from './components/MembersManagement';
 import NotificationManagement from './components/NotificationManagement';
 import EventsManagement from './components/EventsManagement';
+import AdminMessagesSection from './components/MessageManagement';
+import { useNavigate } from 'react-router';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -141,6 +143,9 @@ const AdminDashboard = () => {
 };
 
 const MainDashboard = () => {
+  const { user, clearUser } = useUserStore();
+  console.log(user);
+  const navigate = useNavigate();
   const [allUser, setAllUser] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const fetchAllUsers = async () => {
@@ -195,13 +200,17 @@ const MainDashboard = () => {
     });
     return Object.entries(counts).map(([year, members]) => ({ year, members }));
   }, [allUser]);
-
+  const onLogout = async () => {
+    await signOut(auth);
+    clearUser();
+    navigate('/');
+  };
   return (
     <div className="flex flex-col bg-gray-50 min-h-screen">
       <main className="flex-1 p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="font-bold text-2xl">Admin Dashboard</h1>
-          <Button>Add New Member</Button>
+          <Button onClick={onLogout}>Log out</Button>
         </div>
 
         <Tabs defaultValue="members">
@@ -211,6 +220,7 @@ const MainDashboard = () => {
             <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="reports">Reports</TabsTrigger>
+            <TabsTrigger value="messages">Messages</TabsTrigger>
           </TabsList>
 
           {/* Members Tab */}
@@ -434,6 +444,7 @@ const MainDashboard = () => {
               </CardContent>
             </Card>
           </TabsContent>
+          <AdminMessagesSection users={allUser} adminEmail={user.email} />
         </Tabs>
       </main>
     </div>

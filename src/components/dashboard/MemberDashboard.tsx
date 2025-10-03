@@ -143,16 +143,8 @@ const MemberDashboard = ({
     );
   }
 
-  // Generate personalized notifications based on user data
-  const notifications = [];
-
-  // Generate relevant events based on user specialization
-  const upcomingEvents = [];
-
   // Generate payment history based on membership type and registration date
   const paymentHistory = [];
-
-  const messages = [];
 
   // Render the appropriate content based on the current page
   const renderContent = () => {
@@ -172,7 +164,7 @@ const MemberDashboard = ({
       case 'notifications':
         return <NotificationsSection userId={user.profile.authRef.id} />;
       case 'messages':
-        return <MessagesSection />;
+        return <MessagesSection userId={user.profile.authRef.id} />;
       case 'settings':
         return <SettingsSection />;
       default:

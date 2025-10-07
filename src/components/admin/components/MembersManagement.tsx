@@ -1,15 +1,70 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function MembersManagement({ allUser, isLoading, setIsLoading, fetchAllUser }) {
   const ITEMS_PER_PAGE = 5;
   const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('dateJoined');
+  const [sortOrder, setSortOrder] = useState('desc');
 
-  const totalPages = Math.ceil(allUser.length / ITEMS_PER_PAGE);
+  const filteredAndSortedUsers = useMemo(() => {
+    let filtered = allUser.filter(user => {
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        user.phone?.toLowerCase().includes(searchLower) ||
+        user.email?.toLowerCase().includes(searchLower) ||
+        user.membershipNumber?.toLowerCase().includes(searchLower) ||
+        user.membershipInfo?.membershipType?.toLowerCase().includes(searchLower) ||
+        user.dateJoined?.toLowerCase().includes(searchLower)
+      );
+    });
+
+    return filtered.sort((a, b) => {
+      let aVal, bVal;
+      
+      switch (sortBy) {
+        case 'phone':
+          aVal = a.phone || '';
+          bVal = b.phone || '';
+          break;
+        case 'email':
+          aVal = a.email || '';
+          bVal = b.email || '';
+          break;
+        case 'membershipNumber':
+          aVal = a.membershipNumber || '';
+          bVal = b.membershipNumber || '';
+          break;
+        case 'membershipType':
+          aVal = a.membershipInfo?.membershipType || '';
+          bVal = b.membershipInfo?.membershipType || '';
+          break;
+        case 'dateJoined':
+        default:
+          aVal = a.dateJoined || '';
+          bVal = b.dateJoined || '';
+          break;
+      }
+      
+      const comparison = aVal.localeCompare(bVal);
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+  }, [allUser, searchTerm, sortBy, sortOrder]);
+
+  const totalPages = Math.ceil(filteredAndSortedUsers.length / ITEMS_PER_PAGE);
   const startIdx = (page - 1) * ITEMS_PER_PAGE;
-  const currentUsers = allUser.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+  const currentUsers = filteredAndSortedUsers.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
+  // Reset page when search changes
+  const handleSearchChange = (value) => {
+    setSearchTerm(value);
+    setPage(1);
+  };
 
   return (
     <TabsContent value="members">
@@ -22,6 +77,48 @@ export default function MembersManagement({ allUser, isLoading, setIsLoading, fe
         </CardHeader>
 
         <CardContent>
+          {/* Search and Sort Controls */}
+          <div className="mb-6 space-y-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <Input
+                  placeholder="Search by phone, email, membership number, type, or date joined..."
+                  value={searchTerm}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="dateJoined">Date Joined</SelectItem>
+                    <SelectItem value="phone">Phone</SelectItem>
+                    <SelectItem value="email">Email</SelectItem>
+                    <SelectItem value="membershipNumber">Membership #</SelectItem>
+                    <SelectItem value="membershipType">Membership Type</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={sortOrder} onValueChange={setSortOrder}>
+                  <SelectTrigger className="w-24">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="asc">A-Z</SelectItem>
+                    <SelectItem value="desc">Z-A</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            {searchTerm && (
+              <p className="text-sm text-gray-600">
+                Found {filteredAndSortedUsers.length} member(s) matching "{searchTerm}"
+              </p>
+            )}
+          </div>
+
           {isLoading ? (
             // Skeleton loader (responsive)
             <div className="space-y-6">

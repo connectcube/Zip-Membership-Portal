@@ -25,7 +25,15 @@ import LoginForm from '../auth/LoginForm';
 import * as z from 'zod';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth, fireDataBase } from '@/lib/firebase';
-import { collection, doc, getDoc, getDocs, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from 'firebase/firestore';
 import {
   PieChart,
   Pie,
@@ -148,7 +156,14 @@ const MainDashboard = () => {
     try {
       setIsLoading(true);
       const docs = await getDocs(collection(fireDataBase, 'users'));
-      setAllUser(docs.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setAllUser(
+        docs.docs
+          .filter(doc => {
+            const data = doc.data();
+            return data.firstName || data.lastName;
+          })
+          .map(doc => ({ id: doc.id, ...doc.data() }))
+      );
       setIsLoading(false);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -442,7 +457,7 @@ const MainDashboard = () => {
             </Card>
           </TabsContent>
           <AdminMessagesSection users={allUser} adminEmail={user.email} />
-          
+
           {/* Admin Management Tab */}
           <TabsContent value="admins">
             <AdminManagement />

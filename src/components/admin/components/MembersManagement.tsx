@@ -3,7 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function MembersManagement({ allUser, isLoading, setIsLoading, fetchAllUser }) {
   const ITEMS_PER_PAGE = 5;
@@ -26,7 +32,7 @@ export default function MembersManagement({ allUser, isLoading, setIsLoading, fe
 
     return filtered.sort((a, b) => {
       let aVal, bVal;
-      
+
       switch (sortBy) {
         case 'phone':
           aVal = a.phone || '';
@@ -50,7 +56,7 @@ export default function MembersManagement({ allUser, isLoading, setIsLoading, fe
           bVal = b.dateJoined || '';
           break;
       }
-      
+
       const comparison = aVal.localeCompare(bVal);
       return sortOrder === 'asc' ? comparison : -comparison;
     });
@@ -61,7 +67,7 @@ export default function MembersManagement({ allUser, isLoading, setIsLoading, fe
   const currentUsers = filteredAndSortedUsers.slice(startIdx, startIdx + ITEMS_PER_PAGE);
 
   // Reset page when search changes
-  const handleSearchChange = (value) => {
+  const handleSearchChange = value => {
     setSearchTerm(value);
     setPage(1);
   };
@@ -78,13 +84,13 @@ export default function MembersManagement({ allUser, isLoading, setIsLoading, fe
 
         <CardContent>
           {/* Search and Sort Controls */}
-          <div className="mb-6 space-y-4">
-            <div className="flex flex-col sm:flex-row gap-4">
+          <div className="space-y-4 mb-6">
+            <div className="flex sm:flex-row flex-col gap-4">
               <div className="flex-1">
                 <Input
                   placeholder="Search by phone, email, membership number, type, or date joined..."
                   value={searchTerm}
-                  onChange={(e) => handleSearchChange(e.target.value)}
+                  onChange={e => handleSearchChange(e.target.value)}
                   className="w-full"
                 />
               </div>
@@ -113,7 +119,7 @@ export default function MembersManagement({ allUser, isLoading, setIsLoading, fe
               </div>
             </div>
             {searchTerm && (
-              <p className="text-sm text-gray-600">
+              <p className="text-gray-600 text-sm">
                 Found {filteredAndSortedUsers.length} member(s) matching "{searchTerm}"
               </p>
             )}
@@ -157,15 +163,15 @@ export default function MembersManagement({ allUser, isLoading, setIsLoading, fe
                   {/* Personal Info */}
                   <div>
                     <h2 className="font-semibold text-lg md:text-xl">
-                      {user.firstName} {user.middleName} {user.lastName}
+                      {user.firstName || 'N/A'} {user.middleName || ''} {user.lastName || 'N/A'}
                     </h2>
                     <p className="text-gray-500 text-xs md:text-sm">
-                      Membership #: {user.membershipNumber}
+                      Membership #: {user.membershipNumber || 'Not assigned'}
                     </p>
-                    <p className="mt-2 text-gray-700 text-sm">📍 {user.address}</p>
-                    <p className="text-gray-700 text-sm">📞 {user.phone}</p>
-                    <p className="text-gray-700 text-sm">📧 {user.email}</p>
-                    <p className="text-gray-700 text-sm">🗓️ Joined: {user.dateJoined}</p>
+                    <p className="mt-2 text-gray-700 text-sm">📍 {user.address || 'Address not provided'}</p>
+                    <p className="text-gray-700 text-sm">📞 {user.phone || 'Phone not provided'}</p>
+                    <p className="text-gray-700 text-sm">📧 {user.email || 'Email not provided'}</p>
+                    <p className="text-gray-700 text-sm">🗓️ Joined: {user.dateJoined || 'Date not available'}</p>
                   </div>
 
                   {/* Membership + Professional Info */}
@@ -174,22 +180,26 @@ export default function MembersManagement({ allUser, isLoading, setIsLoading, fe
                       Membership Info
                     </h3>
                     <p className="text-gray-600 text-sm">
-                      Type: {user.membershipInfo.membershipType}
+                      Type: {user.membershipInfo?.membershipType || 'Not specified'}
                     </p>
                     <p className="text-gray-600 text-sm">
-                      Specialization: {user.membershipInfo.specialization}
+                      Specialization: {user.membershipInfo?.specialization || 'Not specified'}
                     </p>
-                    <p className="mt-2 text-gray-700 text-sm italic">“{user.membershipInfo.bio}”</p>
+                    {user.membershipInfo?.bio && (
+                      <p className="mt-2 text-gray-700 text-sm italic">
+                        “{user.membershipInfo?.bio}”
+                      </p>
+                    )}
 
                     <h3 className="mt-4 font-medium text-gray-800 text-sm md:text-base">
                       Professional Info
                     </h3>
                     <ul className="space-y-1 text-gray-600 text-sm">
-                      <li>🏢 Employer: {user.professionalInfo.currentEmployer}</li>
-                      <li>🎓 Institution: {user.professionalInfo.institution}</li>
-                      <li>📅 Graduation Year: {user.professionalInfo.graduationYear}</li>
-                      <li>🧠 Specialization: {user.professionalInfo.specialization}</li>
-                      <li>🧪 Experience: {user.professionalInfo.experience} years</li>
+                      <li>🏢 Employer: {user.professionalInfo?.currentEmployer || 'Not provided'}</li>
+                      <li>🎓 Institution: {user.professionalInfo?.institution || 'Not provided'}</li>
+                      <li>📅 Graduation Year: {user.professionalInfo?.graduationYear || 'Not provided'}</li>
+                      <li>🧠 Specialization: {user.professionalInfo?.specialization || 'Not provided'}</li>
+                      <li>🧪 Experience: {user.professionalInfo?.experience ? `${user.professionalInfo.experience} years` : 'Not provided'}</li>
                     </ul>
                   </div>
 
@@ -199,10 +209,18 @@ export default function MembersManagement({ allUser, isLoading, setIsLoading, fe
                       Documents
                     </h3>
                     <div className="gap-4 grid grid-cols-2 sm:grid-cols-3 text-blue-600 text-xs md:text-sm">
-                      <a href={user.documents.cvURL} target="_blank" rel="noopener noreferrer">
-                        📄 CV
-                      </a>
-                      {user.documents.idCopyURL ? (
+                      {user.documents?.cvURL ? (
+                        <a
+                          href={user.documents.cvURL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          📄 CV
+                        </a>
+                      ) : (
+                        <span className="text-gray-400">📄 CV: Not uploaded</span>
+                      )}
+                      {user.documents?.idCopyURL ? (
                         <a
                           href={user.documents.idCopyURL}
                           target="_blank"
@@ -213,27 +231,39 @@ export default function MembersManagement({ allUser, isLoading, setIsLoading, fe
                       ) : (
                         <span className="text-gray-400">🪪 ID Copy: Not uploaded</span>
                       )}
-                      <a
-                        href={user.documents.qualificationCertificateURL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        🎓 Qualification Certificate
-                      </a>
-                      <a
-                        href={user.documents.professionalReferencesURL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        📁 Professional References
-                      </a>
-                      <a
-                        href={user.documents.passportPhotoURL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        🖼️ Passport Photo
-                      </a>
+                      {user.documents?.qualificationCertificateURL ? (
+                        <a
+                          href={user.documents.qualificationCertificateURL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          🎓 Qualification Certificate
+                        </a>
+                      ) : (
+                        <span className="text-gray-400">🎓 Qualification Certificate: Not uploaded</span>
+                      )}
+                      {user.documents?.professionalReferencesURL ? (
+                        <a
+                          href={user.documents.professionalReferencesURL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          📁 Professional References
+                        </a>
+                      ) : (
+                        <span className="text-gray-400">📁 Professional References: Not uploaded</span>
+                      )}
+                      {user.documents?.passportPhotoURL ? (
+                        <a
+                          href={user.documents.passportPhotoURL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          🖼️ Passport Photo
+                        </a>
+                      ) : (
+                        <span className="text-gray-400">🖼️ Passport Photo: Not uploaded</span>
+                      )}
                     </div>
                   </div>
                 </div>

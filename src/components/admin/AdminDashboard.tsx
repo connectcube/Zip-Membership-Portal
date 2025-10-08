@@ -160,7 +160,11 @@ const MainDashboard = () => {
         docs.docs
           .filter(doc => {
             const data = doc.data();
-            return data.firstName || data.lastName;
+            return (
+              data.firstName &&
+              data.lastName &&
+              !(data.firstName === 'Mohd' || data.lastName === 'Bilal')
+            );
           })
           .map(doc => ({ id: doc.id, ...doc.data() }))
       );

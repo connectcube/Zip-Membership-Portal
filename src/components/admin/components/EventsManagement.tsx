@@ -76,12 +76,12 @@ const EventsManagement = () => {
       description: form.description,
       date: Timestamp.fromDate(new Date(form.date)),
       location: form.location,
-      createdAt: editingEvent ? editingEvent.createdAt : Timestamp.now(),
+      createdAt: editingEvent ? editingEvent?.createdAt : Timestamp.now(),
       updatedAt: Timestamp.now(),
-      ignored: editingEvent.ignored ? editingEvent.ignored : [],
-      willAttend: editingEvent.willAttend ? editingEvent.willAttend : [],
-      attended: editingEvent.attended ? editingEvent.attended : [],
-      missed: editingEvent.missed ? editingEvent.missed : [],
+      ignored: editingEvent?.ignored ? editingEvent?.ignored : [],
+      willAttend: editingEvent?.willAttend ? editingEvent?.willAttend : [],
+      attended: editingEvent?.attended ? editingEvent?.attended : [],
+      missed: editingEvent?.missed ? editingEvent?.missed : [],
     };
 
     try {

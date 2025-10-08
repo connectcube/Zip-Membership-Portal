@@ -23,11 +23,10 @@ const AdminMessagesSection = ({ users = [], adminEmail }) => {
   const filteredUsers = users.filter(user => {
     const query = searchQuery.toLowerCase();
     return (
-      user.firstName.toLowerCase().includes(query) ||
-      user.lastName.toLowerCase().includes(query) ||
+      user.firstName?.toLowerCase().includes(query) ||
+      user.lastName?.toLowerCase().includes(query) ||
       user.middleName?.toLowerCase().includes(query) ||
-      user.email.toLowerCase().includes(query) ||
-      user.authRef.id.toLowerCase().includes(query)
+      user.email.toLowerCase().includes(query)
     );
   });
   const encodeEmail = email => email.replace(/\./g, '_DOT_');
@@ -111,7 +110,7 @@ const AdminMessagesSection = ({ users = [], adminEmail }) => {
 
                       return (
                         <div
-                          key={user.authRef.id}
+                          key={user}
                           onClick={() => setSelectedUser(user)}
                           className={`p-4 border-b cursor-pointer hover:bg-gray-50 flex flex-col ${
                             selectedUser?.id === user.id ? 'bg-blue-50' : ''

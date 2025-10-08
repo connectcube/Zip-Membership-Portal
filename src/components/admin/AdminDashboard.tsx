@@ -70,6 +70,7 @@ const AdminDashboard = () => {
           'busikusm@gmail.com',
           'linda@realtyplus.co.zm',
           'mohd@landlord.com',
+          'xipadadmin@admin.com',
         ]; // Replace with your admin email list
         return adminEmails.includes(email);
       };
@@ -144,7 +145,6 @@ const AdminDashboard = () => {
 
 const MainDashboard = () => {
   const { user, clearUser } = useUserStore();
-  console.log(user);
   const navigate = useNavigate();
   const [allUser, setAllUser] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);

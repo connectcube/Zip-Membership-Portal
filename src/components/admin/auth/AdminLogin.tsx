@@ -47,13 +47,16 @@ const AdminLogin = ({ handleStateUpdate, setActiveTab }) => {
       const user = userCredential.user;
 
       // 2. Fetch user document from Firestore
-      const userRef = doc(fireDataBase, 'admins', user.uid);
-      const userSnap = await getDoc(userRef);
+      let userRef = doc(fireDataBase, 'admins', values.email);
+      let userSnap = await getDoc(userRef);
 
       if (!userSnap.exists()) {
-        throw new Error('User profile not found in Firestore');
+        userRef = doc(fireDataBase, 'admins', userCredential.user.uid);
+        userSnap = await getDoc(userRef);
       }
-
+      if (!userSnap.exists()) {
+        throw new Error('User not found');
+      }
       const userData = userSnap.data();
       await handleStateUpdate(userData);
     } catch (error) {

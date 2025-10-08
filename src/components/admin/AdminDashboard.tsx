@@ -25,7 +25,7 @@ import LoginForm from '../auth/LoginForm';
 import * as z from 'zod';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth, fireDataBase } from '@/lib/firebase';
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import {
   PieChart,
   Pie,
@@ -46,6 +46,7 @@ import MembersManagement from './components/MembersManagement';
 import NotificationManagement from './components/NotificationManagement';
 import EventsManagement from './components/EventsManagement';
 import AdminMessagesSection from './components/MessageManagement';
+import AdminManagement from './components/AdminManagement';
 import { useNavigate } from 'react-router';
 
 const loginSchema = z.object({
@@ -63,7 +64,6 @@ const AdminDashboard = () => {
   const handleStateUpdate = async data => {
     try {
       setIsLoading(true);
-      console.log('User data from login/signup:', data);
       const checkAdminPrivileges = async (email: string | null) => {
         const adminListRefs = doc(fireDataBase, 'admins', 'admins');
         const adminListDoc = await getDoc(adminListRefs);
@@ -217,6 +217,7 @@ const MainDashboard = () => {
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="reports">Reports</TabsTrigger>
             <TabsTrigger value="messages">Messages</TabsTrigger>
+            <TabsTrigger value="admins">Admin Management</TabsTrigger>
           </TabsList>
 
           {/* Members Tab */}
@@ -441,6 +442,11 @@ const MainDashboard = () => {
             </Card>
           </TabsContent>
           <AdminMessagesSection users={allUser} adminEmail={user.email} />
+          
+          {/* Admin Management Tab */}
+          <TabsContent value="admins">
+            <AdminManagement />
+          </TabsContent>
         </Tabs>
       </main>
     </div>

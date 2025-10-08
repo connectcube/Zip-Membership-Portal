@@ -64,14 +64,10 @@ const AdminDashboard = () => {
     try {
       setIsLoading(true);
       console.log('User data from login/signup:', data);
-      const checkAdminPrivileges = (email: string | null) => {
-        const adminEmails = [
-          'registrar@zambiainstituteofplanners.org.zm',
-          'busikusm@gmail.com',
-          'linda@realtyplus.co.zm',
-          'mohd@landlord.com',
-          'xipadadmin@admin.com',
-        ]; // Replace with your admin email list
+      const checkAdminPrivileges = async (email: string | null) => {
+        const adminListRefs = doc(fireDataBase, 'admins', 'admins');
+        const adminListDoc = await getDoc(adminListRefs);
+        let adminEmails = adminListDoc.data()?.adminEmails || []; // Replace with your admin email list
         return adminEmails.includes(email);
       };
       // 3. Trigger success callback with full user data

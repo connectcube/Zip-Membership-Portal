@@ -18,6 +18,7 @@ import SettingsSection from './components/SettingsSection';
 import NotificationsSection from './components/NotificationSection';
 import EventsSection from './components/EventsSection';
 import DocumentsSection from './components/DocumentSection';
+import DashboardHelmet from './DashboardHelmet';
 
 interface MemberDashboardProps {
   userName?: string;
@@ -175,18 +176,21 @@ const MemberDashboard = ({
   };
 
   return (
-    <div className="flex bg-white h-screen">
-      <Sidebar
-        activePage={currentPage}
-        setCurrentPage={setCurrentPage}
-        userName={userName}
-        membershipType={membershipType}
-        membershipStatus={membershipStatus}
-        expiryDate={membershipExpiry}
-        onLogout={onLogout}
-      />
-      <div className="flex-1 overflow-auto">{renderContent()}</div>
-    </div>
+    <>
+      <DashboardHelmet activeSection={currentPage} />
+      <div className="flex bg-white h-screen">
+        <Sidebar
+          activePage={currentPage}
+          setCurrentPage={setCurrentPage}
+          userName={userName}
+          membershipType={membershipType}
+          membershipStatus={membershipStatus}
+          expiryDate={membershipExpiry}
+          onLogout={onLogout}
+        />
+        <div className="flex-1 overflow-auto">{renderContent()}</div>
+      </div>
+    </>
   );
 };
 

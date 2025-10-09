@@ -56,6 +56,7 @@ import EventsManagement from './components/EventsManagement';
 import AdminMessagesSection from './components/MessageManagement';
 import AdminManagement from './components/AdminManagement';
 import { useNavigate } from 'react-router';
+import AdminSEO from '../seo/AdminSEO';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -221,7 +222,9 @@ const MainDashboard = () => {
     navigate('/');
   };
   return (
-    <div className="flex flex-col bg-gray-50 min-h-screen">
+    <>
+      <AdminSEO />
+      <div className="flex flex-col bg-gray-50 min-h-screen">
       <main className="flex-1 p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="font-bold text-2xl">Admin Dashboard</h1>
@@ -468,7 +471,8 @@ const MainDashboard = () => {
           </TabsContent>
         </Tabs>
       </main>
-    </div>
+      </div>
+    </>
   );
 };
 

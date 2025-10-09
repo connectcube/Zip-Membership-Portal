@@ -8,6 +8,7 @@ import VerificationTool, { VerificationResult } from './home/VerificationTool';
 import AuthModal from './auth/AuthModal';
 import MemberDashboard from './dashboard/MemberDashboard';
 import { useUserStore } from '@/lib/zustand';
+import HomeSEO from './seo/HomeSEO';
 
 interface UserData {
   personalInfo: {
@@ -146,8 +147,10 @@ const Home = () => {
   }
 
   return (
-    <div className="flex flex-col bg-white min-h-screen">
-      <Header />
+    <>
+      <HomeSEO />
+      <div className="flex flex-col bg-white min-h-screen">
+        <Header />
       <main className="flex-grow">
         <HeroSection onCtaClick={handleRegisterClick} onSecondaryCtaClick={handleLoginClick} />
         <FeatureHighlights />
@@ -165,7 +168,8 @@ const Home = () => {
         onLoginSuccess={handleLoginSuccess}
         onRegisterSuccess={handleRegistrationSuccess}
       />
-    </div>
+      </div>
+    </>
   );
 };
 

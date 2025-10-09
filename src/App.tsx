@@ -5,12 +5,13 @@ import Home from './components/home';
 import AdminDashboard from './components/admin/AdminDashboard';
 import MemberDashboard from './components/dashboard/MemberDashboard';
 import routes from './tempo-routes';
+import { Loader2 } from 'lucide-react';
 
 function App() {
   useEffect(() => {}, []);
   return (
     <HelmetProvider>
-      <Suspense fallback={<p>Loading...</p>}>
+      <Suspense fallback={<LoadingSpinner />}>
         <>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -24,4 +25,11 @@ function App() {
   );
 }
 
+const LoadingSpinner = () => (
+  <div className="flex justify-center items-center w-[100svw] h-[100svh]">
+    <div className="spinner">
+      <Loader2 className="text-gray-600 animate-spin ease-in-out" />
+    </div>
+  </div>
+);
 export default App;

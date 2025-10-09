@@ -2,14 +2,15 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from 'lucide-react';
-import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, arrayUnion, arrayRemove, Timestamp } from 'firebase/firestore';
 import { fireDataBase } from '@/lib/firebase';
 
 interface EventItem {
   id: string;
   title: string;
   type: string;
-  date: any; // Firestore Timestamp
+  date: Timestamp;
+  5;
   location?: string;
   description?: string;
   ignored: string[];

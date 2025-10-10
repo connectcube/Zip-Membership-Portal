@@ -225,9 +225,9 @@ const DashboardOverview = ({
                   </div>
                 ))
               ) : notifications.length > 0 ? (
-                notifications.slice(0, 3).map(notification => (
+                notifications.slice(0, 3).map((notification, index) => (
                   <div
-                    key={notification.id}
+                    key={index}
                     className={`p-3 rounded-lg ${
                       notification.isRead ? 'bg-gray-50' : 'bg-blue-50'
                     } flex items-start gap-3`}

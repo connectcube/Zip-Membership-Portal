@@ -10,7 +10,6 @@ interface EventItem {
   title: string;
   type: string;
   date: Timestamp;
-  5;
   location?: string;
   description?: string;
   ignored: string[];

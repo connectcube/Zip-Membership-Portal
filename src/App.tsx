@@ -6,6 +6,7 @@ import AdminDashboard from './components/admin/AdminDashboard';
 import MemberDashboard from './components/dashboard/MemberDashboard';
 import routes from './tempo-routes';
 import { Loader2 } from 'lucide-react';
+import NotFound from './components/layout/NotFound';
 
 function App() {
   useEffect(() => {}, []);
@@ -14,6 +15,7 @@ function App() {
       <Suspense fallback={<LoadingSpinner />}>
         <>
           <Routes>
+            <Route path="*" element={<NotFound />} />
             <Route path="/" element={<Home />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/dashboard" element={<MemberDashboard />} />

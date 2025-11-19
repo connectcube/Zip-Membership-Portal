@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { toast } from 'react-toastify';
+import { getFirebaseErrorMessage } from '@/lib/firebaseErrors';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -68,19 +69,7 @@ const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFo
       let errorMessage = 'Login failed. Please try again.';
 
       if (error instanceof Error) {
-        if (error.message.includes('auth/user-not-found')) {
-          errorMessage = 'No account found with this email address.';
-        } else if (error.message.includes('auth/wrong-password')) {
-          errorMessage = 'Incorrect password. Please try again.';
-        } else if (error.message.includes('auth/invalid-email')) {
-          errorMessage = 'Please enter a valid email address.';
-        } else if (error.message.includes('auth/user-disabled')) {
-          errorMessage = 'This account has been disabled. Contact support.';
-        } else if (error.message.includes('auth/too-many-requests')) {
-          errorMessage = 'Too many failed attempts. Please try again later.';
-        } else {
-          errorMessage = error.message || errorMessage;
-        }
+        errorMessage = getFirebaseErrorMessage(error);
       }
 
       toast.error(errorMessage);

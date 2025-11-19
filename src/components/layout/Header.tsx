@@ -13,6 +13,7 @@ import { auth, fireDataBase, fireStorage } from '@/lib/firebase';
 import { doc, getDoc, increment, setDoc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { DialogTitle } from '@radix-ui/react-dialog';
+import { toast } from 'react-toastify';
 const personalInfoSchema = z.object({
   firstName: z.string().min(2, { message: 'First name must be at least 2 characters' }),
   middleName: z.string().optional(),
@@ -104,11 +105,31 @@ const AuthModal: React.FC<AuthModalProps> = ({ activeTab = 'login', setActiveTab
         profile: userData,
       });
       navigate('/dashboard');
+      toast.success('Login successful!');
       setIsLoading(false);
       setActiveTab(null);
     } catch (error) {
       console.error('Login failed:', error);
-      // Optionally show toast or error feedback
+      let errorMessage = 'Login failed. Please try again.';
+
+      if (error instanceof Error) {
+        if (error.message.includes('auth/user-not-found')) {
+          errorMessage = 'No account found with this email address.';
+        } else if (error.message.includes('auth/wrong-password')) {
+          errorMessage = 'Incorrect password. Please try again.';
+        } else if (error.message.includes('auth/invalid-email')) {
+          errorMessage = 'Please enter a valid email address.';
+        } else if (error.message.includes('auth/invalid-credential).')) {
+          errorMessage = 'Either password or email incorrect kindly check.';
+        } else if (error.message.includes('auth/too-many-requests')) {
+          errorMessage = 'Too many failed attempts. Please try again later.';
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+      }
+
+      toast.error(errorMessage);
+      setIsLoading(false);
     }
   };
 
@@ -188,11 +209,28 @@ const AuthModal: React.FC<AuthModalProps> = ({ activeTab = 'login', setActiveTab
       await updateDoc(doc(fireDataBase, 'userIndex', 'userNumber'), {
         lastUserIndex: increment(1),
       });
+      toast.success('Registration successful! Please login with your credentials.');
       setIsLoading(false);
       setActiveTab('login');
     } catch (error) {
       console.error('Registration failed:', error);
-      // Optionally show toast or error feedback
+      let errorMessage = 'Registration failed. Please try again.';
+
+      if (error instanceof Error) {
+        if (error.message.includes('auth/email-already-in-use')) {
+          errorMessage =
+            'This email is already registered. Please use a different email or sign in.';
+        } else if (error.message.includes('auth/weak-password')) {
+          errorMessage = 'Password is too weak. Please choose a stronger password.';
+        } else if (error.message.includes('auth/invalid-email')) {
+          errorMessage = 'Please enter a valid email address.';
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+      }
+
+      toast.error(errorMessage);
+      setIsLoading(false);
     }
   };
   if (activeTab === 'login') {

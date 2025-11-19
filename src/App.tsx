@@ -7,11 +7,24 @@ import MemberDashboard from './components/dashboard/MemberDashboard';
 import routes from './tempo-routes';
 import { Loader2 } from 'lucide-react';
 import NotFound from './components/layout/NotFound';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   useEffect(() => {}, []);
   return (
     <HelmetProvider>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Suspense fallback={<LoadingSpinner />}>
         <>
           <Routes>

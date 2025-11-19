@@ -17,10 +17,8 @@ import {
 import { toast } from 'react-toastify';
 
 const loginSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address" }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 8 characters" }),
+  email: z.string().email({ message: 'Please enter a valid email address' }),
+  password: z.string().min(6, { message: 'Password must be at least 8 characters' }),
   rememberMe: z.boolean().optional(),
 });
 
@@ -34,13 +32,14 @@ interface LoginFormProps {
 
 const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  // amazonq-ignore-next-line
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
       rememberMe: false,
     },
   });
@@ -48,15 +47,15 @@ const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFo
   // Check for remembered email on component mount
   React.useEffect(() => {
     try {
-      const rememberMe = localStorage.getItem("zipRememberMe");
-      const rememberedEmail = localStorage.getItem("zipRememberedEmail");
+      const rememberMe = localStorage.getItem('zipRememberMe');
+      const rememberedEmail = localStorage.getItem('zipRememberedEmail');
 
-      if (rememberMe === "true" && rememberedEmail) {
-        form.setValue("email", rememberedEmail);
-        form.setValue("rememberMe", true);
+      if (rememberMe === 'true' && rememberedEmail) {
+        form.setValue('email', rememberedEmail);
+        form.setValue('rememberMe', true);
       }
     } catch (error) {
-      console.error("Failed to load remembered credentials:", error);
+      console.error('Failed to load remembered credentials:', error);
     }
   }, [form]);
 
@@ -64,10 +63,26 @@ const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFo
     setIsLoading(true);
     try {
       await onSubmit(values);
-      toast.success('Login successful!');
     } catch (error) {
-      console.error("Login failed:", error);
-      const errorMessage = error instanceof Error ? error.message : "Login failed. Please try again.";
+      console.error('Login failed:', error);
+      let errorMessage = 'Login failed. Please try again.';
+
+      if (error instanceof Error) {
+        if (error.message.includes('auth/user-not-found')) {
+          errorMessage = 'No account found with this email address.';
+        } else if (error.message.includes('auth/wrong-password')) {
+          errorMessage = 'Incorrect password. Please try again.';
+        } else if (error.message.includes('auth/invalid-email')) {
+          errorMessage = 'Please enter a valid email address.';
+        } else if (error.message.includes('auth/user-disabled')) {
+          errorMessage = 'This account has been disabled. Contact support.';
+        } else if (error.message.includes('auth/too-many-requests')) {
+          errorMessage = 'Too many failed attempts. Please try again later.';
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+      }
+
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);

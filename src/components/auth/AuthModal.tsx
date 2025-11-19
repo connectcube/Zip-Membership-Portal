@@ -25,6 +25,7 @@ import {
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { auth, fireDataBase, fireStorage } from '@/lib/firebase';
 import { useUserStore } from '@/lib/zustand';
+import { toast } from 'react-toastify';
 interface AuthModalProps {
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -94,6 +95,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
   const [activeTab, setActiveTab] = useState<string>(defaultTab);
   const { setUser } = useUserStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleLoginSubmit = async (values: LoginFormValues) => {
     setIsLoading(true);
@@ -119,10 +121,30 @@ const AuthModal: React.FC<AuthModalProps> = ({
         rememberMe: values.rememberMe,
         profile: userData,
       });
+      toast.success('Login successful!');
       setIsLoading(false);
     } catch (error) {
-      //  console.error('Login failed:', error);
-      // Optionally show toast or error feedback
+      console.error('Login failed:', error);
+      let errorMessage = 'Login failed. Please try again.';
+
+      if (error instanceof Error) {
+        if (error.message.includes('auth/user-not-found')) {
+          errorMessage = 'No account found with this email address.';
+        } else if (error.message.includes('auth/wrong-password')) {
+          errorMessage = 'Incorrect password. Please try again.';
+        } else if (error.message.includes('auth/invalid-email')) {
+          errorMessage = 'Please enter a valid email address.';
+        } else if (error.message.includes('auth/user-disabled')) {
+          errorMessage = 'This account has been disabled. Contact support.';
+        } else if (error.message.includes('auth/too-many-requests')) {
+          errorMessage = 'Too many failed attempts. Please try again later.';
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+      }
+
+      toast.error(errorMessage);
+      setIsLoading(false);
     }
   };
 
@@ -214,9 +236,26 @@ const AuthModal: React.FC<AuthModalProps> = ({
         { lastUserIndex: increment(1) },
         { merge: true }
       );
+      toast.success('Registration successful! Please login with your credentials.');
     } catch (error) {
       console.error('Registration failed:', error);
-      // Optionally show toast or error feedback
+      let errorMessage = 'Registration failed. Please try again.';
+
+      if (error instanceof Error) {
+        if (error.message.includes('auth/email-already-in-use')) {
+          errorMessage =
+            'This email is already registered. Please use a different email or sign in.';
+        } else if (error.message.includes('auth/weak-password')) {
+          errorMessage = 'Password is too weak. Please choose a stronger password.';
+        } else if (error.message.includes('auth/invalid-email')) {
+          errorMessage = 'Please enter a valid email address.';
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+      }
+
+      toast.error(errorMessage);
+      setIsLoading(false);
     }
   };
 
@@ -255,6 +294,11 @@ const AuthModal: React.FC<AuthModalProps> = ({
           </div>
 
           <TabsContent value="login" className="m-0">
+            {error && activeTab === 'login' && (
+              <div className="mx-6 mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-red-600 text-sm">{error}</p>
+              </div>
+            )}
             <LoginForm
               onSubmit={handleLoginSubmit}
               onForgotPassword={handleForgotPassword}

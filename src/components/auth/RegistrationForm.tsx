@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { motion } from "framer-motion";
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { motion } from 'framer-motion';
 import {
   Upload,
   User,
@@ -13,9 +13,9 @@ import {
   Building,
   GraduationCap,
   Calendar,
-} from "lucide-react";
+} from 'lucide-react';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -24,9 +24,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Card,
   CardContent,
@@ -34,73 +34,57 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
 // Form validation schemas for each step
 const personalInfoSchema = z.object({
-  firstName: z
-    .string()
-    .min(2, { message: "First name must be at least 2 characters" }),
+  firstName: z.string().min(2, { message: 'First name must be at least 2 characters' }),
   middleName: z.string().optional(),
-  lastName: z
-    .string()
-    .min(2, { message: "Last name must be at least 2 characters" }),
-  email: z.string().email({ message: "Please enter a valid email address" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
-  phone: z
-    .string()
-    .min(10, { message: "Phone number must be at least 10 digits" }),
-  address: z
-    .string()
-    .min(5, { message: "Address must be at least 5 characters" }),
-  town: z.string().min(2, { message: "Town must be at least 2 characters" }),
-  province: z
-    .string()
-    .min(2, { message: "Province must be at least 2 characters" }),
-  dateJoined: z.string().min(1, { message: "Date joined is required" }),
+  lastName: z.string().min(2, { message: 'Last name must be at least 2 characters' }),
+  email: z.string().email({ message: 'Please enter a valid email address' }),
+  password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
+  phone: z.string().min(10, { message: 'Phone number must be at least 10 digits' }),
+  address: z.string().min(5, { message: 'Address must be at least 5 characters' }),
+  town: z.string().min(2, { message: 'Town must be at least 2 characters' }),
+  province: z.string().min(2, { message: 'Province must be at least 2 characters' }),
+  dateJoined: z.string().min(1, { message: 'Date joined is required' }),
 });
 
 const professionalInfoSchema = z.object({
-  qualification: z.string().min(2, { message: "Qualification is required" }),
-  institution: z.string().min(2, { message: "Institution is required" }),
-  graduationYear: z.string().min(4, { message: "Graduation year is required" }),
+  qualification: z.string().min(2, { message: 'Qualification is required' }),
+  institution: z.string().min(2, { message: 'Institution is required' }),
+  graduationYear: z.string().min(4, { message: 'Graduation year is required' }),
   currentEmployer: z.string().optional(),
   jobTitle: z.string().optional(),
-  experience: z.string().min(1, { message: "Years of experience is required" }),
-  specialization: z
-    .string()
-    .min(2, { message: "Area of specialization is required" }),
+  experience: z.string().min(1, { message: 'Years of experience is required' }),
+  specialization: z.string().min(2, { message: 'Area of specialization is required' }),
 });
 
 const membershipInfoSchema = z.object({
-  membershipType: z
-    .string()
-    .min(1, { message: "Please select a membership type" }),
-  specialization: z
-    .string()
-    .min(1, { message: "Please select a specialization" }),
+  membershipType: z.string().min(1, { message: 'Please select a membership type' }),
+  specialization: z.string().min(1, { message: 'Please select a specialization' }),
   bio: z
     .string()
-    .min(50, { message: "Bio must be at least 50 characters" })
-    .max(500, { message: "Bio must not exceed 500 characters" }),
+    .min(50, { message: 'Bio must be at least 50 characters' })
+    .max(500, { message: 'Bio must not exceed 500 characters' }),
 });
 
 const documentUploadSchema = z.object({
   idCopy: z.any().optional(),
   qualificationCertificate: z.any().optional(),
   professionalReferences: z.any().optional(),
-  passportPhoto: z.any().refine((val) => val !== undefined, {
-    message: "Passport photo is required",
+  passportPhoto: z.any().refine(val => val !== undefined, {
+    message: 'Passport photo is required',
   }),
-  cv: z.any().refine((val) => val !== undefined, {
-    message: "CV is required",
+  cv: z.any().refine(val => val !== undefined, {
+    message: 'CV is required',
   }),
 });
 
@@ -118,7 +102,7 @@ interface RegistrationFormData {
 }
 
 const RegistrationForm: React.FC<RegistrationFormProps> = ({
-  onSubmit = (data) => console.log("Form submitted:", data),
+  onSubmit = data => console.log('Form submitted:', data),
   isLoading,
   isOpen = true,
 }) => {
@@ -134,15 +118,15 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const personalInfoForm = useForm<z.infer<typeof personalInfoSchema>>({
     resolver: zodResolver(personalInfoSchema),
     defaultValues: {
-      firstName: "",
-      middleName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      address: "",
-      town: "",
-      province: "",
-      dateJoined: "",
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      address: '',
+      town: '',
+      province: '',
+      dateJoined: '',
     },
   });
 
@@ -150,13 +134,13 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const professionalInfoForm = useForm<z.infer<typeof professionalInfoSchema>>({
     resolver: zodResolver(professionalInfoSchema),
     defaultValues: {
-      qualification: "",
-      institution: "",
-      graduationYear: "",
-      currentEmployer: "",
-      jobTitle: "",
-      experience: "",
-      specialization: "",
+      qualification: '',
+      institution: '',
+      graduationYear: '',
+      currentEmployer: '',
+      jobTitle: '',
+      experience: '',
+      specialization: '',
     },
   });
 
@@ -164,9 +148,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const membershipInfoForm = useForm<z.infer<typeof membershipInfoSchema>>({
     resolver: zodResolver(membershipInfoSchema),
     defaultValues: {
-      membershipType: "",
-      specialization: "",
-      bio: "",
+      membershipType: '',
+      specialization: '',
+      bio: '',
     },
   });
 
@@ -182,30 +166,22 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     },
   });
 
-  const handlePersonalInfoSubmit = (
-    data: z.infer<typeof personalInfoSchema>,
-  ) => {
+  const handlePersonalInfoSubmit = (data: z.infer<typeof personalInfoSchema>) => {
     setFormData({ ...formData, personalInfo: data });
     setStep(2);
   };
 
-  const handleProfessionalInfoSubmit = (
-    data: z.infer<typeof professionalInfoSchema>,
-  ) => {
+  const handleProfessionalInfoSubmit = (data: z.infer<typeof professionalInfoSchema>) => {
     setFormData({ ...formData, professionalInfo: data });
     setStep(3);
   };
 
-  const handleMembershipInfoSubmit = (
-    data: z.infer<typeof membershipInfoSchema>,
-  ) => {
+  const handleMembershipInfoSubmit = (data: z.infer<typeof membershipInfoSchema>) => {
     setFormData({ ...formData, membershipInfo: data });
     setStep(4);
   };
 
-  const handleDocumentUploadSubmit = (
-    data: z.infer<typeof documentUploadSchema>,
-  ) => {
+  const handleDocumentUploadSubmit = (data: z.infer<typeof documentUploadSchema>) => {
     const completeFormData = {
       ...formData,
       documents: data,
@@ -215,10 +191,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     onSubmit(completeFormData);
   };
 
-  const handleFileChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    fieldName: string,
-  ) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: string) => {
     if (e.target.files && e.target.files[0]) {
       documentUploadForm.setValue(fieldName as any, e.target.files[0]);
     }
@@ -227,28 +200,28 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   return (
     <div className="bg-white shadow-md mx-auto rounded-xl w-full max-w-md overflow-hidden">
       <div className="p-6">
-        <h2 className="mb-6 font-bold text-primary text-2xl text-center">
-          Register as a Planner
-        </h2>
+        <h2 className="mb-6 font-bold text-primary text-2xl text-center">Register as a Planner</h2>
 
         {/* Progress indicator */}
         <div className="mb-8">
           <div className="flex justify-between">
-            {[1, 2, 3, 4].map((i) => (
+            {[1, 2, 3, 4].map(i => (
               <div key={i} className="flex flex-col items-center">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= i ? "bg-primary text-white" : "bg-gray-200 text-gray-500"}`}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    step >= i ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'
+                  }`}
                 >
                   {i}
                 </div>
                 <span className="mt-1 text-xs">
                   {i === 1
-                    ? "Personal"
+                    ? 'Personal'
                     : i === 2
-                      ? "Professional"
-                      : i === 3
-                        ? "Membership"
-                        : "Documents"}
+                    ? 'Professional'
+                    : i === 3
+                    ? 'Membership'
+                    : 'Documents'}
                 </span>
               </div>
             ))}
@@ -273,16 +246,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             <Card>
               <CardHeader>
                 <CardTitle>Personal Information</CardTitle>
-                <CardDescription>
-                  Please provide your personal details
-                </CardDescription>
+                <CardDescription>Please provide your personal details</CardDescription>
               </CardHeader>
               <CardContent>
                 <Form {...personalInfoForm}>
                   <form
-                    onSubmit={personalInfoForm.handleSubmit(
-                      handlePersonalInfoSubmit,
-                    )}
+                    onSubmit={personalInfoForm.handleSubmit(handlePersonalInfoSubmit)}
                     className="space-y-4"
                   >
                     <div className="gap-4 grid grid-cols-3">
@@ -295,11 +264,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             <FormControl>
                               <div className="relative">
                                 <User className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
-                                <Input
-                                  className="pl-10"
-                                  placeholder="John"
-                                  {...field}
-                                />
+                                <Input className="pl-10" placeholder="John" {...field} />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -335,11 +300,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             <FormControl>
                               <div className="relative">
                                 <User className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
-                                <Input
-                                  className="pl-10"
-                                  placeholder="Doe"
-                                  {...field}
-                                />
+                                <Input className="pl-10" placeholder="Doe" {...field} />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -378,6 +339,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                               <Mail className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
                               <Input
                                 className="pl-10"
+                                type="password"
                                 placeholder="john.doe@example.com"
                                 {...field}
                               />
@@ -396,11 +358,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           <FormControl>
                             <div className="relative">
                               <Phone className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
-                              <Input
-                                className="pl-10"
-                                placeholder="+260 97X XXX XXX"
-                                {...field}
-                              />
+                              <Input className="pl-10" placeholder="+260 97X XXX XXX" {...field} />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -416,11 +374,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           <FormControl>
                             <div className="relative">
                               <MapPin className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
-                              <Input
-                                className="pl-10"
-                                placeholder="123 Main St"
-                                {...field}
-                              />
+                              <Input className="pl-10" placeholder="123 Main St" {...field} />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -448,44 +402,23 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           <FormItem>
                             <FormLabel>Province</FormLabel>
                             <FormControl>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                   <SelectTrigger>
                                     <SelectValue placeholder="Select province" />
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="central">
-                                    Central
-                                  </SelectItem>
-                                  <SelectItem value="copperbelt">
-                                    Copperbelt
-                                  </SelectItem>
-                                  <SelectItem value="eastern">
-                                    Eastern
-                                  </SelectItem>
-                                  <SelectItem value="luapula">
-                                    Luapula
-                                  </SelectItem>
+                                  <SelectItem value="central">Central</SelectItem>
+                                  <SelectItem value="copperbelt">Copperbelt</SelectItem>
+                                  <SelectItem value="eastern">Eastern</SelectItem>
+                                  <SelectItem value="luapula">Luapula</SelectItem>
                                   <SelectItem value="lusaka">Lusaka</SelectItem>
-                                  <SelectItem value="muchinga">
-                                    Muchinga
-                                  </SelectItem>
-                                  <SelectItem value="northern">
-                                    Northern
-                                  </SelectItem>
-                                  <SelectItem value="north-western">
-                                    North-Western
-                                  </SelectItem>
-                                  <SelectItem value="southern">
-                                    Southern
-                                  </SelectItem>
-                                  <SelectItem value="western">
-                                    Western
-                                  </SelectItem>
+                                  <SelectItem value="muchinga">Muchinga</SelectItem>
+                                  <SelectItem value="northern">Northern</SelectItem>
+                                  <SelectItem value="north-western">North-Western</SelectItem>
+                                  <SelectItem value="southern">Southern</SelectItem>
+                                  <SelectItem value="western">Western</SelectItem>
                                 </SelectContent>
                               </Select>
                             </FormControl>
@@ -499,9 +432,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                       name="dateJoined"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>
-                            When did you first join the organization?
-                          </FormLabel>
+                          <FormLabel>When did you first join the organization?</FormLabel>
                           <FormControl>
                             <div className="relative">
                               <Calendar className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
@@ -535,16 +466,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             <Card>
               <CardHeader>
                 <CardTitle>Professional Information</CardTitle>
-                <CardDescription>
-                  Tell us about your professional background
-                </CardDescription>
+                <CardDescription>Tell us about your professional background</CardDescription>
               </CardHeader>
               <CardContent>
                 <Form {...professionalInfoForm}>
                   <form
-                    onSubmit={professionalInfoForm.handleSubmit(
-                      handleProfessionalInfoSubmit,
-                    )}
+                    onSubmit={professionalInfoForm.handleSubmit(handleProfessionalInfoSubmit)}
                     className="space-y-4"
                   >
                     <FormField
@@ -597,11 +524,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             <FormControl>
                               <div className="relative">
                                 <Calendar className="top-2.5 left-3 absolute w-4 h-4 text-muted-foreground" />
-                                <Input
-                                  className="pl-10"
-                                  placeholder="2020"
-                                  {...field}
-                                />
+                                <Input className="pl-10" placeholder="2020" {...field} />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -617,10 +540,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           <FormItem>
                             <FormLabel>Current Employer</FormLabel>
                             <FormControl>
-                              <Input
-                                placeholder="Ministry of Planning"
-                                {...field}
-                              />
+                              <Input placeholder="Ministry of Planning" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -669,11 +589,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                       />
                     </div>
                     <div className="flex justify-between pt-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setStep(1)}
-                      >
+                      <Button type="button" variant="outline" onClick={() => setStep(1)}>
                         Back
                       </Button>
                       <Button type="submit">Continue</Button>
@@ -703,9 +619,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
               <CardContent>
                 <Form {...membershipInfoForm}>
                   <form
-                    onSubmit={membershipInfoForm.handleSubmit(
-                      handleMembershipInfoSubmit,
-                    )}
+                    onSubmit={membershipInfoForm.handleSubmit(handleMembershipInfoSubmit)}
                     className="space-y-4"
                   >
                     <FormField
@@ -714,41 +628,27 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Membership Type</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select membership type" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="technician">
-                                Technician
-                              </SelectItem>
-                              <SelectItem value="associate">
-                                Associate
-                              </SelectItem>
+                              <SelectItem value="technician">Technician</SelectItem>
+                              <SelectItem value="associate">Associate</SelectItem>
                               <SelectItem value="full">Full Member</SelectItem>
                               <SelectItem value="fellow">Fellow</SelectItem>
-                              <SelectItem value="student">
-                                Student Chapter
-                              </SelectItem>
-                              <SelectItem value="postgrad">
-                                Post Grad.
-                              </SelectItem>
-                              <SelectItem value="planning-firms">
-                                Planning Firms
-                              </SelectItem>
+                              <SelectItem value="student">Student Chapter</SelectItem>
+                              <SelectItem value="postgrad">Post Grad.</SelectItem>
+                              <SelectItem value="planning-firms">Planning Firms</SelectItem>
                               <SelectItem value="educational-ngo">
                                 Educational/Research Institutions or NGO
                               </SelectItem>
                             </SelectContent>
                           </Select>
                           <FormDescription>
-                            Different membership types have different
-                            requirements and fees.
+                            Different membership types have different requirements and fees.
                           </FormDescription>
                           <FormMessage />
                         </FormItem>
@@ -760,25 +660,16 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Specialization</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select your specialization" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="spatial">
-                                Spatial Planning
-                              </SelectItem>
-                              <SelectItem value="socioeconomic">
-                                Socio-economic Planning
-                              </SelectItem>
-                              <SelectItem value="environmental">
-                                Environmental Planning
-                              </SelectItem>
+                              <SelectItem value="spatial">Spatial Planning</SelectItem>
+                              <SelectItem value="socioeconomic">Socio-economic Planning</SelectItem>
+                              <SelectItem value="environmental">Environmental Planning</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormDescription>
@@ -809,11 +700,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                       )}
                     />
                     <div className="flex justify-between pt-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setStep(2)}
-                      >
+                      <Button type="button" variant="outline" onClick={() => setStep(2)}>
                         Back
                       </Button>
                       <Button type="submit">Continue</Button>
@@ -843,9 +730,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
               <CardContent>
                 <Form {...documentUploadForm}>
                   <form
-                    onSubmit={documentUploadForm.handleSubmit(
-                      handleDocumentUploadSubmit,
-                    )}
+                    onSubmit={documentUploadForm.handleSubmit(handleDocumentUploadSubmit)}
                     className="space-y-4"
                   >
                     <div className="gap-4 grid">
@@ -855,47 +740,38 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           <Input
                             type="file"
                             id="idCopy"
-                            onChange={(e) => handleFileChange(e, "idCopy")}
+                            onChange={e => handleFileChange(e, 'idCopy')}
                             className="hidden"
                           />
                           <Button
                             type="button"
                             variant="outline"
-                            onClick={() =>
-                              document.getElementById("idCopy")?.click()
-                            }
+                            onClick={() => document.getElementById('idCopy')?.click()}
                             className="flex justify-center items-center gap-2 w-full"
                           >
                             <Upload className="w-4 h-4" />
                             <span>Upload ID</span>
                           </Button>
                           <span className="text-muted-foreground text-sm">
-                            {documentUploadForm.watch("idCopy")?.name ||
-                              "No file chosen"}
+                            {documentUploadForm.watch('idCopy')?.name || 'No file chosen'}
                           </span>
                         </div>
                       </div>
 
                       <div className="p-4 border rounded-md">
-                        <FormLabel className="block mb-2">
-                          Qualification Certificate
-                        </FormLabel>
+                        <FormLabel className="block mb-2">Qualification Certificate</FormLabel>
                         <div className="flex items-center gap-2">
                           <Input
                             type="file"
                             id="qualificationCertificate"
-                            onChange={(e) =>
-                              handleFileChange(e, "qualificationCertificate")
-                            }
+                            onChange={e => handleFileChange(e, 'qualificationCertificate')}
                             className="hidden"
                           />
                           <Button
                             type="button"
                             variant="outline"
                             onClick={() =>
-                              document
-                                .getElementById("qualificationCertificate")
-                                ?.click()
+                              document.getElementById('qualificationCertificate')?.click()
                             }
                             className="flex justify-center items-center gap-2 w-full"
                           >
@@ -903,33 +779,26 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             <span>Upload Certificate</span>
                           </Button>
                           <span className="text-muted-foreground text-sm">
-                            {documentUploadForm.watch(
-                              "qualificationCertificate",
-                            )?.name || "No file chosen"}
+                            {documentUploadForm.watch('qualificationCertificate')?.name ||
+                              'No file chosen'}
                           </span>
                         </div>
                       </div>
 
                       <div className="p-4 border rounded-md">
-                        <FormLabel className="block mb-2">
-                          Professional References
-                        </FormLabel>
+                        <FormLabel className="block mb-2">Professional References</FormLabel>
                         <div className="flex items-center gap-2">
                           <Input
                             type="file"
                             id="professionalReferences"
-                            onChange={(e) =>
-                              handleFileChange(e, "professionalReferences")
-                            }
+                            onChange={e => handleFileChange(e, 'professionalReferences')}
                             className="hidden"
                           />
                           <Button
                             type="button"
                             variant="outline"
                             onClick={() =>
-                              document
-                                .getElementById("professionalReferences")
-                                ?.click()
+                              document.getElementById('professionalReferences')?.click()
                             }
                             className="flex justify-center items-center gap-2 w-full"
                           >
@@ -937,8 +806,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             <span>Upload References</span>
                           </Button>
                           <span className="text-muted-foreground text-sm">
-                            {documentUploadForm.watch("professionalReferences")
-                              ?.name || "No file chosen"}
+                            {documentUploadForm.watch('professionalReferences')?.name ||
+                              'No file chosen'}
                           </span>
                         </div>
                       </div>
@@ -951,30 +820,25 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           <Input
                             type="file"
                             id="passportPhoto"
-                            onChange={(e) =>
-                              handleFileChange(e, "passportPhoto")
-                            }
+                            onChange={e => handleFileChange(e, 'passportPhoto')}
                             className="hidden"
                             accept="image/*"
                           />
                           <Button
                             type="button"
                             variant="outline"
-                            onClick={() =>
-                              document.getElementById("passportPhoto")?.click()
-                            }
+                            onClick={() => document.getElementById('passportPhoto')?.click()}
                             className="flex justify-center items-center gap-2 w-full"
                           >
                             <Upload className="w-4 h-4" />
                             <span>Upload Photo</span>
                           </Button>
                           <span className="text-muted-foreground text-sm">
-                            {documentUploadForm.watch("passportPhoto")?.name ||
-                              "No file chosen"}
+                            {documentUploadForm.watch('passportPhoto')?.name || 'No file chosen'}
                           </span>
                         </div>
                         <p className="mt-1 text-red-500 text-xs">
-                          {String(documentUploadForm.formState.errors.cv?.message ?? "")}
+                          {String(documentUploadForm.formState.errors.cv?.message ?? '')}
                         </p>
                       </div>
 
@@ -986,41 +850,36 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           <Input
                             type="file"
                             id="cv"
-                            onChange={(e) => handleFileChange(e, "cv")}
+                            onChange={e => handleFileChange(e, 'cv')}
                             className="hidden"
                             accept=".pdf,.doc,.docx"
                           />
                           <Button
                             type="button"
                             variant="outline"
-                            onClick={() =>
-                              document.getElementById("cv")?.click()
-                            }
+                            onClick={() => document.getElementById('cv')?.click()}
                             className="flex justify-center items-center gap-2 w-full"
                           >
                             <Upload className="w-4 h-4" />
                             <span>Upload CV</span>
                           </Button>
                           <span className="text-muted-foreground text-sm">
-                            {documentUploadForm.watch("cv")?.name ||
-                              "No file chosen"}
+                            {documentUploadForm.watch('cv')?.name || 'No file chosen'}
                           </span>
                         </div>
                         <p className="mt-1 text-red-500 text-xs">
-                          {String(documentUploadForm.formState.errors.passportPhoto?.message ?? "")}
+                          {String(documentUploadForm.formState.errors.passportPhoto?.message ?? '')}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex justify-between pt-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setStep(3)}
-                      >
+                      <Button type="button" variant="outline" onClick={() => setStep(3)}>
                         Back
                       </Button>
-                      <Button type="submit">{isLoading?"Registering...":"Complete Registration"}</Button>
+                      <Button type="submit">
+                        {isLoading ? 'Registering...' : 'Complete Registration'}
+                      </Button>
                     </div>
                   </form>
                 </Form>

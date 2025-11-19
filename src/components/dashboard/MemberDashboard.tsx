@@ -67,9 +67,25 @@ const MemberDashboard = ({
         setUser({ ...user, profile: userSnap.data() });
       } else {
         console.log('No such user!');
+        // Handle case where user document doesn't exist
+        await signOut(auth);
+        clearUser();
+        navigate('/');
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
+      // Handle specific error cases
+      if (error instanceof Error) {
+        if (error.message.includes('permission-denied')) {
+          console.error('Permission denied accessing user data');
+          await signOut(auth);
+          clearUser();
+          navigate('/');
+        } else if (error.message.includes('network')) {
+          console.error('Network error fetching user data');
+          // Could show a retry mechanism or offline message
+        }
+      }
     }
   };
 
@@ -152,7 +168,7 @@ const MemberDashboard = ({
     switch (currentPage) {
       case 'dashboard':
         return (
-          <DashboardOverview userId={user.profile.authRef.id} setCurrentPage={setCurrentPage} />
+          <DashboardOverview userId={user?.profile?.authRef?.id} setCurrentPage={setCurrentPage} />
         );
       case 'profile':
         return <ProfileSection />;
@@ -161,16 +177,16 @@ const MemberDashboard = ({
       case 'documents':
         return <DocumentsSection />;
       case 'events':
-        return <EventsSection userId={user.profile.authRef.id} />;
+        return <EventsSection userId={user?.profile?.authRef?.id} />;
       case 'notifications':
-        return <NotificationsSection userId={user.profile.authRef.id} />;
+        return <NotificationsSection userId={user?.profile?.authRef?.id} />;
       case 'messages':
-        return <MessagesSection userId={user.profile.authRef.id} />;
+        return <MessagesSection userId={user?.profile?.authRef?.id} />;
       case 'settings':
         return <SettingsSection />;
       default:
         return (
-          <DashboardOverview userId={user.profile.authRef.id} setCurrentPage={setCurrentPage} />
+          <DashboardOverview userId={user?.profile?.authRef?.id} setCurrentPage={setCurrentPage} />
         );
     }
   };

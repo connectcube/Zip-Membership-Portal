@@ -121,7 +121,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
       });
       setIsLoading(false);
     } catch (error) {
-      console.error('Login failed:', error);
+      //  console.error('Login failed:', error);
       // Optionally show toast or error feedback
     }
   };

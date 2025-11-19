@@ -124,8 +124,22 @@ const ProfileSection = () => {
         professionalInfo: professionalInfo,
       });
       setIsEditing(false);
+      // Success feedback could be added here
     } catch (err) {
       console.error('Error updating profile:', err);
+      // Handle specific error types
+      let errorMessage = 'Failed to update profile. Please try again.';
+      if (err instanceof Error) {
+        if (err.message.includes('permission-denied')) {
+          errorMessage = 'You do not have permission to update this profile.';
+        } else if (err.message.includes('network')) {
+          errorMessage = 'Network error. Please check your connection and try again.';
+        } else {
+          errorMessage = err.message || errorMessage;
+        }
+      }
+      // Display error to user (could use toast notification)
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -145,6 +159,8 @@ const ProfileSection = () => {
       () => {},
       error => {
         console.error('Upload error:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to upload photo. Please try again.';
+        alert(errorMessage);
         setUploading(false);
       },
       async () => {

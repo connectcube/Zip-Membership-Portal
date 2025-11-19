@@ -17,6 +17,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, fireDataBase } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { toast } from 'react-toastify';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -58,9 +59,12 @@ const AdminLogin = ({ handleStateUpdate, setActiveTab }) => {
         throw new Error('User not found');
       }
       const userData = userSnap.data();
+      toast.success('Login successful!');
       await handleStateUpdate(userData);
     } catch (error) {
       console.error('Login failed:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Login failed. Please try again.';
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

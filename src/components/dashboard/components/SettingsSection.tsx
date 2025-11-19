@@ -1,6 +1,51 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 import { useUserStore } from '@/lib/zustand';
+
+interface NotificationItemProps {
+  id: string;
+  title: string;
+  description: string;
+  checked: boolean;
+}
+
+const NotificationItem = ({ id, title, description, checked }: NotificationItemProps) => (
+  <div className="flex justify-between items-center p-3 border rounded-md">
+    <div>
+      <h4 className="font-medium">{title}</h4>
+      <p className="text-gray-500 text-sm">{description}</p>
+    </div>
+    <div className="flex items-center space-x-2">
+      <Checkbox id={id} checked={checked} />
+      <Label htmlFor={id}>{checked ? 'Enabled' : 'Disabled'}</Label>
+    </div>
+  </div>
+);
+
+interface PrivacyItemProps {
+  id: string;
+  title: string;
+  description: string;
+  checked: boolean;
+}
+
+const PrivacyItem = ({ id, title, description, checked }: PrivacyItemProps) => (
+  <div className="flex justify-between items-center p-3 border rounded-md">
+    <div>
+      <h5 className="font-medium">{title}</h5>
+      <p className="text-gray-500 text-sm">{description}</p>
+    </div>
+    <div className="flex items-center space-x-2">
+      <Checkbox id={id} checked={checked} />
+      <Label htmlFor={id}>{checked ? 'Enabled' : 'Disabled'}</Label>
+    </div>
+  </div>
+);
 
 const SettingsSection = () => {
   const { user } = useUserStore();
@@ -19,37 +64,34 @@ const SettingsSection = () => {
               <h3 className="mb-4 font-medium text-xl">Account Settings</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block mb-1 font-medium text-gray-700 text-sm">
-                    Email Address
-                  </label>
-                  <input
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input
+                    id="email"
                     type="email"
-                    className="p-2 border rounded-md w-full"
                     value={user.email || 'john.doe@example.com'}
                   />
                 </div>
                 <div>
-                  <label className="block mb-1 font-medium text-gray-700 text-sm">
-                    Phone Number
-                  </label>
-                  <input
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
                     type="tel"
-                    className="p-2 border rounded-md w-full"
                     value={user.profile.phone || 'N/A'}
                   />
                 </div>
                 <div>
-                  <label className="block mb-1 font-medium text-gray-700 text-sm">
-                    Language Preference
-                  </label>
-                  <select className="p-2 border rounded-md w-full">
-                    <option>English</option>
-                  </select>
+                  <Label htmlFor="language">Language Preference</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="English" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="en">English</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="flex justify-end">
-                  <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
-                    Save Changes
-                  </button>
+                  <Button>Save Changes</Button>
                 </div>
               </div>
             </CardContent>
@@ -60,54 +102,32 @@ const SettingsSection = () => {
             <CardContent className="p-6">
               <h3 className="mb-4 font-medium text-xl">Notification Preferences</h3>
               <div className="space-y-4">
-                <div className="flex justify-between items-center p-3 border rounded-md">
-                  <div>
-                    <h4 className="font-medium">Email Notifications</h4>
-                    <p className="text-gray-500 text-sm">Receive notifications via email</p>
-                  </div>
-                  <div className="flex items-center">
-                    <input type="checkbox" id="email-notifications" className="mr-2" checked />
-                    <label htmlFor="email-notifications">Enabled</label>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center p-3 border rounded-md">
-                  <div>
-                    <h4 className="font-medium">SMS Notifications</h4>
-                    <p className="text-gray-500 text-sm">Receive notifications via SMS</p>
-                  </div>
-                  <div className="flex items-center">
-                    <input type="checkbox" id="sms-notifications" className="mr-2" />
-                    <label htmlFor="sms-notifications">Disabled</label>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center p-3 border rounded-md">
-                  <div>
-                    <h4 className="font-medium">Payment Reminders</h4>
-                    <p className="text-gray-500 text-sm">
-                      Receive reminders about upcoming payments
-                    </p>
-                  </div>
-                  <div className="flex items-center">
-                    <input type="checkbox" id="payment-reminders" className="mr-2" checked />
-                    <label htmlFor="payment-reminders">Enabled</label>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center p-3 border rounded-md">
-                  <div>
-                    <h4 className="font-medium">Event Notifications</h4>
-                    <p className="text-gray-500 text-sm">
-                      Receive notifications about upcoming events
-                    </p>
-                  </div>
-                  <div className="flex items-center">
-                    <input type="checkbox" id="event-notifications" className="mr-2" checked />
-                    <label htmlFor="event-notifications">Enabled</label>
-                  </div>
-                </div>
+                <NotificationItem
+                  id="email-notifications"
+                  title="Email Notifications"
+                  description="Receive notifications via email"
+                  checked={true}
+                />
+                <NotificationItem
+                  id="sms-notifications"
+                  title="SMS Notifications"
+                  description="Receive notifications via SMS"
+                  checked={false}
+                />
+                <NotificationItem
+                  id="payment-reminders"
+                  title="Payment Reminders"
+                  description="Receive reminders about upcoming payments"
+                  checked={true}
+                />
+                <NotificationItem
+                  id="event-notifications"
+                  title="Event Notifications"
+                  description="Receive notifications about upcoming events"
+                  checked={true}
+                />
                 <div className="flex justify-end">
-                  <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white transition-colors">
-                    Save Preferences
-                  </button>
+                  <Button>Save Preferences</Button>
                 </div>
               </div>
             </CardContent>
@@ -121,57 +141,29 @@ const SettingsSection = () => {
                 <div>
                   <h4 className="mb-2 font-medium">Change Password</h4>
                   <div className="space-y-3">
-                    <input
-                      type="password"
-                      className="p-2 border rounded-md w-full"
-                      placeholder="Current Password"
-                    />
-                    <input
-                      type="password"
-                      className="p-2 border rounded-md w-full"
-                      placeholder="New Password"
-                    />
-                    <input
-                      type="password"
-                      className="p-2 border rounded-md w-full"
-                      placeholder="Confirm New Password"
-                    />
+                    <Input type="password" placeholder="Current Password" />
+                    <Input type="password" placeholder="New Password" />
+                    <Input type="password" placeholder="Confirm New Password" />
                   </div>
-                  <button className="bg-blue-600 hover:bg-blue-700 mt-3 px-4 py-2 rounded-md text-white transition-colors">
-                    Update Password
-                  </button>
+                  <Button className="mt-3">Update Password</Button>
                 </div>
                 <div className="mt-4 pt-4 border-t">
                   <h4 className="mb-2 font-medium">Profile Visibility</h4>
                   <div className="space-y-3">
-                    <div className="flex justify-between items-center p-3 border rounded-md">
-                      <div>
-                        <h5 className="font-medium">Public Profile</h5>
-                        <p className="text-gray-500 text-sm">
-                          Allow your profile to be visible in the public directory
-                        </p>
-                      </div>
-                      <div className="flex items-center">
-                        <input type="checkbox" id="public-profile" className="mr-2" checked />
-                        <label htmlFor="public-profile">Enabled</label>
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-center p-3 border rounded-md">
-                      <div>
-                        <h5 className="font-medium">Contact Information</h5>
-                        <p className="text-gray-500 text-sm">
-                          Show your contact information to other members
-                        </p>
-                      </div>
-                      <div className="flex items-center">
-                        <input type="checkbox" id="contact-info" className="mr-2" />
-                        <label htmlFor="contact-info">Disabled</label>
-                      </div>
-                    </div>
+                    <PrivacyItem
+                      id="public-profile"
+                      title="Public Profile"
+                      description="Allow your profile to be visible in the public directory"
+                      checked={true}
+                    />
+                    <PrivacyItem
+                      id="contact-info"
+                      title="Contact Information"
+                      description="Show your contact information to other members"
+                      checked={false}
+                    />
                   </div>
-                  <button className="bg-blue-600 hover:bg-blue-700 mt-3 px-4 py-2 rounded-md text-white transition-colors">
-                    Save Privacy Settings
-                  </button>
+                  <Button className="mt-3">Save Privacy Settings</Button>
                 </div>
               </div>
             </CardContent>

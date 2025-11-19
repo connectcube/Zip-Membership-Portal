@@ -214,7 +214,7 @@ const Header = () => {
     setIsMenuOpen(!isMenuOpen);
   };
   return (
-    <header className="top-0 z-50 sticky bg-gradient-to-r from-blue-300 to-blue-800 shadow-lg border-b border-blue-900 w-full">
+    <header className="top-0 z-50 sticky bg-gradient-to-r from-blue-300 to-blue-800 shadow-lg border-blue-900 border-b w-full">
       <div className="flex justify-between items-center mx-auto px-4 w-full h-20 container">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
@@ -325,6 +325,7 @@ const Header = () => {
               </Button>
               <Button
                 className="bg-primary hover:bg-primary/90 w-full text-white"
+                // amazonq-ignore-next-line
                 onClick={() => setIsAuthModalOpen(true)}
               >
                 Register

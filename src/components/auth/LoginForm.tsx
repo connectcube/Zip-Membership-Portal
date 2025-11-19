@@ -14,6 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { toast } from 'react-toastify';
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -35,17 +36,6 @@ const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFo
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Check for remembered email on component mount
-  React.useEffect(() => {
-    const rememberMe = localStorage.getItem("zipRememberMe");
-    const rememberedEmail = localStorage.getItem("zipRememberedEmail");
-
-    if (rememberMe === "true" && rememberedEmail) {
-      form.setValue("email", rememberedEmail);
-      form.setValue("rememberMe", true);
-    }
-  }, []);
-
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -55,12 +45,30 @@ const LoginForm = ({ onSubmit = () => {}, onForgotPassword = () => {} }: LoginFo
     },
   });
 
+  // Check for remembered email on component mount
+  React.useEffect(() => {
+    try {
+      const rememberMe = localStorage.getItem("zipRememberMe");
+      const rememberedEmail = localStorage.getItem("zipRememberedEmail");
+
+      if (rememberMe === "true" && rememberedEmail) {
+        form.setValue("email", rememberedEmail);
+        form.setValue("rememberMe", true);
+      }
+    } catch (error) {
+      console.error("Failed to load remembered credentials:", error);
+    }
+  }, [form]);
+
   const handleSubmit = async (values: LoginFormValues) => {
     setIsLoading(true);
     try {
       await onSubmit(values);
+      toast.success('Login successful!');
     } catch (error) {
       console.error("Login failed:", error);
+      const errorMessage = error instanceof Error ? error.message : "Login failed. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

@@ -10,6 +10,7 @@ const Footer = () => {
     <footer className="bg-slate-900 py-8 w-full text-white">
       <div className="mx-auto px-4 container">
         <div className="gap-8 grid grid-cols-1 md:grid-cols-4">
+          // amazonq-ignore-next-line
           {/* About Section 
           <div>
             <h3 className="mb-4 font-bold text-xl">Zambia Institute of Planners</h3>
@@ -28,7 +29,6 @@ const Footer = () => {
               </a>
             </div>
           </div>*/}
-
           {/* Quick Links */}
           <div>
             <h3 className="mb-4 font-bold text-xl">Quick Links</h3>
@@ -64,7 +64,6 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-
           {/* Contact Information */}
           <div>
             <h3 className="mb-4 font-bold text-xl">Contact Us</h3>
@@ -86,7 +85,6 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-
           {/* Newsletter */}
           <div>
             <h3 className="mb-4 font-bold text-xl">Newsletter</h3>

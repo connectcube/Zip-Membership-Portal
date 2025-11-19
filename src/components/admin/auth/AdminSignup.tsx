@@ -17,6 +17,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { fireDataBase, auth } from '@/lib/firebase'; // adjust path
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { toast } from 'react-toastify';
 
 const registerSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -54,10 +55,13 @@ const AdminRegister = ({ handleStateUpdate, setActiveTab }) => {
         const adminSnap = await getDoc(adminRef);
 
         if (adminSnap.exists()) {
-          setErrorMessage('You already have an account. Please sign in instead.');
+          const errorMsg = 'You already have an account. Please sign in instead.';
+          setErrorMessage(errorMsg);
+          toast.error(errorMsg);
         } else {
           // promote to admin
           await setDoc(adminRef, { email: values.email, createdAt: new Date() });
+          toast.success('Admin account created successfully!');
           handleStateUpdate({ email: values.email, role: 'admin' });
         }
       } else {
@@ -68,11 +72,25 @@ const AdminRegister = ({ handleStateUpdate, setActiveTab }) => {
           email: values.email,
           createdAt: new Date(),
         });
+        toast.success('Admin account created successfully!');
         handleStateUpdate({ email: values.email, role: 'admin' });
       }
     } catch (error) {
       console.error('Registration error:', error);
-      setErrorMessage('Something went wrong. Please try again.');
+      let errorMsg = 'Something went wrong. Please try again.';
+      if (error instanceof Error) {
+        if (error.message.includes('auth/email-already-in-use')) {
+          errorMsg = 'This email is already registered. Please use a different email or sign in.';
+        } else if (error.message.includes('auth/weak-password')) {
+          errorMsg = 'Password is too weak. Please choose a stronger password.';
+        } else if (error.message.includes('auth/invalid-email')) {
+          errorMsg = 'Please enter a valid email address.';
+        } else {
+          errorMsg = error.message || 'Something went wrong. Please try again.';
+        }
+      }
+      setErrorMessage(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }

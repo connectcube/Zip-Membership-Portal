@@ -12,6 +12,8 @@ import {
 } from '@/components/ui/select';
 
 export default function MembersManagement({ allUser, isLoading, setIsLoading, fetchAllUser }) {
+  // Add safety check for allUser
+  const safeAllUser = Array.isArray(allUser) ? allUser : [];
   const ITEMS_PER_PAGE = 5;
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
@@ -19,7 +21,8 @@ export default function MembersManagement({ allUser, isLoading, setIsLoading, fe
   const [sortOrder, setSortOrder] = useState('desc');
 
   const filteredAndSortedUsers = useMemo(() => {
-    let filtered = allUser.filter(user => {
+    let filtered = safeAllUser.filter(user => {
+      if (!user) return false;
       const searchLower = searchTerm.toLowerCase();
       return (
         user.phone?.toLowerCase().includes(searchLower) ||
@@ -31,6 +34,7 @@ export default function MembersManagement({ allUser, isLoading, setIsLoading, fe
     });
 
     return filtered.sort((a, b) => {
+      if (!a || !b) return 0;
       let aVal, bVal;
 
       switch (sortBy) {
@@ -60,7 +64,7 @@ export default function MembersManagement({ allUser, isLoading, setIsLoading, fe
       const comparison = aVal.localeCompare(bVal);
       return sortOrder === 'asc' ? comparison : -comparison;
     });
-  }, [allUser, searchTerm, sortBy, sortOrder]);
+  }, [safeAllUser, searchTerm, sortBy, sortOrder]);
 
   const totalPages = Math.ceil(filteredAndSortedUsers.length / ITEMS_PER_PAGE);
   const startIdx = (page - 1) * ITEMS_PER_PAGE;

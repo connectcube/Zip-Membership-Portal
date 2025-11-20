@@ -23,6 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
+firebase-service-account.json
+.env
+
 !node_modules/.vite
 
 **/tempobook/dynamic/

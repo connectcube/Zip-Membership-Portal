@@ -160,9 +160,6 @@ const MemberDashboard = ({
     );
   }
 
-  // Generate payment history based on membership type and registration date
-  const paymentHistory = [];
-
   // Render the appropriate content based on the current page
   const renderContent = () => {
     switch (currentPage) {
@@ -173,7 +170,7 @@ const MemberDashboard = ({
       case 'profile':
         return <ProfileSection />;
       case 'payments':
-        return <PaymentsSection paymentHistory={paymentHistory} />;
+        return <PaymentsSection />;
       case 'documents':
         return <DocumentsSection />;
       case 'events':

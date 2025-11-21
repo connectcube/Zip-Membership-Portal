@@ -4,7 +4,18 @@ import { CreditCard, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { paymentService } from '@/services/paymentService';
 import { useUserStore } from '@/lib/zustand';
-import { doc, updateDoc, arrayUnion, collection, addDoc, getDocs, query, where, orderBy } from 'firebase/firestore';
+import {
+  doc,
+  updateDoc,
+  arrayUnion,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  Timestamp,
+} from 'firebase/firestore';
 import { fireDataBase } from '@/lib/firebase';
 
 declare global {
@@ -52,20 +63,20 @@ const PaymentsSection = () => {
   const loadPaymentHistory = async () => {
     try {
       if (!user?.uid) return;
-      
+
       const q = query(
         collection(fireDataBase, 'payments'),
         where('uid', '==', user.uid),
         orderBy('createdAt', 'desc')
       );
-      
+
       const snapshot = await getDocs(q);
       const payments = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-        date: doc.data().createdAt?.toDate?.()?.toISOString() || new Date().toISOString()
+        date: doc.data().createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
       }));
-      
+
       setPaymentHistory(payments);
     } catch (error) {
       console.error('Failed to load payment history:', error);
@@ -75,55 +86,62 @@ const PaymentsSection = () => {
   const handlePayment = async () => {
     try {
       setLoading(true);
-      const response = await paymentService.initializePayment({
+
+      // Generate payment data and initialize Lenco payment
+      const reference = 'ref-' + Date.now();
+      const publicKey = 'YOUR_PUBLIC_KEY';
+
+      // Create initial payment document
+      const paymentDoc = await addDoc(collection(fireDataBase, 'payments'), {
+        uid: user.uid,
+        email: user.email,
+        reference,
         amount,
+        currency: 'ZMW',
         membershipType: selectedType,
         duration: 1,
-        currency: 'ZMW',
+        status: 'pending',
+        createdAt: Timestamp.now(),
       });
 
-      const { data } = response;
+      // Update user document with payment reference
+      const userRef = doc(fireDataBase, 'users', user.uid);
+      await updateDoc(userRef, {
+        paymentRefs: arrayUnion(paymentDoc.id),
+      });
 
       window.LencoPay.getPaid({
-        key: data.publicKey,
-        reference: data.reference,
-        email: data.email,
-        amount: data.amount,
-        currency: data.currency,
+        key: publicKey,
+        reference,
+        email: user.email,
+        amount,
+        currency: 'ZMW',
+        channels: ['card', 'mobile-money'],
         customer: {
-          firstName: data.customerName.split(' ')[0] || '',
-          lastName: data.customerName.split(' ')[1] || '',
+          firstName: user.profile.firstName || 'User',
+          lastName: user.profile.lastName || '',
+          phone: user.profile.phone || '0971111111',
         },
         onSuccess: async paymentResponse => {
           try {
             const verification = await paymentService.verifyPayment(paymentResponse.reference);
+
+            // Update payment document with verification data
+            await updateDoc(doc(fireDataBase, 'payments', paymentDoc.id), {
+              lencoReference: verification.data.lencoReference,
+              status: verification.data.status,
+              paymentMethod: verification.data.paymentMethod,
+              fee: verification.data.fee,
+              completedAt: verification.data.completedAt
+                ? new Date(verification.data.completedAt)
+                : null,
+              updatedAt: Timestamp.now(),
+            });
+
             if (verification.data.status === 'successful') {
-              // Create payment document
-              const paymentDoc = await addDoc(collection(fireDataBase, 'payments'), {
-                uid: user.uid,
-                email: user.email,
-                reference: paymentResponse.reference,
-                lencoReference: verification.data.lencoReference,
-                amount: data.amount,
-                currency: data.currency,
-                membershipType: selectedType,
-                duration: 1,
-                status: 'successful',
-                paymentMethod: verification.data.paymentMethod,
-                fee: verification.data.fee,
-                createdAt: new Date(),
-                completedAt: new Date(verification.data.completedAt)
-              });
-
-              // Update user document with payment reference
-              const userRef = doc(fireDataBase, 'users', user.uid);
-              await updateDoc(userRef, {
-                paymentRefs: arrayUnion(paymentDoc.id)
-              });
-
               alert('Payment successful! Your membership has been activated.');
-              loadPaymentHistory();
             }
+            loadPaymentHistory();
           } catch (error) {
             console.error('Payment verification failed:', error);
             alert('Payment completed but verification failed. Please contact support.');
@@ -132,8 +150,19 @@ const PaymentsSection = () => {
         onClose: () => {
           console.log('Payment window closed');
         },
-        onConfirmationPending: () => {
-          alert('Payment is being processed. You will be notified once confirmed.');
+        onConfirmationPending: async () => {
+          try {
+            // Update payment status to confirmation pending
+            await updateDoc(doc(fireDataBase, 'payments', paymentDoc.id), {
+              status: 'confirmation_pending',
+              updatedAt: Timestamp.now(),
+            });
+
+            alert('Payment is being processed. You will be notified once confirmed.');
+            loadPaymentHistory();
+          } catch (error) {
+            console.error('Failed to update payment status:', error);
+          }
         },
       });
     } catch (error) {
@@ -181,14 +210,18 @@ const PaymentsSection = () => {
                         </p>
                         <span
                           className={`inline-block px-2 py-1 rounded-full text-xs ${
-                            payment.status === 'completed'
+                            payment.status === 'successful'
                               ? 'bg-green-100 text-green-800'
                               : payment.status === 'pending'
                               ? 'bg-yellow-100 text-yellow-800'
+                              : payment.status === 'confirmation_pending'
+                              ? 'bg-blue-100 text-blue-800'
                               : 'bg-red-100 text-red-800'
                           }`}
                         >
-                          {payment.status}
+                          {payment.status === 'confirmation_pending'
+                            ? 'Confirming'
+                            : payment.status}
                         </span>
                       </div>
                     </div>

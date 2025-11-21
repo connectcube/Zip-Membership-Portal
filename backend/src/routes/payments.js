@@ -6,18 +6,7 @@ const paymentController = require('../controllers/paymentController');
 
 const router = express.Router();
 
-// Initialize payment
-router.post('/initialize',
-  verifyToken,
-  [
-    body('amount').isFloat({ min: 0.01 }),
-    body('membershipType').isIn(['basic', 'premium', 'enterprise']),
-    body('duration').isInt({ min: 1, max: 12 }),
-    body('currency').optional().isLength({ min: 3, max: 3 })
-  ],
-  handleValidationErrors,
-  paymentController.initializePayment
-);
+
 
 // Verify payment
 router.get('/verify/:reference',

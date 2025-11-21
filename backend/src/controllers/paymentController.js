@@ -2,32 +2,7 @@ const axios = require('axios');
 const crypto = require('crypto');
 const { generatePaymentReference } = require('../helpers/paymentHelpers');
 
-const initializePayment = async (req, res) => {
-  try {
-    const { uid, email, name } = req.user;
-    const { amount, membershipType, duration, currency = 'ZMW' } = req.body;
-    
-    const reference = generatePaymentReference();
-    
-    res.json({
-      success: true,
-      data: {
-        reference,
-        amount: parseFloat(amount),
-        currency,
-        publicKey: process.env.LENCO_PUBLIC_KEY,
-        email,
-        customerName: name || email.split('@')[0],
-        uid,
-        membershipType,
-        duration
-      }
-    });
-  } catch (error) {
-    console.error('Initialize payment error:', error);
-    res.status(500).json({ error: 'Failed to initialize payment' });
-  }
-};
+
 
 const verifyPayment = async (req, res) => {
   try {
@@ -94,7 +69,6 @@ const handleWebhook = async (req, res) => {
 
 
 module.exports = {
-  initializePayment,
   verifyPayment,
   handleWebhook
 };

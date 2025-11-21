@@ -45,15 +45,5 @@ export const paymentService = {
     return response.json();
   },
 
-  async getPaymentHistory(page = 1, limit = 10) {
-    const token = await getAuthToken();
-    const response = await fetch(`${API_BASE_URL}/payments/history?page=${page}&limit=${limit}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
 
-    if (!response.ok) throw new Error('Failed to get payment history');
-    return response.json();
-  },
 };

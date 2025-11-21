@@ -30,10 +30,6 @@ router.post('/webhook',
   paymentController.handleWebhook
 );
 
-// Get payment history
-router.get('/history',
-  verifyToken,
-  paymentController.getPaymentHistory
-);
+
 
 module.exports = router;

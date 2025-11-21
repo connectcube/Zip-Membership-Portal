@@ -4,7 +4,7 @@ import { CreditCard, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { paymentService } from '@/services/paymentService';
 import { useUserStore } from '@/lib/zustand';
-import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, updateDoc, arrayUnion, collection, addDoc, getDocs, query, where, orderBy } from 'firebase/firestore';
 import { fireDataBase } from '@/lib/firebase';
 
 declare global {
@@ -51,8 +51,22 @@ const PaymentsSection = () => {
 
   const loadPaymentHistory = async () => {
     try {
-      const response = await paymentService.getPaymentHistory();
-      setPaymentHistory(response.data || []);
+      if (!user?.uid) return;
+      
+      const q = query(
+        collection(fireDataBase, 'payments'),
+        where('uid', '==', user.uid),
+        orderBy('createdAt', 'desc')
+      );
+      
+      const snapshot = await getDocs(q);
+      const payments = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        date: doc.data().createdAt?.toDate?.()?.toISOString() || new Date().toISOString()
+      }));
+      
+      setPaymentHistory(payments);
     } catch (error) {
       console.error('Failed to load payment history:', error);
     }
@@ -84,19 +98,27 @@ const PaymentsSection = () => {
           try {
             const verification = await paymentService.verifyPayment(paymentResponse.reference);
             if (verification.data.status === 'successful') {
-              // Update user document with payment history
+              // Create payment document
+              const paymentDoc = await addDoc(collection(fireDataBase, 'payments'), {
+                uid: user.uid,
+                email: user.email,
+                reference: paymentResponse.reference,
+                lencoReference: verification.data.lencoReference,
+                amount: data.amount,
+                currency: data.currency,
+                membershipType: selectedType,
+                duration: 1,
+                status: 'successful',
+                paymentMethod: verification.data.paymentMethod,
+                fee: verification.data.fee,
+                createdAt: new Date(),
+                completedAt: new Date(verification.data.completedAt)
+              });
+
+              // Update user document with payment reference
               const userRef = doc(fireDataBase, 'users', user.uid);
               await updateDoc(userRef, {
-                paymentHistory: arrayUnion({
-                  id: paymentResponse.reference,
-                  amount: data.amount,
-                  currency: data.currency,
-                  membershipType: selectedType,
-                  duration: 1,
-                  status: 'completed',
-                  date: new Date().toISOString(),
-                  method: 'lenco',
-                }),
+                paymentRefs: arrayUnion(paymentDoc.id)
               });
 
               alert('Payment successful! Your membership has been activated.');
@@ -150,6 +172,7 @@ const PaymentsSection = () => {
                           <p className="text-gray-500 text-sm">
                             {new Date(payment.date).toLocaleDateString()}
                           </p>
+                          <p className="text-gray-400 text-xs">Ref: {payment.reference}</p>
                         </div>
                       </div>
                       <div className="text-right">

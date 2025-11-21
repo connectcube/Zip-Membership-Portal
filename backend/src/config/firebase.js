@@ -43,5 +43,6 @@ module.exports = {
   initializeFirebase,
   getAuth,
   getFirestore,
-  admin
+  admin,
+  Timestamp: admin.firestore.Timestamp
 };

@@ -161,7 +161,9 @@ const DashboardOverview = ({
             </CardContent>
           </div>
           <CardFooter className="place-self-end w-full">
-            <Button className="place-self-end w-full">Renew Membership</Button>
+            <Button onClick={() => setCurrentPage('payments')} className="place-self-end w-full">
+              Renew Membership
+            </Button>
           </CardFooter>
         </Card>
 
